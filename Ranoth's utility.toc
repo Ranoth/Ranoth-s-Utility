@@ -1,0 +1,7 @@
+## Interface: 100206
+## Title: Ranoth's Utility
+## Author: Ranoth_
+## Version: v1.0.0
+## DefaultState: Enabled
+
+Core.lua
