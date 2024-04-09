@@ -4,26 +4,17 @@ local WorldFrame = _G.WorldFrame
 local npcCastGUID
 
 local function SelectChannel()
-    local channel, groupName
-
     if IsInRaid(LE_PARTY_CATEGORY_INSTANCE) then
-        channel = "INSTANCE_CHAT"
-        groupName = "for the instance raid"
+        return "INSTANCE_CHAT", "for the instance raid"
     elseif IsInRaid(LE_PARTY_CATEGORY_HOME) then
-        channel = "RAID"
-        groupName = "for the raid"
+        return "RAID", "for the raid"
     elseif IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-        channel = "INSTANCE_CHAT"
-        groupName = "for the instance party"
+        return "INSTANCE_CHAT", "for the instance party"
     elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
-        channel = "PARTY"
-        groupName = "for the party"
+        return "PARTY", "for the party"
     else
-        channel = "EMOTE"
-        groupName = "for... me"
+        return "EMOTE", "for... me"
     end
-
-    return channel, groupName
 end
 
 local function SelectTarget()
@@ -55,7 +46,7 @@ local function MakeSecureButton()
     end)
 end
 
-local function SayMessage(message, channel)
+local function PrepareSendChatMessage(message, channel)
     if channel == nil then return end
     SendChatMessage(message, channel)
 end
@@ -159,7 +150,7 @@ local function PlayerCastSent(unit, _, _, spellId)
     itemMessage = spellItemMap[spellId] and spellItemMap[spellId]()
 
     if itemMessage then
-        SayMessage(spellMessage .. itemMessage .. "!", channel)
+        PrepareSendChatMessage(spellMessage .. itemMessage .. "!", channel)
     end
 end
 
@@ -189,7 +180,7 @@ local function PlayerCastInterrupted(unit, _, spellId)
     itemMessage = spellItemMap[spellId] and spellItemMap[spellId]()
 
     if itemMessage then
-        SayMessage(spellMessage .. itemMessage .. "!", channel)
+        PrepareSendChatMessage(spellMessage .. itemMessage .. "!", channel)
     end
 end
 
@@ -223,7 +214,7 @@ local function PlayerCastSucceeded(unit, _, spellId)
     itemMessage = spellItemMap[spellId] and spellItemMap[spellId]()
 
     if itemMessage then
-        SayMessage(spellMessage .. itemMessage .. "!", channel)
+        PrepareSendChatMessage(spellMessage .. itemMessage .. "!", channel)
     end
 end
 
@@ -260,7 +251,7 @@ local function NPCCastSucceeded(unit, castGUID, spellID)
 
         local message = spellItemMap[spellID] and spellItemMap[spellID]()
         if message then
-            SayMessage(message, channel)
+            PrepareSendChatMessage(message, channel)
         end
         npcCastGUID = nil
     end
@@ -292,12 +283,12 @@ function Addon:OnCombatLogEventUnfiltered(self, ...)
     if subevent == "SPELL_INTERRUPT" and (sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet")) then
         local channel, _ = SelectChannel()
         local extraSpellName = select(16, CombatLogGetCurrentEventInfo())
-        SayMessage("Interrupted " .. destName .. "'s " .. extraSpellName .. "!", channel)
+        PrepareSendChatMessage("Interrupted " .. destName .. "'s " .. extraSpellName .. "!", channel)
     elseif subevent == "ENVIRONMENTAL_SUMMON" and sourceGUID == UnitGUID("player") then
         local channel, _ = SelectChannel()
         local spellId = select(12, CombatLogGetCurrentEventInfo())
         -- if spellId == 200061 then
-        SayMessage("Summoned " .. destName .. "!", channel)
+        PrepareSendChatMessage("Summoned " .. destName .. "!", channel)
         -- end
     end
 end
