@@ -1,7 +1,9 @@
 ## Interface: 100206
 ## Title: Ranoth's Utility
+## Notes: A collection of things I want in the game.
 ## Author: Ranoth_
 ## Version: v1.0.2
 ## DefaultState: Enabled
+## X-Curse-Project-ID: 1000615
 
 RanothsUtilsCore.lua
