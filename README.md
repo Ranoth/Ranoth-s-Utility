@@ -15,9 +15,9 @@ Kind of like **LeatrixPlus** with features **I** specifically want.
 > - add a command to toggle the speech on utility spells
 > - make a persistent config to enable/disable speech on utility spells
 
-## Installation
+<!-- ## Installation
 
-To install Ranoth's Utility, follow these steps:
+To install Ranoth's Utility, follow these steps: -->
 
 ## Usage
 
