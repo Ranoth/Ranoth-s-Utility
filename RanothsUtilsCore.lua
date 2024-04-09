@@ -233,6 +233,7 @@ local function NPCCastStart(unit, castGUID, spellID)
     local message = spellItemMap[spellID] and spellItemMap[spellID]()
 
     if message then
+        PrepareSendChatMessage(message, channel)
         npcCastGUID = castGUID
     end
 end
@@ -252,8 +253,8 @@ local function NPCCastSucceeded(unit, castGUID, spellID)
         local message = spellItemMap[spellID] and spellItemMap[spellID]()
         if message then
             PrepareSendChatMessage(message, channel)
+            npcCastGUID = nil
         end
-        npcCastGUID = nil
     end
 end
 
