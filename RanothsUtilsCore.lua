@@ -283,15 +283,22 @@ function Addon:OnCombatLogEventUnfiltered(self, ...)
 
     if subevent == "SPELL_INTERRUPT" and (sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet")) then
         local channel, _ = SelectChannel()
-        local extraSpellName = select(16, CombatLogGetCurrentEventInfo())
-        PrepareSendChatMessage("Interrupted " .. destName .. "'s " .. extraSpellName .. "!", channel)
-    elseif subevent == "ENVIRONMENTAL_SUMMON" and sourceGUID == UnitGUID("player") then
-        local channel, _ = SelectChannel()
-        local spellId = select(12, CombatLogGetCurrentEventInfo())
-        -- if spellId == 200061 then
-        PrepareSendChatMessage("Summoned " .. destName .. "!", channel)
-        -- end
+        local extraSpellId = select(15, CombatLogGetCurrentEventInfo())
+        PrepareSendChatMessage("Interrupted " .. destName .. "'s " .. GetSpellLink(extraSpellId) .. "!", channel)
     end
+    -- elseif subevent == "SPELL_PERIODIC_INTERRUPT" and (sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet")) then -- TODO: test if the above code can detect interrupted channeling spells
+    --     print("test")
+    --     local channel, _ = SelectChannel()
+    --     local extraSpellId = select(15, CombatLogGetCurrentEventInfo())
+    --     PrepareSendChatMessage("Interrupted " .. destName .. "'s " .. GetSpellLink(extraSpellId) .. "!", channel)
+    -- end
+    -- elseif subevent == "ENVIRONMENTAL_SUMMON" and sourceGUID == UnitGUID("player") then  -- TODO: for now, I can make "kind of" sure that the player is the one summoned the reaves
+    --     local channel, _ = SelectChannel()                                               -- TODO: by using the fact that the player must be targetting the Reaves to use its modes
+    --     local spellId = select(12, CombatLogGetCurrentEventInfo())                       -- TODO: However this can fail, or not chat anything if the player stops targetting the Reaves
+    --     -- if spellId == 200061 then                                                     -- TODO: Make this code work to find the GUID of the summoned Reaves
+    --     PrepareSendChatMessage("Summoned " .. destName .. "!", channel)
+    --     -- end
+    -- end
 end
 
 function Addon:OnInitialize()

@@ -7,13 +7,15 @@ Kind of like **LeatrixPlus** with features **I** specifically want.
 
 ## Features
 
-- Slash commands to open all containers, all easter eggs, and print a bag item's info
-- Warlock and engineer utility spells trigger a chat response to advertize their availability to other players
+- Slash commands to open all containers, all easter eggs, and print a bag item's info.
+- Warlock and engineer utility spells trigger a chat response to advertize their availability to other players.
+- Will detect an interrupt from the player or its pet and will trigger a chat response to advertize successfully interrupted spells by link in chat.
 
 > TODO:
 >
-> - add a command to toggle the speech on utility spells
-> - make a persistent config to enable/disable speech on utility spells
+> - Add a command to toggle the speech on utility spells.
+> - Make a persistent config to enable/disable speech on utility spells.
+> - Find out how to use the say and yell channels to advertize utility spells and successful interrupts.
 
 <!-- ## Installation
 
