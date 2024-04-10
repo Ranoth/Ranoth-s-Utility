@@ -205,10 +205,10 @@ local function PlayerCastSucceeded(unit, _, spellId)
                 return "resurrected " .. target
             end
         end,
-        [67826] = function() return "Summoned " .. select(2, GetItemInfo(49040)) end,
-        [256153] = function() return "Placed a " .. select(2, GetItemInfo(153647)) end,
-        [384908] = function() return "Placed a " .. select(2, GetItemInfo(198268)) end,
-        [299127] = function() return "Placed an " .. select(2, GetItemInfo(168222)) end,
+        [67826] = function() return "summoned " .. select(2, GetItemInfo(49040)) end,
+        [256153] = function() return "placed a " .. select(2, GetItemInfo(153647)) end,
+        [384908] = function() return "placed a " .. select(2, GetItemInfo(198268)) end,
+        [299127] = function() return "placed an " .. select(2, GetItemInfo(168222)) end,
     }
 
     itemMessage = spellItemMap[spellId] and spellItemMap[spellId]()
@@ -245,14 +245,15 @@ local function NPCCastSucceeded(unit, castGUID, spellID)
     Addon:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", "OnSpellcastSucceeded")
 
     if castGUID == npcCastGUID then
+        local spellMessage = "{Triangle} Successfully "
         local spellItemMap = {
-            [200218] = function() return "Placed a Blingtron-6000!" end,
-            [200205] = function() return "Placed an " .. select(2, GetItemInfo(132514)) .. "!" end,
+            [200218] = function() return "placed a Blingtron-6000!" end,
+            [200205] = function() return "placed an " .. select(2, GetItemInfo(132514)) .. "!" end,
         }
 
         local message = spellItemMap[spellID] and spellItemMap[spellID]()
         if message then
-            PrepareSendChatMessage(message, channel)
+            PrepareSendChatMessage(spellMessage .. message, channel)
             npcCastGUID = nil
         end
     end
