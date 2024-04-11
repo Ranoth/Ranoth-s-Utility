@@ -1,9 +1,46 @@
+local Addon = LibStub("AceAddon-3.0"):NewAddon("RanothsUtility", "AceEvent-3.0", "AceHook-3.0")
+
 local _G = getfenv(0)
 local SecureButton
 local WorldFrame = _G.WorldFrame
-local npcCastGUID
 
-local function SelectChannel()
+local SpellMessagePrefixMap = {
+    SENT = "",
+    STARTED = "",
+    INTERRUPTED = "{Cross} Failed to ",
+    STOPPED = "{Cross} Failed to ",
+    SUCCEEDED = "{Triangle} Successfully ",
+}
+
+local function selectTarget()
+    local target = UnitExists("mouseover") and "mouseover" or "player"
+    local isAlive = not UnitIsDeadOrGhost(target)
+    if UnitIsPlayer(target) then
+        if target == "player" or UnitIsUnit(target, "player") then
+            return "on myself", isAlive
+        else
+            return "on" .. " " .. UnitName(target), isAlive
+        end
+    else
+        return "on myself", isAlive
+    end
+end
+
+local function soulstoneMessage(msgType)
+    local target, isAlive = selectTarget()
+
+    local soulstoneMessages = {
+        ["sent"] = function() if isAlive then return "Placing a" else return "Resurrecting" end end,
+        ["started"] = function() if isAlive then return "Placing a" else return "Resurrecting" end end,
+        ["interrupted"] = function() if isAlive then return "place" else return "resurrect" end end,
+        ["stopped"] = function() if isAlive then return "place" else return "resurrect" end end,
+        ["succeeded"] = function() if isAlive then return "placed" else return "resurrected" end end,
+    }
+
+    return soulstoneMessages[msgType]()
+end
+
+local function selectChannel()
     if IsInRaid(LE_PARTY_CATEGORY_INSTANCE) then
         return "INSTANCE_CHAT", "for the instance raid"
     elseif IsInRaid(LE_PARTY_CATEGORY_HOME) then
@@ -17,44 +54,70 @@ local function SelectChannel()
     end
 end
 
-local function SelectTarget()
-    local target = UnitExists("mouseover") and "mouseover" or "player"
-    local isAlive = not UnitIsDeadOrGhost(target)
-    if UnitIsPlayer(target) then
-        if target == "player" or UnitIsUnit(target, "player") then
-            return "myself", isAlive
-        else
-            return UnitName(target), isAlive
-        end
-    else
-        return "myself", isAlive
-    end
+
+local function createSpellMessage(prefix, msg, spellId, itemId, plural, target, groupName)
+    if msg == "" then return end
+
+    local itemLink = itemId and select(2, GetItemInfo(itemId)) or ""
+    local spellLink = spellId and GetSpellLink(spellId) or ""
+    local link = (itemLink ~= "" and itemLink or spellLink) .. (plural and "s" or "")
+    local groupNameDisplay = groupName and (" " .. select(2, selectChannel())) or ""
+    local targetDisplay = target and (" " .. selectTarget()) or ""
+    local groupOrTarget = groupNameDisplay ~= "" and groupNameDisplay or targetDisplay
+
+    if spellId == 200218 then link = "Blingtron-6000" end
+
+    return prefix .. msg .. " " .. link .. groupOrTarget .. "!"
 end
 
-local Addon = LibStub("AceAddon-3.0"):NewAddon("RanothsUtility", "AceEvent-3.0", "AceHook-3.0")
-
-local function MakeSecureButton()
-    SecureButton = CreateFrame("Button", "RanothsUtility", UIParent, "SecureActionButtonTemplate")
-    SecureButton:Hide()
-    SecureButton:EnableMouse(true)
-    SecureButton:RegisterForClicks("RightButtonDown", "RightButtonUp")
-    SecureButton:SetAttribute("action", "nil")
-
-    SecureButton:SetScript("PostClick", function(self, button, up)
-        if up then return end
-        ClearOverrideBindings(self)
-    end)
+local function createSpellMessageEntry(spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg,
+                                       plural, target, group)
+    return {
+        spellId = spellId,
+        itemId = itemId,
+        plural = plural,
+        link = link,
+        sentMsg = sentMsg,
+        startedMsg = startedMsg,
+        interruptedMsg = interruptedMsg,
+        stoppedMsg = stoppedMsg,
+        succeededMsg = succeededMsg,
+        target = target,
+        group = group,
+    }
 end
 
-local function PrepareSendChatMessage(message, channel)
+local SpellMessageMap = {
+    -- Add more entries like this:
+    -- [spellId] = createSpellMessageEntry(spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg, plural, target, group)
+
+    [29893] = createSpellMessageEntry(29893, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Soulwell, Healthstone
+    [698] = createSpellMessageEntry(698, false, "Using", "", "using", "", "used", false),                -- Ritual of Summoning, No Item
+    [20707] = createSpellMessageEntry(20707, false, soulstoneMessage("sent"), "", soulstoneMessage("interrupted"), "",
+        soulstoneMessage("succeeded"),
+        false, true),                                                                                         -- Soulstone, No Item
+    [187748] = createSpellMessageEntry(187748, 127770, "Placing a", "", "place a", "", "placed a", false),    -- Brazier of Awakening, Brazier of Awakening
+    [67826] = createSpellMessageEntry(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
+    [256153] = createSpellMessageEntry(256153, 153647, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Tome of the Quiet Mind
+    [384908] = createSpellMessageEntry(384908, 198268, "Placing a", "", "place a", "", "placed a", false),    -- Portable Tinker's Workbench, Portable Tinker's Workbench
+    [299127] = createSpellMessageEntry(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
+    [200218] = createSpellMessageEntry(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron-6000, No Item
+    [200205] = createSpellMessageEntry(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
+}
+
+local function prepareSendChatMessage(message, channel)
     if channel == nil then return end
     SendChatMessage(message, channel)
 end
 
-local function RegisterAdditionalSlashCommands()
-    SLASH_DEBUGTESTCOMMAND1 = "/debugtest"
-    SlashCmdList.DEBUGTESTCOMMAND = function()
-        print(UnitId(101527))
+local function registerAdditionalSlashCommands()
+    SLASH_DEBUGTESTCOMMAND1 = "/dbt"
+    SlashCmdList.DEBUGTESTCOMMAND = function(id)
+        local map = SpellMessageMap[id]
+
+        prepareSendChatMessage(
+            createSpellMessage(SpellMessagePrefixMap.SENT, map.interruptedMsg, map.spellId, map.itemId, map.plural,
+                map.target or false, map.group or false), selectChannel())
     end
 
     SLASH_SWITCHLANGUAGES1 = "/swlang"
@@ -129,29 +192,11 @@ local function PlayerCastSent(unit, _, _, spellId)
     Addon:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", "OnSpellCastInterrupted")
     Addon:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", "OnSpellcastSucceeded")
 
-    local channel, _ = SelectChannel()
-    local spellMessage = "Using "
-    local itemMessage
+    local map = SpellMessageMap[spellId]
 
-    local spellItemMap = {
-        [29893] = function() return GetSpellLink(29893) end,
-        [698] = function() return GetSpellLink(698) end,
-        [20707] = function()
-            local target, isAlive = SelectTarget()
-            if isAlive then
-                return "Placing a " .. GetSpellLink(20707) .. " on " .. target
-            else
-                return "Resurrecting " .. target
-            end
-        end,
-        [187748] = function() return "Placing a " .. select(2, GetItemInfo(127770)) end,
-    }
-
-    itemMessage = spellItemMap[spellId] and spellItemMap[spellId]()
-
-    if itemMessage then
-        PrepareSendChatMessage(spellMessage .. itemMessage .. "!", channel)
-    end
+    prepareSendChatMessage(
+        createSpellMessage(SpellMessagePrefixMap.SENT, map.sentMsg, map.spellId, map.itemId, map.plural,
+            map.target or false, map.group or false), selectChannel())
 end
 
 local function PlayerCastInterrupted(unit, _, spellId)
@@ -160,28 +205,11 @@ local function PlayerCastInterrupted(unit, _, spellId)
     Addon:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     Addon:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 
-    local channel, _ = SelectChannel()
-    local spellMessage = "{Cross} Failed to "
-    local itemMessage
+    local map = SpellMessageMap[spellId]
 
-    local spellItemMap = {
-        [187748] = function() return "place a " .. select(2, GetItemInfo(127770)) end,
-        [20707] = function()
-            local target, isAlive = SelectTarget()
-            if isAlive then
-                return "place a " .. GetSpellLink(20707) .. " on " .. target
-            else
-                return "resurrect " .. target
-            end
-        end,
-        [29893] = function() return "use " .. GetSpellLink(29893) end,
-    }
-
-    itemMessage = spellItemMap[spellId] and spellItemMap[spellId]()
-
-    if itemMessage then
-        PrepareSendChatMessage(spellMessage .. itemMessage .. "!", channel)
-    end
+    prepareSendChatMessage(
+        createSpellMessage(SpellMessagePrefixMap.INTERRUPTED, map.interruptedMsg, map.spellId, map.itemId, map.plural,
+            map.target or false, map.group or false), selectChannel())
 end
 
 local function PlayerCastSucceeded(unit, _, spellId)
@@ -190,73 +218,34 @@ local function PlayerCastSucceeded(unit, _, spellId)
     Addon:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
     Addon:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
 
-    local channel, groupName = SelectChannel()
-    local spellMessage = "{Triangle} Successfully "
-    local itemMessage, target, isAlive
+    local map = SpellMessageMap[spellId]
 
-    local spellItemMap = {
-        [29893] = function() return "made " .. select(2, GetItemInfo(5512)) .. "s " .. groupName end,
-        [187748] = function() return "placed a " .. select(2, GetItemInfo(127770)) end,
-        [20707] = function()
-            target, isAlive = SelectTarget()
-            if isAlive then
-                return "placed a " .. GetSpellLink(20707) .. " on " .. target
-            else
-                return "resurrected " .. target
-            end
-        end,
-        [67826] = function() return "summoned " .. select(2, GetItemInfo(49040)) end,
-        [256153] = function() return "placed a " .. select(2, GetItemInfo(153647)) end,
-        [384908] = function() return "placed a " .. select(2, GetItemInfo(198268)) end,
-        [299127] = function() return "placed an " .. select(2, GetItemInfo(168222)) end,
-    }
-
-    itemMessage = spellItemMap[spellId] and spellItemMap[spellId]()
-
-    if itemMessage then
-        PrepareSendChatMessage(spellMessage .. itemMessage .. "!", channel)
-    end
+    prepareSendChatMessage(
+        createSpellMessage(SpellMessagePrefixMap.SUCCEEDED, map.succeededMsg, map.spellId, map.itemId, map.plural,
+            map.target or false, map.group or false), selectChannel())
 end
 
 local function NPCCastStart(unit, castGUID, spellID)
     if unit ~= "target" then return end
-    local channel, _ = SelectChannel()
-    npcCastGUID = nil
-
     Addon:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", "OnSpellcastSucceeded")
 
-    local spellItemMap = {
-        [200218] = function() return "Placing a Blingtron-6000!" end,
-        [200205] = function() return "Placing an " .. select(2, GetItemInfo(132514)) .. "!" end,
-    }
+    local map = SpellMessageMap[spellID]
 
-    local message = spellItemMap[spellID] and spellItemMap[spellID]()
-
-    if message then
-        PrepareSendChatMessage(message, channel)
-        npcCastGUID = castGUID
-    end
+    prepareSendChatMessage(
+        createSpellMessage(SpellMessagePrefixMap.STARTED, map.startedMsg, map.spellId, map.itemId, map.plural,
+            map.target or false, map.group or false), selectChannel())
 end
 
 local function NPCCastSucceeded(unit, castGUID, spellID)
     if unit ~= "target" then return end
-    local channel, _ = SelectChannel()
 
     Addon:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED", "OnSpellcastSucceeded")
 
-    if castGUID == npcCastGUID then
-        local spellMessage = "{Triangle} Successfully "
-        local spellItemMap = {
-            [200218] = function() return "placed a Blingtron-6000!" end,
-            [200205] = function() return "placed an " .. select(2, GetItemInfo(132514)) .. "!" end,
-        }
+    local map = SpellMessageMap[spellID]
 
-        local message = spellItemMap[spellID] and spellItemMap[spellID]()
-        if message then
-            PrepareSendChatMessage(spellMessage .. message, channel)
-            npcCastGUID = nil
-        end
-    end
+    prepareSendChatMessage(
+        createSpellMessage(SpellMessagePrefixMap.SUCCEEDED, map.succeededMsg, map.spellId, map.itemId, map.plural,
+            map.target or false, map.group or false), selectChannel())
 end
 
 function Addon:OnSpellcastSent(self, unit, _, _, spellId)
@@ -283,9 +272,9 @@ function Addon:OnCombatLogEventUnfiltered(self, ...)
     local _, subevent, _, sourceGUID, _, _, _, _, destName = CombatLogGetCurrentEventInfo()
 
     if subevent == "SPELL_INTERRUPT" and (sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet")) then
-        local channel, _ = SelectChannel()
+        local channel, _ = selectChannel()
         local extraSpellId = select(15, CombatLogGetCurrentEventInfo())
-        PrepareSendChatMessage("Interrupted " .. destName .. "'s " .. GetSpellLink(extraSpellId) .. "!", channel)
+        prepareSendChatMessage("Interrupted " .. destName .. "'s " .. GetSpellLink(extraSpellId) .. "!", channel)
     end
     -- elseif subevent == "SPELL_PERIODIC_INTERRUPT" and (sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet")) then -- TODO: test if the above code can detect interrupted channeling spells
     --     print("test")
@@ -303,7 +292,7 @@ function Addon:OnCombatLogEventUnfiltered(self, ...)
 end
 
 function Addon:OnInitialize()
-    RegisterAdditionalSlashCommands()
+    registerAdditionalSlashCommands()
     -- MakeSecureButton()
 end
 
