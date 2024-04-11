@@ -65,7 +65,12 @@ local function createSpellMessage(prefix, msg, spellId, itemId, plural, target, 
     local targetDisplay = target and (" " .. selectTarget()) or ""
     local groupOrTarget = groupNameDisplay ~= "" and groupNameDisplay or targetDisplay
 
-    if spellId == 200218 then link = "Blingtron-6000" end
+    if spellId == 200218 then
+        link = "Blingtron-6000"
+    elseif spellId == 20707 and not select(2, selectTarget()) then
+        link = ""
+        groupOrTarget = groupOrTarget:match("^%s*(.-)%s*$")
+    end
 
     return prefix .. msg .. " " .. link .. groupOrTarget .. "!"
 end
@@ -92,7 +97,7 @@ local SpellMessageMap = {
     -- [spellId] = createSpellMessageEntry(spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg, plural, target, group)
 
     [29893] = createSpellMessageEntry(29893, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Soulwell, Healthstone
-    [698] = createSpellMessageEntry(698, false, "Using", "", "", "", "", false),                -- Ritual of Summoning, No Item
+    [698] = createSpellMessageEntry(698, false, "Using", "", "", "", "", false),                         -- Ritual of Summoning, No Item
     [20707] = createSpellMessageEntry(20707, false, soulstoneMessage("sent"), "", soulstoneMessage("interrupted"), "",
         soulstoneMessage("succeeded"),
         false, true),                                                                                         -- Soulstone, No Item
