@@ -27,14 +27,14 @@ local function selectTarget()
 end
 
 local function soulstoneMessage(msgType)
-    local target, isAlive = selectTarget()
+    local _, isAlive = selectTarget()
 
     local soulstoneMessages = {
         ["sent"] = function() if isAlive then return "Placing a" else return "Resurrecting" end end,
         ["started"] = function() if isAlive then return "Placing a" else return "Resurrecting" end end,
-        ["interrupted"] = function() if isAlive then return "place" else return "resurrect" end end,
-        ["stopped"] = function() if isAlive then return "place" else return "resurrect" end end,
-        ["succeeded"] = function() if isAlive then return "placed" else return "resurrected" end end,
+        ["interrupted"] = function() if isAlive then return "place a" else return "resurrect" end end,
+        ["stopped"] = function() if isAlive then return "place a" else return "resurrect" end end,
+        ["succeeded"] = function() if isAlive then return "placed a" else return "resurrected" end end,
     }
 
     return soulstoneMessages[msgType]()
@@ -92,7 +92,7 @@ local SpellMessageMap = {
     -- [spellId] = createSpellMessageEntry(spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg, plural, target, group)
 
     [29893] = createSpellMessageEntry(29893, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Soulwell, Healthstone
-    [698] = createSpellMessageEntry(698, false, "Using", "", "using", "", "used", false),                -- Ritual of Summoning, No Item
+    [698] = createSpellMessageEntry(698, false, "Using", "", "", "", "", false),                -- Ritual of Summoning, No Item
     [20707] = createSpellMessageEntry(20707, false, soulstoneMessage("sent"), "", soulstoneMessage("interrupted"), "",
         soulstoneMessage("succeeded"),
         false, true),                                                                                         -- Soulstone, No Item
