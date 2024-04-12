@@ -114,43 +114,47 @@ local spellMessageDb = {
 }
 
 function SpellMessages:PlayerCastSent(unit, _, _, spellId)
-    if unit ~= "player" then return end
+    local spellMessage = spellMessageDb[spellId]
+    if unit ~= "player" or spellMessage == nil then return end
 
-    SpellMessages:PrepareSendChatMessage(spellMessageDb[spellId]:createSpellMessage(spellMessagePrefixMap.SENT,
+    SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.SENT,
         "SENT"))
 end
 
 function SpellMessages:PlayerCastInterrupted(unit, _, spellId)
-    if unit ~= "player" then return end
+    local spellMessage = spellMessageDb[spellId]
+    if unit ~= "player" or spellMessage == nil then return end
 
-    SpellMessages:PrepareSendChatMessage(spellMessageDb[spellId]:createSpellMessage(spellMessagePrefixMap.INTERRUPTED,
+    SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.INTERRUPTED,
         "INTERRUPTED"))
 end
 
 function SpellMessages:PlayerCastSucceeded(unit, _, spellId)
-    if unit ~= "player" then return end
+    local spellMessage = spellMessageDb[spellId]
+    if unit ~= "player" or spellMessage == nil then return end
 
-    SpellMessages:PrepareSendChatMessage(spellMessageDb[spellId]:createSpellMessage(spellMessagePrefixMap.SUCCEEDED,
+    SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.SUCCEEDED,
         "SUCCEEDED"))
 end
 
 function SpellMessages:NpcCastStart(unit, castGUID, spellId)
-    if unit ~= "target" then return end
+    local spellMessage = spellMessageDb[spellId]
+    if unit ~= "target" or spellMessage == nil then return end
 
-    SpellMessages:PrepareSendChatMessage(spellMessageDb[spellId]:createSpellMessage(spellMessagePrefixMap.STARTED,
+    SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.STARTED,
         "STARTED"))
 end
 
 function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
-    if unit ~= "target" then return end
+    local spellMessage = spellMessageDb[spellId]
+    if unit ~= "target" or spellMessage == nil then return end
 
-    SpellMessages:PrepareSendChatMessage(spellMessageDb[spellId]:createSpellMessage(spellMessagePrefixMap.SUCCEEDED,
+    SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.SUCCEEDED,
         "SUCCEEDED"))
 end
 
 function SpellMessages:InterruptedSpellCast()
     local _, subevent, _, sourceGUID, _, _, _, _, destName = CombatLogGetCurrentEventInfo()
-
     if subevent == "SPELL_INTERRUPT" and (sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet")) then
         local extraSpellId = select(15, CombatLogGetCurrentEventInfo())
         SpellMessages:PrepareSendChatMessage("Interrupted " .. destName .. "'s " .. GetSpellLink(extraSpellId) .. "!")
