@@ -134,14 +134,14 @@ function SpellMessages:PlayerCastSucceeded(unit, _, spellId)
         "SUCCEEDED"))
 end
 
-function SpellMessages:NpcCastStart(unit, castGUID, spellID)
+function SpellMessages:NpcCastStart(unit, castGUID, spellId)
     if unit ~= "target" then return end
 
     SpellMessages:PrepareSendChatMessage(spellMessageDb[spellId]:createSpellMessage(spellMessagePrefixMap.STARTED,
         "STARTED"))
 end
 
-function SpellMessages:NpcCastSucceeded(unit, castGUID, spellID)
+function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
     if unit ~= "target" then return end
 
     SpellMessages:PrepareSendChatMessage(spellMessageDb[spellId]:createSpellMessage(spellMessagePrefixMap.SUCCEEDED,
