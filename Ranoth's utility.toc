@@ -2,8 +2,11 @@
 ## Title: Ranoth's Utility
 ## Notes: A collection of things I want in the game.
 ## Author: Ranoth_
-## Version: v1.1.2-2
+## Version: v1.1.2-3
 ## DefaultState: Enabled
 ## X-Curse-Project-ID: 1000615
 
-RanothsUtilsCore.lua
+init.lua
+spellMessages.lua
+commands.lua
+core.lua

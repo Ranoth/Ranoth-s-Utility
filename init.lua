@@ -1,0 +1,3 @@
+local addon_name, _ = ...
+local AceAddon = LibStub("AceAddon-3.0")
+RanothUtils = AceAddon:NewAddon(addon_name, "AceEvent-3.0", "AceHook-3.0")
