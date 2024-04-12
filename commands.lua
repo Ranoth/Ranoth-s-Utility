@@ -56,6 +56,7 @@ function Commands:RegisterAdditionalSlashCommands()
                         tooltipText = _G["ItemTooltipTextLeft" .. i]:GetText()
                     end
                 end
+                ---@diagnostic disable-next-line: undefined-field
                 if tooltipText and string.find(tooltipText, _G.ITEM_OPENABLE) then
                     local _, _, locked = C_Container.GetContainerItemInfo(bag, slot)
                     if not locked then
@@ -68,5 +69,11 @@ function Commands:RegisterAdditionalSlashCommands()
                 end
             end
         end
+    end
+
+    SLASH_CALCULATRIX1 = "/calc"
+    SlashCmdList.CALCULATRIX = function(expression)
+        local result = loadstring("return " .. expression)()
+        print(result)
     end
 end

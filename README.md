@@ -8,6 +8,7 @@ Kind of like **LeatrixPlus** with features **I** specifically want.
 ## Features
 
 - Slash commands to open all containers, all easter eggs, and print a bag item's info.
+- Slash command to calculate an expression (e.g. /calc 1 + 1 = 2).
 - Warlock and engineer utility spells trigger a chat response to advertize their availability to other players.
 - Will detect an interrupt from the player or its pet and will trigger a chat response to advertize successfully interrupted spells by link in chat.
 
@@ -29,6 +30,7 @@ To install Ranoth's Utility, follow these steps: -->
   - /dumpii(bag, slot) - Prints the item info for the item in the specified bag and slot
     > Note that the slot is 1-indexed, not 0-indexed and you can know the bag and slot numbers by using the framestack debug feature
   - /swlang - Switches spoken language between all available languages for your character
+  - /calc - Calculates an expression and prints the result (e.g. /calc 1 + 1 = 2, /calc 2 * 2 = 4, /calc 2 / 2 = 1)
 
 ## Support
 
