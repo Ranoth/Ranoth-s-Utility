@@ -29,6 +29,7 @@ local function selectChannel()
 end
 
 function SpellMessages:PrepareSendChatMessage(message)
+    if not message then return end
     local channel, _ = selectChannel()
     if channel == nil then return end
     SendChatMessage(message, channel)
