@@ -28,11 +28,13 @@ function RanothUtils:UNIT_SPELLCAST_SUCCEEDED(self, unit, _, spellId)
     SpellMessages:NpcCastSucceeded(unit, _, spellId)
 end
 
--- function RanothUtils:UNIT_SPELLCAST_STOP(self, unit, _, spellId)
--- end
-
-function RanothUtils:COMBAT_LOG_EVENT_UNFILTERED(self, _)
-    SpellMessages:InterruptedSpellCast()
+function RanothUtils:COMBAT_LOG_EVENT_UNFILTERED()
+    local eventInfo = { CombatLogGetCurrentEventInfo() }
+    if eventInfo[2] == "SPELL_SUMMON" then
+        SpellMessages:SummonedGuardian(unpack(eventInfo))
+    elseif eventInfo[2] == "SPELL_INTERRUPT" then
+        SpellMessages:InterruptedSpellCast(unpack(eventInfo))
+    end
 end
 
 function RanothUtils:OnInitialize()

@@ -1,5 +1,6 @@
 local SpellMessages = RanothUtils:NewModule("SpellMessages")
 local Debug = RanothUtils:GetModule("Debug")
+local petOwners = {}
 
 local function selectTarget()
     local target = UnitExists("mouseover") and "mouseover" or "player"
@@ -118,7 +119,6 @@ local spellMessageDb = {
 
 function SpellMessages:PlayerCastSent(unit, _, _, spellId)
     local spellMessage = spellMessageDb[spellId]
-    Debug:Print("PlayerCastSent called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
     if not spellMessage then return end
     if unit ~= "player" then return end
 
@@ -128,18 +128,15 @@ end
 
 function SpellMessages:PlayerCastInterrupted(unit, _, spellId)
     local spellMessage = spellMessageDb[spellId]
-    Debug:Print("PlayerCastInterrupted called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
     if not spellMessage then return end
     if unit ~= "player" then return end
-    
+
     SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.INTERRUPTED,
-    "INTERRUPTED"))
+        "INTERRUPTED"))
 end
 
 function SpellMessages:PlayerCastSucceeded(unit, _, spellId)
-    Debug:Print("tiggered")
     local spellMessage = spellMessageDb[spellId]
-    Debug:Print("PlayerCastSucceeded called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
     if not spellMessage then return end
     if unit ~= "player" then return end
 
@@ -149,7 +146,6 @@ end
 
 function SpellMessages:NpcCastStart(unit, castGUID, spellId)
     local spellMessage = spellMessageDb[spellId]
-    Debug:Print("NpcCastStart called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
     if not spellMessage then return end
     if unit ~= "target" then return end
 
@@ -160,7 +156,6 @@ end
 function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
     -- print("NpcCastSucceeded called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
     local spellMessage = spellMessageDb[spellId]
-    Debug:Print("NpcCastSucceeded called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
     if not spellMessage then return end
     if unit ~= "target" then return end
 
@@ -168,9 +163,19 @@ function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
         "SUCCEEDED"))
 end
 
-function SpellMessages:InterruptedSpellCast()
-    local _, subevent, _, sourceGUID, _, _, _, _, destName = CombatLogGetCurrentEventInfo()
-    if subevent == "SPELL_INTERRUPT" and (sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet")) then
+function SpellMessages:SummonedGuardian(...)
+    local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = ...
+    Debug:CombatLogGetUnitFlags(subevent, destName, destFlags)
+    if sourceGUID and destGUID then
+        petOwners[destGUID] = sourceGUID
+    end
+end
+
+function SpellMessages:InterruptedSpellCast(...)
+    local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = ...
+    local playerGUID, petGUID = UnitGUID("player"), UnitGUID("pet")
+    Debug:Print(petOwners[sourceGUID] == playerGUID or "failed")
+    if sourceGUID == playerGUID or sourceGUID == petGUID or petOwners[sourceGUID] == playerGUID then
         local extraSpellId = select(15, CombatLogGetCurrentEventInfo())
         SpellMessages:PrepareSendChatMessage("Interrupted " .. destName .. "'s " .. GetSpellLink(extraSpellId) .. "!")
     end

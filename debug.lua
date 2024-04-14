@@ -18,7 +18,7 @@ end
 local function createToggledFunction(func)
     return function(...)
         if not toggled then return end
-        return func(...)
+        return func(unpack({ ... }))
     end
 end
 
@@ -37,4 +37,43 @@ Debug.Print = createToggledFunction(function(...)
         args[i] = tostring(args[i])
     end
     chatTab:AddMessage(table.concat(args, " "))
+end)
+
+Debug.CombatLogGetUnitFlags = createToggledFunction(function(self, subevent, destName, destFlags)
+    local flags = {
+        [COMBATLOG_OBJECT_AFFILIATION_MASK] = {
+            [COMBATLOG_OBJECT_AFFILIATION_MINE] = "Affiliation: Mine",
+            [COMBATLOG_OBJECT_AFFILIATION_PARTY] = "Affiliation: Party",
+            [COMBATLOG_OBJECT_AFFILIATION_RAID] = "Affiliation: Raid",
+            [COMBATLOG_OBJECT_AFFILIATION_OUTSIDER] = "Affiliation: Outsider",
+        },
+        [COMBATLOG_OBJECT_REACTION_MASK] = {
+            [COMBATLOG_OBJECT_REACTION_FRIENDLY] = "Reaction: Friendly",
+            [COMBATLOG_OBJECT_REACTION_NEUTRAL] = "Reaction: Neutral",
+            [COMBATLOG_OBJECT_REACTION_HOSTILE] = "Reaction: Hostile",
+        },
+        [COMBATLOG_OBJECT_CONTROL_MASK] = {
+            [COMBATLOG_OBJECT_CONTROL_PLAYER] = "Control: Player",
+            [COMBATLOG_OBJECT_CONTROL_NPC] = "Control: NPC",
+        },
+        [COMBATLOG_OBJECT_TYPE_MASK] = {
+            [COMBATLOG_OBJECT_TYPE_PLAYER] = "Type: Player",
+            [COMBATLOG_OBJECT_TYPE_NPC] = "Type: NPC",
+            [COMBATLOG_OBJECT_TYPE_PET] = "Type: Pet",
+            [COMBATLOG_OBJECT_TYPE_GUARDIAN] = "Type: Guardian",
+            [COMBATLOG_OBJECT_TYPE_OBJECT] = "Type: Object",
+        },
+    }
+    local order = { "TYPE", "CONTROL", "REACTION", "AFFILIATION" }
+    local t = {}
+    table.insert(t, subevent)
+    table.insert(t, destName)
+    table.insert(t, format("0x%X", destFlags))
+    for _, v in pairs(order) do
+        local mask = _G["COMBATLOG_OBJECT_" .. v .. "_MASK"]
+        local bitfield = bit.band(destFlags, mask)
+        local info = flags[mask][bitfield]
+        table.insert(t, (info:gsub(": (%a+)", ": |cff71d5ff%1|r"))) -- add some coloring
+    end
+    Debug:Print(table.concat(t, ", "))
 end)
