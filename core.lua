@@ -14,12 +14,14 @@ function RanothUtils:UNIT_SPELLCAST_START(self, unit, castGUID, spellId)
 end
 
 function RanothUtils:UNIT_SPELLCAST_INTERRUPTED(self, unit, _, spellId)
+    if unit == "pet" then return end
     RanothUtils:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     RanothUtils:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
     SpellMessages:PlayerCastInterrupted(unit, _, spellId)
 end
 
 function RanothUtils:UNIT_SPELLCAST_SUCCEEDED(self, unit, _, spellId)
+    if unit == "pet" then return end
     RanothUtils:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     RanothUtils:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
     SpellMessages:PlayerCastSucceeded(unit, _, spellId)

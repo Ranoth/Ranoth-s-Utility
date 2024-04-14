@@ -1,8 +1,10 @@
 local Commands = RanothUtils:NewModule("Commands")
+local Debug = RanothUtils:GetModule("Debug")
 
 function Commands:RegisterAdditionalSlashCommands()
-    SLASH_DEBUGTESTCOMMAND1 = "/dbt"
-    SlashCmdList.DEBUGTESTCOMMAND = function(id)
+    SLASH_DEBUGTESTCOMMAND1 = "/toggledebug"
+    SlashCmdList.DEBUGTESTCOMMAND = function()
+        Debug:Toggle()
     end
 
     SLASH_SWITCHLANGUAGES1 = "/swlang"

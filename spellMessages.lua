@@ -1,4 +1,5 @@
 local SpellMessages = RanothUtils:NewModule("SpellMessages")
+local Debug = RanothUtils:GetModule("Debug")
 
 local function selectTarget()
     local target = UnitExists("mouseover") and "mouseover" or "player"
@@ -100,6 +101,7 @@ local spellMessageDb = {
     -- Add more entries like this:
     -- [spellId] = createSpellMessageEntry(spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg, plural, target, group)
 
+    -- [6201] = SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Healthstone, Healthstone (for debugging purposes)
     [29893] = SpellMessage(29893, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Soulwell, Healthstone
     [698] = SpellMessage(698, false, "Using", "", "", "", "", false),                         -- Ritual of Summoning, No Item
     [20707] = SpellMessage(20707, false, soulstoneMessage("sent"), "", soulstoneMessage("interrupted"), "",
@@ -116,7 +118,9 @@ local spellMessageDb = {
 
 function SpellMessages:PlayerCastSent(unit, _, _, spellId)
     local spellMessage = spellMessageDb[spellId]
-    if unit ~= "player" or spellMessage == nil then return end
+    Debug:Print("PlayerCastSent called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
+    if not spellMessage then return end
+    if unit ~= "player" then return end
 
     SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.SENT,
         "SENT"))
@@ -124,15 +128,20 @@ end
 
 function SpellMessages:PlayerCastInterrupted(unit, _, spellId)
     local spellMessage = spellMessageDb[spellId]
-    if unit ~= "player" or spellMessage == nil then return end
-
+    Debug:Print("PlayerCastInterrupted called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
+    if not spellMessage then return end
+    if unit ~= "player" then return end
+    
     SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.INTERRUPTED,
-        "INTERRUPTED"))
+    "INTERRUPTED"))
 end
 
 function SpellMessages:PlayerCastSucceeded(unit, _, spellId)
+    Debug:Print("tiggered")
     local spellMessage = spellMessageDb[spellId]
-    if unit ~= "player" or spellMessage == nil then return end
+    Debug:Print("PlayerCastSucceeded called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
+    if not spellMessage then return end
+    if unit ~= "player" then return end
 
     SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.SUCCEEDED,
         "SUCCEEDED"))
@@ -140,15 +149,20 @@ end
 
 function SpellMessages:NpcCastStart(unit, castGUID, spellId)
     local spellMessage = spellMessageDb[spellId]
-    if unit ~= "target" or spellMessage == nil then return end
+    Debug:Print("NpcCastStart called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
+    if not spellMessage then return end
+    if unit ~= "target" then return end
 
     SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.STARTED,
         "STARTED"))
 end
 
 function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
+    -- print("NpcCastSucceeded called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
     local spellMessage = spellMessageDb[spellId]
-    if unit ~= "target" or spellMessage == nil then return end
+    Debug:Print("NpcCastSucceeded called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
+    if not spellMessage then return end
+    if unit ~= "target" then return end
 
     SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.SUCCEEDED,
         "SUCCEEDED"))
