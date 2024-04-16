@@ -96,6 +96,7 @@ local function SpellMessage(spellId, itemId, sentMsg, startedMsg, interruptedMsg
             elseif spellId == 20707 and not select(2, selectTarget()) then
                 link = ""
                 groupOrTarget = groupOrTarget:match("^%s*(.-)%s*$")
+                groupOrTarget = groupOrTarget:gsub("^on ", "")
             end
 
             return prefix .. msg .. " " .. link .. groupOrTarget .. "!"
@@ -108,9 +109,9 @@ local function soulstoneMessage(msgType)
 
     local soulstoneMessages = {
         ["sent"] = function() if isAlive then return "Placing a" else return "Resurrecting" end end,
-        ["started"] = function() if isAlive then return "Placing a" else return "Resurrecting" end end,
+        -- ["started"] = function() if isAlive then return "Placing a" else return "Resurrecting" end end,
         ["interrupted"] = function() if isAlive then return "place a" else return "resurrect" end end,
-        ["stopped"] = function() if isAlive then return "place a" else return "resurrect" end end,
+        -- ["stopped"] = function() if isAlive then return "place a" else return "resurrect" end end,
         ["succeeded"] = function() if isAlive then return "placed a" else return "resurrected" end end,
     }
 
