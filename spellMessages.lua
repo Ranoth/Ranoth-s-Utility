@@ -1,6 +1,7 @@
 local SpellMessages = RanothUtils:NewModule("SpellMessages")
 local Debug = RanothUtils:GetModule("Debug")
 local petOwners = {}
+local lastInterruptedSpell = nil
 
 local function selectTarget()
     local target = UnitExists("mouseover") and "mouseover" or "player"
@@ -27,6 +28,18 @@ local function selectChannel()
         return "PARTY", "for the party"
     else
         return "EMOTE", "for... me"
+    end
+end
+
+function SpellMessages:CheckDuplicateInterruptTrigger(unit, spellId)
+    local currentTime = GetTime()
+    local currentSpell = unit .. spellId .. currentTime
+
+    if lastInterruptedSpell == currentSpell or unit ~= "player" then
+        return false
+    else
+        lastInterruptedSpell = currentSpell
+        return true
     end
 end
 
@@ -65,7 +78,13 @@ local function SpellMessage(spellId, itemId, sentMsg, startedMsg, interruptedMsg
             local msg = self.messages[key]
             if msg == "" then return end
 
-            local itemLink = itemId and select(2, GetItemInfo(itemId)) or ""
+            local itemLink = ""
+            if itemId then
+                if not C_Item.IsItemDataCachedByID(itemId) then
+                    C_Item.RequestLoadItemDataByID(itemId)
+                end
+                itemLink = select(2, GetItemInfo(itemId)) or ""
+            end
             local spellLink = spellId and GetSpellLink(spellId) or ""
             local link = (itemLink ~= "" and itemLink or spellLink) .. (plural and "s" or "")
             local groupNameDisplay = group and (" " .. select(2, selectChannel())) or ""

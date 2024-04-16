@@ -6,13 +6,18 @@ function RanothUtils:UNIT_SPELLCAST_SENT(self, unit, _, _, spellId)
 end
 
 function RanothUtils:UNIT_SPELLCAST_START(self, unit, castGUID, spellId)
-
     SpellMessages:NpcCastStart(unit, castGUID, spellId)
 end
 
 function RanothUtils:UNIT_SPELLCAST_INTERRUPTED(self, unit, _, spellId)
     if unit == "pet" then return end
+    if SpellMessages:CheckDuplicateInterruptTrigger(unit, spellId) then return end
     SpellMessages:PlayerCastInterrupted(unit, _, spellId)
+
+    RanothUtils:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+    C_Timer.After(0.1, function()
+        RanothUtils:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+    end)
 end
 
 function RanothUtils:UNIT_SPELLCAST_SUCCEEDED(self, unit, _, spellId)
