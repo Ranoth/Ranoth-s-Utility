@@ -51,8 +51,8 @@ function SpellMessages:PrepareSendChatMessage(message)
 end
 
 local spellMessagePrefixMap = {
-    SENT = "",
-    STARTED = "",
+    SENT = "{Circle} ",
+    STARTED = "{Circle} ",
     INTERRUPTED = "{Cross} Failed to ",
     STOPPED = "{Cross} Failed to ",
     SUCCEEDED = "{Triangle} Successfully ",
@@ -133,7 +133,10 @@ local spellMessageDb = {
     [256153] = SpellMessage(256153, 153647, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Tome of the Quiet Mind
     [384908] = SpellMessage(384908, 198268, "Placing a", "", "place a", "", "placed a", false),    -- Portable Tinker's Workbench, Portable Tinker's Workbench
     [299127] = SpellMessage(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
+    [127129] = SpellMessage(127129, 87214, "", "", "", "", "placed a", false), -- Blingtron 4000, Blingtron 4000
+    [161414] = SpellMessage(161414, 111821, "", "", "", "", "placed a", false), -- Blingtron 5000, Blingtron 5000
     [200218] = SpellMessage(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron-6000, No Item
+    [298926] = SpellMessage(298926, 168667, "", "", "", "", "placed a", false), -- Blingtron 7000, Blingtron 7000
     [200205] = SpellMessage(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
 }
 
