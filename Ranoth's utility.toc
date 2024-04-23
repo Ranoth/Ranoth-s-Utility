@@ -4,7 +4,10 @@
 ## Author: Ranoth_
 ## Version: v1.1.4-3
 ## DefaultState: Enabled
+## SavedVariables: RanothUtilityDB
 ## X-Curse-Project-ID: 1000615
+
+embeds.xml
 
 init.lua
 debug.lua

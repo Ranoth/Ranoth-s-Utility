@@ -1,5 +1,9 @@
+local addon_name, _ = ...
+local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
+local Core = RanothUtils:NewModule("Core")
 local SpellMessages = RanothUtils:GetModule("SpellMessages")
 local Commands = RanothUtils:GetModule("Commands")
+local Debug = RanothUtils:GetModule("Debug")
 
 function RanothUtils:UNIT_SPELLCAST_SENT(self, unit, _, _, spellId)
     SpellMessages:PlayerCastSent(unit, _, _, spellId)
@@ -35,11 +39,7 @@ function RanothUtils:COMBAT_LOG_EVENT_UNFILTERED()
     end
 end
 
-function RanothUtils:OnInitialize()
-    Commands:RegisterAdditionalSlashCommands()
-end
-
-function RanothUtils:OnEnable()
+function Core:OnEnable()
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_SENT")
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_START")
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
@@ -47,7 +47,7 @@ function RanothUtils:OnEnable()
     RanothUtils:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 end
 
-function RanothUtils:OnDisable()
+function Core:OnDisable()
     RanothUtils:UnhookAll()
     RanothUtils:UnregisterAllEvents()
 end

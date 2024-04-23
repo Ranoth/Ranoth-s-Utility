@@ -1,3 +1,5 @@
+local addon_name, _ = ...
+local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 local Debug = RanothUtils:NewModule("Debug")
 
 local toggled = false
@@ -24,11 +26,8 @@ end
 
 function Debug:Toggle()
     toggled = not toggled
-    if toggled then
-        print("Debug mode enabled")
-    else
-        print("Debug mode disabled")
-    end
+    RanothUtils.db.profile.debug = toggled
+    print(toggled and "Debug mode enabled" or "Debug mode disabled")
 end
 
 Debug.Print = createToggledFunction(function(...)
@@ -77,3 +76,7 @@ Debug.CombatLogGetUnitFlags = createToggledFunction(function(self, subevent, des
     end
     Debug:Print(table.concat(t, ", "))
 end)
+
+function Debug:OnInitialize()
+    toggled = RanothUtils.db.profile.debug
+end
