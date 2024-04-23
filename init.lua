@@ -3,8 +3,9 @@ local RanothUtils = LibStub("AceAddon-3.0"):NewAddon(addon_name, "AceEvent-3.0",
 
 local defaults = {
     profile = {
-        debug = false,
         language = "enUS",
+        debug = false,
+        autoOpen = false,
     },
 }
 

@@ -1,37 +1,8 @@
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 local Commands = RanothUtils:NewModule("Commands")
+local AutoOpen = RanothUtils:GetModule("AutoOpen")
 local Debug = RanothUtils:GetModule("Debug")
-
-local function openAllContainers()
-    local delay = 0
-    for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
-        for slot = 1, C_Container.GetContainerNumSlots(bag) do
-            local itemlink = C_Container.GetContainerItemLink(bag, slot)
-            local tooltipText
-            if itemlink then
-                local itemTooltip = _G["ItemTooltip"] or
-                    CreateFrame("GameTooltip", "ItemTooltip", UIParent, "GameTooltipTemplate")
-                itemTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-                itemTooltip:SetBagItem(bag, slot)
-                for i = 1, itemTooltip:NumLines() do
-                    tooltipText = _G["ItemTooltipTextLeft" .. i]:GetText()
-                end
-            end
-            ---@diagnostic disable-next-line: undefined-field
-            if tooltipText and string.find(tooltipText, _G.ITEM_OPENABLE) then
-                local _, _, locked = C_Container.GetContainerItemInfo(bag, slot)
-                if not locked then
-                    C_Timer.After(delay, function()
-                        C_Container.UseContainerItem(bag, slot)
-                        CloseLoot()
-                    end)
-                    delay = delay + 0.4
-                end
-            end
-        end
-    end
-end
 
 function Commands:RegisterAdditionalSlashCommands()
     SLASH_DEBUGTESTCOMMAND1 = "/toggledebug"
@@ -75,13 +46,16 @@ function Commands:RegisterAdditionalSlashCommands()
     end
 
     SLASH_OPENALLCONTAINERS1 = "/openall"
-    SlashCmdList.OPENALLCONTAINERS = openAllContainers
+    SlashCmdList.OPENALLCONTAINERS = AutoOpen.OpenAllContainers
 
     SLASH_CALCULATRIX1 = "/calc"
     SlashCmdList.CALCULATRIX = function(expression)
         local result = loadstring("return " .. expression)()
         print(result)
     end
+
+    SLASH_TOGGLEAUTOOPEN1 = "/autoopen"
+    SlashCmdList.TOGGLEAUTOOPEN = AutoOpen.Toggle
 end
 
 function Commands:OnInitialize()

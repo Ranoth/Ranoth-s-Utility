@@ -27,10 +27,12 @@ To install Ranoth's Utility, follow these steps: -->
 - Commands:
   - /openall - Opens all containers in your inventory
   - /openeggs - Opens all Noblegarden eggs in your inventory
+  - /autoopen - Automatically opens all containers in a bag when a container is looted (depending on which bag the container is in)
   - /dumpii(bag, slot) - Prints the item info for the item in the specified bag and slot
     > Note that the slot is 1-indexed, not 0-indexed and you can know the bag and slot numbers by using the framestack debug feature
   - /swlang - Switches spoken language between all available languages for your character
-  - /calc - Calculates an expression and prints the result (e.g. /calc 1 + 1 = 2, /calc 2 * 2 = 4, /calc 2 / 2 = 1)
+  - /calc - Calculates an expression and prints the result (e.g. /calc 1 + 1, /calc 2 * 2, /calc 2 / 2)
+  - /toggledebug - Toggles debug mode on and off (prints in a "Debug" chat tab in the default chat frame instead of "General")
 
 ## Support
 

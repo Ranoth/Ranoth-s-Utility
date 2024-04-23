@@ -12,5 +12,6 @@ embeds.xml
 init.lua
 debug.lua
 spellMessages.lua
+autoOpen.lua
 commands.lua
 core.lua
