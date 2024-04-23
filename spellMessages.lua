@@ -92,7 +92,7 @@ local function SpellMessage(spellId, itemId, sentMsg, startedMsg, interruptedMsg
             local groupOrTarget = groupNameDisplay ~= "" and groupNameDisplay or targetDisplay
 
             if spellId == 200218 then
-                link = "Blingtron-6000"
+                link = "Blingtron 6000"
             elseif spellId == 20707 and not select(2, selectTarget()) then
                 link = ""
                 groupOrTarget = groupOrTarget:match("^%s*(.-)%s*$")
@@ -135,7 +135,7 @@ local spellMessageDb = {
     [299127] = SpellMessage(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
     [127129] = SpellMessage(127129, 87214, "", "", "", "", "placed a", false), -- Blingtron 4000, Blingtron 4000
     [161414] = SpellMessage(161414, 111821, "", "", "", "", "placed a", false), -- Blingtron 5000, Blingtron 5000
-    [200218] = SpellMessage(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron-6000, No Item
+    [200218] = SpellMessage(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron 6000, No Item
     [298926] = SpellMessage(298926, 168667, "", "", "", "", "placed a", false), -- Blingtron 7000, Blingtron 7000
     [200205] = SpellMessage(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
 }
