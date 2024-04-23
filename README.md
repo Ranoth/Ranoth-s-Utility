@@ -27,7 +27,7 @@ To install Ranoth's Utility, follow these steps: -->
 - Commands:
   - /openall - Opens all containers in your inventory
   - /openeggs - Opens all Noblegarden eggs in your inventory
-  - /autoopen - Automatically opens all containers in a bag when a container is looted (depending on which bag the container is in)
+  - /autoopen - Toggle automation to open all containers in a bag when a container is looted (depending on which bag the container is in)
   - /dumpii(bag, slot) - Prints the item info for the item in the specified bag and slot
     > Note that the slot is 1-indexed, not 0-indexed and you can know the bag and slot numbers by using the framestack debug feature
   - /swlang - Switches spoken language between all available languages for your character
