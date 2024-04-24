@@ -59,7 +59,7 @@ function RanothUtils:BAG_UPDATE(self, bagID)
 end
 
 function AutoOpen:OnInitialize()
-    self.db = RanothUtils.db.profile.debug
+    self.db = RanothUtils.db.profile.autoOpen
     if self.db then
         self:Enable()
     else
