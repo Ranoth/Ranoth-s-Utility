@@ -53,9 +53,25 @@ function AutoOpen:Toggle()
 end
 
 function RanothUtils:BAG_UPDATE(self, bagID)
-    Debug:Print("BAG_UPDATE: " .. bagID)
     if not AutoOpen:IsEnabled() then return end
+    Debug:Print("BAG_UPDATE: " .. bagID)
     AutoOpen:Open(bagID)
+end
+
+function RanothUtils:BANKFRAME_OPENED()
+    if not AutoOpen:IsEnabled() then return end
+    Debug:Print("BANKFRAME_OPENED")
+    RanothUtils:UnregisterEvent("BANKFRAME_OPENED")
+    RanothUtils:RegisterEvent("BANKFRAME_CLOSED")
+    AutoOpen:Disable()
+end
+
+function RanothUtils:BANKFRAME_CLOSED()
+    if not AutoOpen:IsEnabled() then return end
+    Debug:Print("BANKFRAME_CLOSED")
+    RanothUtils:UnregisterEvent("BANKFRAME_CLOSED")
+    RanothUtils:RegisterEvent("BANKFRAME_OPENED")
+    AutoOpen:Enable()
 end
 
 function AutoOpen:OnInitialize()
@@ -70,6 +86,7 @@ end
 function AutoOpen:OnEnable()
     RanothUtils.db.profile.autoOpen = AutoOpen:IsEnabled()
     RanothUtils:RegisterEvent("BAG_UPDATE")
+    RanothUtils:RegisterEvent("BANKFRAME_OPENED")
 end
 
 function AutoOpen:OnDisable()
