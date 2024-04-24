@@ -12,3 +12,11 @@ local defaults = {
 function RanothUtils:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("RanothUtilityDB", defaults, true)
 end
+
+function RanothUtils:OnEnable()
+end
+
+function RanothUtils:OnDisable()
+    RanothUtils:UnhookAll()
+    RanothUtils:UnregisterAllEvents()
+end

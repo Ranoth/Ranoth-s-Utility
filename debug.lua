@@ -2,8 +2,6 @@ local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 local Debug = RanothUtils:NewModule("Debug")
 
-local toggled
-
 local chatTabName = "Debug" -- replace with the name of your chat tab
 local chatFrameIndex = 1    -- replace with the index of your chat frame
 local chatFrame = _G["ChatFrame" .. chatFrameIndex]
@@ -19,15 +17,18 @@ end
 
 local function createToggledFunction(func)
     return function(...)
-        if not toggled then return end
+        if not Debug:IsEnabled() then return end
         return func(unpack({ ... }))
     end
 end
 
 function Debug:Toggle()
-    toggled = not toggled
-    RanothUtils.db.profile.debug = toggled
-    print(toggled and "Debug mode enabled" or "Debug mode disabled")
+    if Debug:IsEnabled() then
+        Debug:Disable()
+    else
+        Debug:Enable()
+    end
+    print(Debug:IsEnabled() and "Debug mode enabled" or "Debug mode disabled")
 end
 
 Debug.Print = createToggledFunction(function(...)
@@ -78,5 +79,18 @@ Debug.CombatLogGetUnitFlags = createToggledFunction(function(self, subevent, des
 end)
 
 function Debug:OnInitialize()
-    toggled = RanothUtils.db.profile.debug
+    self.db = RanothUtils.db.profile.debug
+    if self.db then
+        self:Enable()
+    else
+        self:Disable()
+    end
+end
+
+function Debug:OnEnable()
+    RanothUtils.db.profile.debug = Debug:IsEnabled()
+end
+
+function Debug:OnDisable()
+    RanothUtils.db.profile.debug = Debug:IsEnabled()
 end
