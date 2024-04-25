@@ -67,7 +67,7 @@ function RanothUtils:BANKFRAME_OPENED()
 end
 
 function RanothUtils:BANKFRAME_CLOSED()
-    if not AutoOpen:IsEnabled() then return end
+    if AutoOpen:IsEnabled() then return end
     Debug:Print("BANKFRAME_CLOSED")
     RanothUtils:UnregisterEvent("BANKFRAME_CLOSED")
     RanothUtils:RegisterEvent("BANKFRAME_OPENED")
