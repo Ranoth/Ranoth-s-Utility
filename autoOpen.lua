@@ -59,17 +59,17 @@ function RanothUtils:BAG_UPDATE(self, bagID)
 end
 
 function RanothUtils:BANKFRAME_OPENED()
+    RanothUtils:UnregisterEvent("BANKFRAME_OPENED")
     if not AutoOpen:IsEnabled() then return end
     Debug:Print("BANKFRAME_OPENED")
-    RanothUtils:UnregisterEvent("BANKFRAME_OPENED")
     RanothUtils:RegisterEvent("BANKFRAME_CLOSED")
     AutoOpen:Disable()
 end
 
 function RanothUtils:BANKFRAME_CLOSED()
+    RanothUtils:UnregisterEvent("BANKFRAME_CLOSED")
     if AutoOpen:IsEnabled() then return end
     Debug:Print("BANKFRAME_CLOSED")
-    RanothUtils:UnregisterEvent("BANKFRAME_CLOSED")
     RanothUtils:RegisterEvent("BANKFRAME_OPENED")
     AutoOpen:Enable()
 end

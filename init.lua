@@ -5,7 +5,7 @@ local defaults = {
     profile = {
         language = "enUS",
         debug = false,
-        autoOpen = false,
+        autoOpen = true,
     },
 }
 
