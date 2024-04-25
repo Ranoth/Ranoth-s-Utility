@@ -1,7 +1,10 @@
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
-local SpellMessages = RanothUtils:NewModule("SpellMessages")
+
 local Debug = RanothUtils:GetModule("Debug")
+
+local SpellMessages = RanothUtils:NewModule("SpellMessages")
+
 local petOwners = {}
 local lastInterruptedSpell = nil
 
@@ -179,7 +182,7 @@ function SpellMessages:NpcCastStart(unit, castGUID, spellId)
 end
 
 function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
-    -- print("NpcCastSucceeded called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
+    -- Debug:Print("NpcCastSucceeded called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
     local spellMessage = spellMessageDb[spellId]
     if not spellMessage then return end
     if unit ~= "target" then return end

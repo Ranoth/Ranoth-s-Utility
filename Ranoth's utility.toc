@@ -1,5 +1,5 @@
 ## Interface: 100206
-## Title: Ranoth's Utility
+## Title: |cffc66ff0Ranoth's Utility|r
 ## Notes: A collection of things I want in the game.
 ## Author: Ranoth_
 ## Version: v1.1.4-3
@@ -11,7 +11,7 @@ embeds.xml
 
 init.lua
 debug.lua
+printer.lua
 spellMessages.lua
 autoOpen.lua
 commands.lua
-core.lua

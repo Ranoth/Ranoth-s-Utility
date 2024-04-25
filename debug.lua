@@ -3,8 +3,8 @@ local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 local Debug = RanothUtils:NewModule("Debug")
 
 local chatTabName = "Debug" -- replace with the name of your chat tab
-local chatFrameIndex = 1    -- replace with the index of your chat frame
-local chatFrame = _G["ChatFrame" .. chatFrameIndex]
+-- local chatFrameIndex = 1    -- replace with the index of your chat frame
+-- local chatFrame = _G["ChatFrame" .. chatFrameIndex]
 local chatTab
 
 for i = 1, NUM_CHAT_WINDOWS do
@@ -28,10 +28,10 @@ function Debug:Toggle()
     else
         Debug:Enable()
     end
-    print(Debug:IsEnabled() and "Debug mode enabled" or "Debug mode disabled")
+    chatTab:AddMessage(Debug:IsEnabled() and "Debug mode enabled" or "Debug mode disabled")
 end
 
-Debug.Print = createToggledFunction(function(...)
+Debug.Print = createToggledFunction(function(self, ...)
     local args = { ... }
     for i = 1, #args do
         args[i] = tostring(args[i])

@@ -1,13 +1,17 @@
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
-local Commands = RanothUtils:NewModule("Commands")
+
 local AutoOpen = RanothUtils:GetModule("AutoOpen")
+local Printer = RanothUtils:GetModule("Printer")
 local Debug = RanothUtils:GetModule("Debug")
+
+local Commands = RanothUtils:NewModule("Commands")
 
 function Commands:RegisterAdditionalSlashCommands()
     SLASH_DEBUGTESTCOMMAND1 = "/toggledebug"
     SlashCmdList.DEBUGTESTCOMMAND = function()
         Debug:Toggle()
+        Printer:Print(Debug:IsEnabled() and "Debug mode enabled" or "Debug mode disabled")
     end
 
     SLASH_SWITCHLANGUAGES1 = "/swlang"
@@ -19,7 +23,7 @@ function Commands:RegisterAdditionalSlashCommands()
                 if i == c() then i = 0 end
                 local nn, ni = g(i + 1)
                 b[l] = ni
-                print("Speaking " .. nn)
+                Printer:Print("Speaking " .. nn)
                 break
             end
         end
@@ -51,7 +55,7 @@ function Commands:RegisterAdditionalSlashCommands()
     SLASH_CALCULATRIX1 = "/calc"
     SlashCmdList.CALCULATRIX = function(expression)
         local result = loadstring("return " .. expression)()
-        print(result)
+        Printer:Print(result)
     end
 
     SLASH_TOGGLEAUTOOPEN1 = "/autoopen"
