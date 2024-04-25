@@ -6,7 +6,8 @@ local Debug = RanothUtils:GetModule("Debug")
 local SpellMessages = RanothUtils:NewModule("SpellMessages")
 
 local petOwners = {}
-local lastInterruptedSpell = nil
+-- local lastInterruptedSpell = nil
+local messageQueue = {}
 
 local function selectTarget()
     local target = UnitExists("mouseover") and "mouseover" or "player"
@@ -36,19 +37,20 @@ local function selectChannel()
     end
 end
 
-function SpellMessages:CheckDuplicateInterruptTrigger(unit, spellId)
-    local currentTime = GetTime()
-    local currentSpell = unit .. spellId .. currentTime
+-- function SpellMessages:CheckDuplicateInterruptTrigger(unit, spellId)
+--     local currentTime = GetTime()
+--     local currentSpell = unit .. spellId .. currentTime
 
-    if lastInterruptedSpell == currentSpell or unit ~= "player" then
-        return false
-    else
-        lastInterruptedSpell = currentSpell
-        return true
-    end
-end
+--     if lastInterruptedSpell == currentSpell or unit ~= "player" then
+--         return false
+--     else
+--         lastInterruptedSpell = currentSpell
+--         return true
+--     end
+-- end
 
 function SpellMessages:PrepareSendChatMessage(message)
+    local message = message or false
     if not message then return end
     local channel, _ = selectChannel()
     if channel == nil then return end
@@ -63,8 +65,20 @@ local spellMessagePrefixMap = {
     SUCCEEDED = "{Triangle} Successfully ",
 }
 
-local function SpellMessage(spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg,
-                            plural, target, group)
+local function soulstoneMessage(msgType, isAlive)
+    local soulstoneMessages = {
+        ["SENT"] = function() if isAlive then return "Placing a" else return "Resurrecting" end end,
+        ["STARTED"] = function() return "" end,
+        ["INTERRUPTED"] = function() if isAlive then return "place a" else return "resurrect" end end,
+        ["STOPPED"] = function() return "" end,
+        ["SUCCEEDED"] = function() if isAlive then return "placed a" else return "resurrected" end end,
+    }
+
+    return soulstoneMessages[msgType or "INTERRUPTED"]()
+end
+
+local function createSpellMessage(spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg,
+                                  plural, target, group)
     return {
         spellId = spellId,
         itemId = itemId,
@@ -79,10 +93,10 @@ local function SpellMessage(spellId, itemId, sentMsg, startedMsg, interruptedMsg
             STOPPED = stoppedMsg,
             SUCCEEDED = succeededMsg,
         },
-        createSpellMessage = function(self, prefix, key)
-            local msg = self.messages[key]
-            if msg == "" then return end
-
+        buildString = function(self, prefix, key)
+            local msg = self.messages[key] or ""
+            if msg == "" and not spellId == 20707 then return end
+            local isAlive = select(2, selectTarget())
             local itemLink = ""
             if itemId then
                 if not C_Item.IsItemDataCachedByID(itemId) then
@@ -93,56 +107,58 @@ local function SpellMessage(spellId, itemId, sentMsg, startedMsg, interruptedMsg
             local spellLink = spellId and GetSpellLink(spellId) or ""
             local link = (itemLink ~= "" and itemLink or spellLink) .. (plural and "s" or "")
             local groupNameDisplay = group and (" " .. select(2, selectChannel())) or ""
-            local targetDisplay = target and (" " .. selectTarget()) or ""
+            local targetDisplay = target and (" " .. select(1, selectTarget())) or ""
             local groupOrTarget = groupNameDisplay ~= "" and groupNameDisplay or targetDisplay
 
             if spellId == 200218 then
                 link = "Blingtron 6000"
-            elseif spellId == 20707 and not select(2, selectTarget()) then
+            elseif spellId == 20707 and not isAlive then
+                msg = soulstoneMessage(key, isAlive)
                 link = ""
                 groupOrTarget = groupOrTarget:match("^%s*(.-)%s*$")
                 groupOrTarget = groupOrTarget:gsub("^on ", "")
+            elseif spellId == 20707 and isAlive then
+                msg = soulstoneMessage(key, isAlive)
             end
 
+            if msg == "" then return end
+
             return prefix .. msg .. " " .. link .. groupOrTarget .. "!"
-        end
+        end,
+        queueMessages = function(self)
+            for k, _ in pairs(self.messages) do
+                local message = self:buildString(spellMessagePrefixMap[k], k)
+                if message ~= nil then
+                    messageQueue[spellMessagePrefixMap[k]] = message
+                end
+            end
+        end,
+        dequeueMessages = function(self)
+            messageQueue = {}
+        end,
     }
-end
-
-local function soulstoneMessage(msgType)
-    local _, isAlive = selectTarget()
-
-    local soulstoneMessages = {
-        ["sent"] = function() if isAlive then return "Placing a" else return "Resurrecting" end end,
-        -- ["started"] = function() if isAlive then return "Placing a" else return "Resurrecting" end end,
-        ["interrupted"] = function() if isAlive then return "place a" else return "resurrect" end end,
-        -- ["stopped"] = function() if isAlive then return "place a" else return "resurrect" end end,
-        ["succeeded"] = function() if isAlive then return "placed a" else return "resurrected" end end,
-    }
-
-    return soulstoneMessages[msgType]()
 end
 
 local spellMessageDb = {
     -- Add more entries like this:
     -- [spellId] = createSpellMessageEntry(spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg, plural, target, group)
+    -- KEEP IN MIND: every field will be static data, the dynamic data like the target's state are added in the buildString function of the object
+    -- Messages shall be queued in messageQueue via the queueMessages function so as to pick the target only once (in case the player is targetting something else when the spell succeeds or is interrupted)
 
     -- [6201] = SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Healthstone, Healthstone (for debugging purposes)
-    [29893] = SpellMessage(29893, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Soulwell, Healthstone
-    [698] = SpellMessage(698, false, "Using", "", "", "", "", false),                         -- Ritual of Summoning, No Item
-    [20707] = SpellMessage(20707, false, soulstoneMessage("sent"), "", soulstoneMessage("interrupted"), "",
-        soulstoneMessage("succeeded"),
-        false, true),                                                                              -- Soulstone, No Item
-    [187748] = SpellMessage(187748, 127770, "Placing a", "", "place a", "", "placed a", false),    -- Brazier of Awakening, Brazier of Awakening
-    [67826] = SpellMessage(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
-    [256153] = SpellMessage(256153, 153647, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Tome of the Quiet Mind
-    [384908] = SpellMessage(384908, 198268, "Placing a", "", "place a", "", "placed a", false),    -- Portable Tinker's Workbench, Portable Tinker's Workbench
-    [299127] = SpellMessage(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
-    [126459] = SpellMessage(126459, 87214, "", "", "", "", "placed a", false),                     -- Blingtron 4000, Blingtron 4000
-    [161414] = SpellMessage(161414, 111821, "", "", "", "", "placed a", false),                    -- Blingtron 5000, Blingtron 5000
-    [200218] = SpellMessage(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron 6000, No Item
-    [298926] = SpellMessage(298926, 168667, "", "", "", "", "placed a", false),                    -- Blingtron 7000, Blingtron 7000
-    [200205] = SpellMessage(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
+    [29893] = createSpellMessage(29893, 5512, "Making", "", "make", "", "made", true, false, true),      -- Create Soulwell, Healthstone
+    [698] = createSpellMessage(698, false, "Using", "", "", "", "", false),                              -- Ritual of Summoning, No Item
+    [20707] = createSpellMessage(20707, false, "", "", "", "", "", false, true),                         -- Soulstone, No Item => messages are decided in spellMessageToString
+    [187748] = createSpellMessage(187748, 127770, "Placing a", "", "place a", "", "placed a", false),    -- Brazier of Awakening, Brazier of Awakening
+    [67826] = createSpellMessage(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
+    [256153] = createSpellMessage(256153, 153647, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Tome of the Quiet Mind
+    [384908] = createSpellMessage(384908, 198268, "Placing a", "", "place a", "", "placed a", false),    -- Portable Tinker's Workbench, Portable Tinker's Workbench
+    [299127] = createSpellMessage(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
+    [126459] = createSpellMessage(126459, 87214, "", "", "", "", "placed a", false),                     -- Blingtron 4000, Blingtron 4000
+    [161414] = createSpellMessage(161414, 111821, "", "", "", "", "placed a", false),                    -- Blingtron 5000, Blingtron 5000
+    [200218] = createSpellMessage(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron 6000, No Item
+    [298926] = createSpellMessage(298926, 168667, "", "", "", "", "placed a", false),                    -- Blingtron 7000, Blingtron 7000
+    [200205] = createSpellMessage(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
 }
 
 function SpellMessages:PlayerCastSent(unit, _, _, spellId)
@@ -150,8 +166,9 @@ function SpellMessages:PlayerCastSent(unit, _, _, spellId)
     if not spellMessage then return end
     if unit ~= "player" then return end
 
-    SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.SENT,
-        "SENT"))
+    spellMessage:queueMessages()
+
+    SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.SENT])
 end
 
 function SpellMessages:PlayerCastInterrupted(unit, _, spellId)
@@ -159,8 +176,12 @@ function SpellMessages:PlayerCastInterrupted(unit, _, spellId)
     if not spellMessage then return end
     if unit ~= "player" then return end
 
-    SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.INTERRUPTED,
-        "INTERRUPTED"))
+    SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.INTERRUPTED])
+    for key, message in pairs(messageQueue) do
+        Debug:Print(key, message)
+    end
+
+    spellMessage:dequeueMessages()
 end
 
 function SpellMessages:PlayerCastSucceeded(unit, _, spellId)
@@ -168,8 +189,9 @@ function SpellMessages:PlayerCastSucceeded(unit, _, spellId)
     if not spellMessage then return end
     if unit ~= "player" then return end
 
-    SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.SUCCEEDED,
-        "SUCCEEDED"))
+    SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.SUCCEEDED])
+
+    spellMessage:dequeueMessages()
 end
 
 function SpellMessages:NpcCastStart(unit, castGUID, spellId)
@@ -177,8 +199,9 @@ function SpellMessages:NpcCastStart(unit, castGUID, spellId)
     if not spellMessage then return end
     if unit ~= "target" then return end
 
-    SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.STARTED,
-        "STARTED"))
+    spellMessage:queueMessages()
+
+    SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.STARTED])
 end
 
 function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
@@ -187,8 +210,9 @@ function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
     if not spellMessage then return end
     if unit ~= "target" then return end
 
-    SpellMessages:PrepareSendChatMessage(spellMessage:createSpellMessage(spellMessagePrefixMap.SUCCEEDED,
-        "SUCCEEDED"))
+    SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.SUCCEEDED])
+
+    spellMessage:dequeueMessages()
 end
 
 function SpellMessages:SummonedGuardian(...)
@@ -219,7 +243,7 @@ end
 
 function RanothUtils:UNIT_SPELLCAST_INTERRUPTED(self, unit, _, spellId)
     if unit == "pet" then return end
-    if SpellMessages:CheckDuplicateInterruptTrigger(unit, spellId) then return end
+    -- if SpellMessages:CheckDuplicateInterruptTrigger(unit, spellId) then return end
     SpellMessages:PlayerCastInterrupted(unit, _, spellId)
 
     RanothUtils:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
