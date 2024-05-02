@@ -25,6 +25,7 @@ local function selectTarget()
     end
 end
 
+--- @name selectChannel
 --- @usage Select the appropriate chat channel based on the player's current group status.
 --- @return string, string -- The chat channel and a flair message reflecting the channel selected.
 local function selectChannel()
@@ -53,7 +54,7 @@ end
 --     end
 -- end
 
-
+--- @name PrepareSendChatMessage
 --- Prepare the message to be sent to the relevent chat channel.
 --- @param message (string) -- message to be sent
 --- @usage `SpellMessages:PrepareSendChatMessage("Hello, World!")`
@@ -224,6 +225,7 @@ local spellMessageDb = {
     [200205] = SpellMessage:new(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
 }
 
+--- @name PlayerCastSent
 --- This function is called when a player casts a spell and the cast is sent to the server.
 --- It retrieves the spell message associated with the spell ID and queues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
@@ -240,6 +242,7 @@ function SpellMessages:PlayerCastSent(unit, _, _, spellId)
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.SENT])
 end
 
+--- @name PlayerCastInterrupted
 --- This function is called when a player casts a spell and the cast is interrupted.
 --- It retrieves the spell message associated with the spell ID and dequeues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
@@ -259,6 +262,7 @@ function SpellMessages:PlayerCastInterrupted(unit, _, spellId)
     spellMessage:dequeueMessages()
 end
 
+--- @name PlayerCastSucceeded
 --- This function is called when a player casts a spell and the cast is successful.
 --- It retrieves the spell message associated with the spell ID and dequeues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
@@ -275,6 +279,7 @@ function SpellMessages:PlayerCastSucceeded(unit, _, spellId)
     spellMessage:dequeueMessages()
 end
 
+--- @name NpcCastStart
 --- This function is called when an NPC casts a spell and the cast is started.
 --- It retrieves the spell message associated with the spell ID and queues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
@@ -291,6 +296,7 @@ function SpellMessages:NpcCastStart(unit, castGUID, spellId)
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.STARTED])
 end
 
+--- @name NpcCastSucceeded
 --- This function is called when an NPC casts a spell and the cast is successful.
 --- It retrieves the spell message associated with the spell ID and dequeues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
@@ -309,6 +315,7 @@ function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
     spellMessage:dequeueMessages()
 end
 
+--- @name SummonedGuardian
 --- This function is called when an NPC casts a spell and the cast is interrupted.
 --- It retrieves the spell message associated with the spell ID and dequeues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
@@ -322,6 +329,7 @@ function SpellMessages:SummonedGuardian(...)
     end
 end
 
+--- @name InterruptedSpellCast
 --- This function is called when an NPC casts a spell and the cast is interrupted.
 --- It retrieves the spell message associated with the spell ID and dequeues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
