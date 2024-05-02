@@ -3,22 +3,24 @@ local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 local Debug = RanothUtils:NewModule("Debug")
 
 local chatTabName = "Debug" -- replace with the name of your chat tab
--- local chatFrameIndex = 1    -- replace with the index of your chat frame
--- local chatFrame = _G["ChatFrame" .. chatFrameIndex]
-local chatTab
-
-for i = 1, NUM_CHAT_WINDOWS do
-    local name = GetChatWindowInfo(i)
-    if name == chatTabName then
-        chatTab = _G["ChatFrame" .. i]
-        break
-    end
-end
+local chatFrameIndex = 1    -- replace with the index of your chat frame
+local chatFrame = _G["ChatFrame" .. chatFrameIndex] or DEFAULT_CHAT_FRAME
+local chatTab = chatTab or _G["ChatFrame" .. chatFrameIndex]
 
 local function createToggledFunction(func)
     return function(...)
         if not Debug:IsEnabled() then return end
         return func(unpack({ ... }))
+    end
+end
+
+local function setChatWindow()
+    for i = 1, NUM_CHAT_WINDOWS do
+        local name = GetChatWindowInfo(i)
+        if name == chatTabName then
+            chatTab = _G["ChatFrame" .. i]
+            break
+        end
     end
 end
 
@@ -80,6 +82,7 @@ end)
 
 function Debug:OnInitialize()
     self.db = RanothUtils.db.profile.debug
+    setChatWindow()
     if self.db then
         self:Enable()
     else
@@ -88,6 +91,7 @@ function Debug:OnInitialize()
 end
 
 function Debug:OnEnable()
+    setChatWindow()
     RanothUtils.db.profile.debug = Debug:IsEnabled()
 end
 

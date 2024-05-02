@@ -23,6 +23,8 @@ local function selectTarget()
     end
 end
 
+--- @usage Select the appropriate chat channel based on the player's current group status.
+--- @return string, string -- The chat channel and a flair message reflecting the channel selected.
 local function selectChannel()
     if IsInRaid(LE_PARTY_CATEGORY_INSTANCE) then
         return "INSTANCE_CHAT", "for the instance raid"
@@ -49,6 +51,10 @@ end
 --     end
 -- end
 
+
+--- Prepare the message to be sent to the relevent chat channel.
+--- @param message (string) -- message to be sent
+--- @usage `SpellMessages:PrepareSendChatMessage("Hello, World!")`
 function SpellMessages:PrepareSendChatMessage(message)
     local message = message or false
     if not message then return end
@@ -57,6 +63,7 @@ function SpellMessages:PrepareSendChatMessage(message)
     SendChatMessage(message, channel)
 end
 
+--- Enum of message prefixes for each spell message type.
 local spellMessagePrefixMap = {
     SENT = "{Circle} ",
     STARTED = "{Circle} ",
@@ -65,7 +72,61 @@ local spellMessagePrefixMap = {
     SUCCEEDED = "{Triangle} Successfully ",
 }
 
-local function soulstoneMessage(msgType, isAlive)
+--- @class SpellMessage
+-- ===========================================================================================================================================================
+--- @field spellId number -- The ID of the spell associated with the message.
+--- @field itemId number|boolean -- The ID of the item associated with the message.
+--- @field plural boolean|nil -- Indicates whether the message should be pluralized.
+--- @field target boolean|nil -- Indicates whether the message should include the target's name.
+--- @field group boolean|nil -- Indicates whether the message should include the group's name.
+--- @field messages table -- The messages to be displayed when the spell is sent, started, interrupted, stopped, and successful.
+--- @field soulstoneMessage function -- A function to generate a message based on the given `msgType` and `isAlive` parameters.
+--- @field buildString function -- A function to build a message based on the given `prefix` and `key` parameters as well as the fields of the object.
+--- @field queueMessages function -- A function to queue the messages to be sent to the chat channel.
+--- @field dequeueMessages function -- A function to dequeue the messages from the message queue.
+local SpellMessage = {}
+SpellMessage.__index = SpellMessage
+
+--- Creates a new spell message object with the given parameters.
+--- @param spellId number -- The ID of the spell associated with the message.
+--- @param itemId number|boolean -- The ID of the item associated with the message. If no item is associated with the message, set this to `false`.
+--- @param sentMsg string -- The message to be displayed when the spell is sent.
+--- @param startedMsg string -- The message to be displayed when the spell is started.
+--- @param interruptedMsg string -- The message to be displayed when the spell is interrupted.
+--- @param stoppedMsg string -- The message to be displayed when the spell is stopped.
+--- @param succeededMsg string -- The message to be displayed when the spell is successful.
+--- @param plural boolean|nil -- (optional) Indicates whether the message should be pluralized.
+--- @param target boolean|nil -- (optional) Indicates whether the message should include the target's name.
+--- @param group boolean|nil -- (optional) Indicates whether the message should include the group's name.
+--- @return table -- The new spell message object.
+--- @usage `SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true)` Note it is intended that empty strings will not generate a message.
+function SpellMessage:new(spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg, plural, target,
+                          group)
+    local obj = {}
+    setmetatable(obj, SpellMessage)
+
+    obj.spellId = spellId
+    obj.itemId = itemId
+    obj.plural = plural
+    obj.target = target or false
+    obj.group = group or false
+    obj.messages = {
+        SENT = sentMsg,
+        STARTED = startedMsg,
+        INTERRUPTED = interruptedMsg,
+        STOPPED = stoppedMsg,
+        SUCCEEDED = succeededMsg,
+    }
+
+    return obj
+end
+
+--- Generates a message based on the given `msgType` and `isAlive` parameters.
+--- @param msgType string -- The type of message. Defaults to "INTERRUPTED" if not provided.
+--- @param isAlive boolean -- Indicates whether the player is alive. Defaults to `false` if not provided.
+--- @return string -- The generated message based on the `msgType` and `isAlive` parameters.
+--- @usage `soulstoneMessage(key, isAlive)` Intended to be used in the `buildString` function of a `newSpellMessage` object.
+function SpellMessage:soulstoneMessage(msgType, isAlive)
     local soulstoneMessages = {
         ["SENT"] = function() if isAlive then return "Placing a" else return "Resurrecting" end end,
         ["STARTED"] = function() return "" end,
@@ -77,90 +138,96 @@ local function soulstoneMessage(msgType, isAlive)
     return soulstoneMessages[msgType or "INTERRUPTED"]()
 end
 
-local function createSpellMessage(spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg,
-                                  plural, target, group)
-    return {
-        spellId = spellId,
-        itemId = itemId,
-        plural = plural,
-        link = link,
-        target = target or false,
-        group = group or false,
-        messages = {
-            SENT = sentMsg,
-            STARTED = startedMsg,
-            INTERRUPTED = interruptedMsg,
-            STOPPED = stoppedMsg,
-            SUCCEEDED = succeededMsg,
-        },
-        buildString = function(self, prefix, key)
-            local msg = self.messages[key] or ""
-            if msg == "" and not spellId == 20707 then return end
-            local isAlive = select(2, selectTarget())
-            local itemLink = ""
-            if itemId then
-                if not C_Item.IsItemDataCachedByID(itemId) then
-                    C_Item.RequestLoadItemDataByID(itemId)
-                end
-                itemLink = select(2, GetItemInfo(itemId)) or ""
-            end
-            local spellLink = spellId and GetSpellLink(spellId) or ""
-            local link = (itemLink ~= "" and itemLink or spellLink) .. (plural and "s" or "")
-            local groupNameDisplay = group and (" " .. select(2, selectChannel())) or ""
-            local targetDisplay = target and (" " .. select(1, selectTarget())) or ""
-            local groupOrTarget = groupNameDisplay ~= "" and groupNameDisplay or targetDisplay
+--- Builds a message based on the given `prefix` and `key` parameters as well as the fields of the object.
+--- @param prefix (string) -- The prefix to be used in the message.
+--- @param key (string) -- The key to be used to retrieve the message from the `messages` table.
+--- @return (string | nil) -- The generated message based on the `prefix` and `key` parameters. Returns `nil` if the message is empty.
+--- @usage `self:buildString(prefix, key)` Intended to be used in the `queueMessages` function of a `newSpellMessage` object.
+function SpellMessage:buildString(prefix, key)
+    local msg = self.messages[key] or ""
+    if msg == "" and not self.spellId == 20707 then return end
+    local isAlive = select(2, selectTarget())
+    local itemLink = ""
+    if self.itemId then
+        if not C_Item.IsItemDataCachedByID(self.itemId) then
+            C_Item.RequestLoadItemDataByID(self.itemId)
+        end
+        itemLink = select(2, GetItemInfo(self.itemId)) or ""
+    end
+    local spellLink = self.spellId and GetSpellLink(self.spellId) or ""
+    local link = (itemLink ~= "" and itemLink or spellLink) .. (self.plural and "s" or "")
+    local groupNameDisplay = self.group and (" " .. select(2, selectChannel())) or ""
+    local targetDisplay = self.target and (" " .. select(1, selectTarget())) or ""
+    local groupOrTarget = groupNameDisplay ~= "" and groupNameDisplay or targetDisplay
 
-            if spellId == 200218 then
-                link = "Blingtron 6000"
-            elseif spellId == 20707 and not isAlive then
-                msg = soulstoneMessage(key, isAlive)
-                link = ""
-                groupOrTarget = groupOrTarget:match("^%s*(.-)%s*$")
-                groupOrTarget = groupOrTarget:gsub("^on ", "")
-            elseif spellId == 20707 and isAlive then
-                msg = soulstoneMessage(key, isAlive)
-            end
+    if self.spellId == 200218 then
+        link = "Blingtron 6000"
+    elseif self.spellId == 20707 and not isAlive then
+        msg = self:soulstoneMessage(key, isAlive)
+        link = ""
+        groupOrTarget = groupOrTarget:match("^%s*(.-)%s*$")
+        groupOrTarget = groupOrTarget:gsub("^on ", "")
+    elseif self.spellId == 20707 and isAlive then
+        msg = self:soulstoneMessage(key, isAlive)
+    end
 
-            if msg == "" then return end
+    if msg == "" then return end
 
-            return prefix .. msg .. " " .. link .. groupOrTarget .. "!"
-        end,
-        queueMessages = function(self)
-            for k, _ in pairs(self.messages) do
-                local message = self:buildString(spellMessagePrefixMap[k], k)
-                if message ~= nil then
-                    messageQueue[spellMessagePrefixMap[k]] = message
-                end
-            end
-        end,
-        dequeueMessages = function(self)
-            messageQueue = {}
-        end,
-    }
+    return prefix .. msg .. " " .. link .. groupOrTarget .. "!"
 end
 
-local spellMessageDb = {
-    -- Add more entries like this:
-    -- [spellId] = createSpellMessageEntry(spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg, plural, target, group)
-    -- KEEP IN MIND: every field will be static data, the dynamic data like the target's state are added in the buildString function of the object
-    -- Messages shall be queued in messageQueue via the queueMessages function so as to pick the target only once (in case the player is targetting something else when the spell succeeds or is interrupted)
+--- Queues the messages to be sent to the chat channel.
+--- @usage `self:queueMessages()` Intended to be used when a cast starts.
+function SpellMessage:queueMessages()
+    for k, _ in pairs(self.messages) do
+        local message = self:buildString(spellMessagePrefixMap[k], k)
+        if message ~= nil then
+            messageQueue[spellMessagePrefixMap[k]] = message
+        end
+    end
+end
 
-    -- [6201] = SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Healthstone, Healthstone (for debugging purposes)
-    [29893] = createSpellMessage(29893, 5512, "Making", "", "make", "", "made", true, false, true),      -- Create Soulwell, Healthstone
-    [698] = createSpellMessage(698, false, "Using", "", "", "", "", false),                              -- Ritual of Summoning, No Item
-    [20707] = createSpellMessage(20707, false, "", "", "", "", "", false, true),                         -- Soulstone, No Item => messages are decided in spellMessageToString
-    [187748] = createSpellMessage(187748, 127770, "Placing a", "", "place a", "", "placed a", false),    -- Brazier of Awakening, Brazier of Awakening
-    [67826] = createSpellMessage(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
-    [256153] = createSpellMessage(256153, 153647, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Tome of the Quiet Mind
-    [384908] = createSpellMessage(384908, 198268, "Placing a", "", "place a", "", "placed a", false),    -- Portable Tinker's Workbench, Portable Tinker's Workbench
-    [299127] = createSpellMessage(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
-    [126459] = createSpellMessage(126459, 87214, "", "", "", "", "placed a", false),                     -- Blingtron 4000, Blingtron 4000
-    [161414] = createSpellMessage(161414, 111821, "", "", "", "", "placed a", false),                    -- Blingtron 5000, Blingtron 5000
-    [200218] = createSpellMessage(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron 6000, No Item
-    [298926] = createSpellMessage(298926, 168667, "", "", "", "", "placed a", false),                    -- Blingtron 7000, Blingtron 7000
-    [200205] = createSpellMessage(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
+--- Dequeues the messages from the message queue.
+--- @usage `self:dequeueMessages()` Intended to be used when the spell cast is interrupted or successful.
+function SpellMessage:dequeueMessages()
+    if messageQueue == {} then return end
+    messageQueue = {}
+end
+-- ===========================================================================================================================================================
+
+--- This table, `spellMessageDb`, stores the spell messages for various spells.
+--- Each entry in the table represents a spell and its associated messages.
+--- The key of each entry is the spellId, and the value is an instance of the newSpellMessage function.
+--- The newSpellMessage function takes several parameters to define the spell message entry.
+--- The messages can be customized for different spells and items.
+--- The messages are used to display information to the player when certain events related to the spell occur.
+--- The messages can be queued in the messageQueue using the queueMessages function.
+--- The dynamic data, such as the target's state, is added in the buildString function of the object.
+local spellMessageDb = {
+    -- Example entries:
+    -- [6201] = SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Healthstone, Healthstone
+
+    [29893] = SpellMessage:new(29893, 5512, "Making", "", "make", "", "made", true, false, true),      -- Create Soulwell, Healthstone
+    [698] = SpellMessage:new(698, false, "Using", "", "", "", "", false),                              -- Ritual of Summoning, No Item
+    [20707] = SpellMessage:new(20707, false, "", "", "", "", "", false, true),                         -- Soulstone, No Item => messages are decided in spellMessageToString
+    [187748] = SpellMessage:new(187748, 127770, "Placing a", "", "place a", "", "placed a", false),    -- Brazier of Awakening, Brazier of Awakening
+    [67826] = SpellMessage:new(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
+    [256153] = SpellMessage:new(256153, 153647, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Tome of the Quiet Mind
+    [384908] = SpellMessage:new(384908, 198268, "Placing a", "", "place a", "", "placed a", false),    -- Portable Tinker's Workbench, Portable Tinker's Workbench
+    [299127] = SpellMessage:new(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
+    [126459] = SpellMessage:new(126459, 87214, "", "", "", "", "placed a", false),                     -- Blingtron 4000, Blingtron 4000
+    [161414] = SpellMessage:new(161414, 111821, "", "", "", "", "placed a", false),                    -- Blingtron 5000, Blingtron 5000
+    [200218] = SpellMessage:new(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron 6000, No Item
+    [298926] = SpellMessage:new(298926, 168667, "", "", "", "", "placed a", false),                    -- Blingtron 7000, Blingtron 7000
+    [200205] = SpellMessage:new(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
 }
 
+--- This function is called when a player casts a spell and the cast is sent to the server.
+--- It retrieves the spell message associated with the spell ID and queues the messages.
+--- It then prepares and sends a chat message using the prepared message queue.
+--- @param unit string The unit that casted the spell.
+--- @param spellId number The ID of the spell that was casted.
+--- @usage `SpellMessages:PlayerCastSent("player", _, _, 12345)`
 function SpellMessages:PlayerCastSent(unit, _, _, spellId)
     local spellMessage = spellMessageDb[spellId]
     if not spellMessage then return end
@@ -171,6 +238,12 @@ function SpellMessages:PlayerCastSent(unit, _, _, spellId)
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.SENT])
 end
 
+--- This function is called when a player casts a spell and the cast is interrupted.
+--- It retrieves the spell message associated with the spell ID and dequeues the messages.
+--- It then prepares and sends a chat message using the prepared message queue.
+--- @param unit string The unit that casted the spell.
+--- @param spellId number The ID of the spell that was casted.
+--- @usage `SpellMessages:PlayerCastInterrupted("player", _, 12345)`
 function SpellMessages:PlayerCastInterrupted(unit, _, spellId)
     local spellMessage = spellMessageDb[spellId]
     if not spellMessage then return end
@@ -184,6 +257,12 @@ function SpellMessages:PlayerCastInterrupted(unit, _, spellId)
     spellMessage:dequeueMessages()
 end
 
+--- This function is called when a player casts a spell and the cast is successful.
+--- It retrieves the spell message associated with the spell ID and dequeues the messages.
+--- It then prepares and sends a chat message using the prepared message queue.
+--- @param unit string The unit that casted the spell.
+--- @param spellId number The ID of the spell that was casted.
+--- @usage SpellMessages:PlayerCastSucceeded("player", _, 12345)
 function SpellMessages:PlayerCastSucceeded(unit, _, spellId)
     local spellMessage = spellMessageDb[spellId]
     if not spellMessage then return end
@@ -194,6 +273,12 @@ function SpellMessages:PlayerCastSucceeded(unit, _, spellId)
     spellMessage:dequeueMessages()
 end
 
+--- This function is called when an NPC casts a spell and the cast is started.
+--- It retrieves the spell message associated with the spell ID and queues the messages.
+--- It then prepares and sends a chat message using the prepared message queue.
+--- @param unit any -- The unit that casted the spell.
+--- @param castGUID any -- The GUID of the cast.
+--- @param spellId any -- The ID of the spell that was casted.
 function SpellMessages:NpcCastStart(unit, castGUID, spellId)
     local spellMessage = spellMessageDb[spellId]
     if not spellMessage then return end
@@ -204,6 +289,13 @@ function SpellMessages:NpcCastStart(unit, castGUID, spellId)
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.STARTED])
 end
 
+--- This function is called when an NPC casts a spell and the cast is successful.
+--- It retrieves the spell message associated with the spell ID and dequeues the messages.
+--- It then prepares and sends a chat message using the prepared message queue.
+--- @param unit string -- The unit that casted the spell.
+--- @param castGUID string -- The GUID of the cast.
+--- @param spellId integer -- The ID of the spell that was casted.
+--- @usage `SpellMessages:NpcCastSucceeded("target", _, 12345)`
 function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
     -- Debug:Print("NpcCastSucceeded called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
     local spellMessage = spellMessageDb[spellId]
@@ -215,6 +307,11 @@ function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
     spellMessage:dequeueMessages()
 end
 
+--- This function is called when an NPC casts a spell and the cast is interrupted.
+--- It retrieves the spell message associated with the spell ID and dequeues the messages.
+--- It then prepares and sends a chat message using the prepared message queue.
+--- @param ... any -- The arguments passed to the function.
+--- @usage `SpellMessages:NpcCastInterrupted(...)`
 function SpellMessages:SummonedGuardian(...)
     local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = ...
     Debug:CombatLogGetUnitFlags(subevent, destName, destFlags)
@@ -223,6 +320,11 @@ function SpellMessages:SummonedGuardian(...)
     end
 end
 
+--- This function is called when an NPC casts a spell and the cast is interrupted.
+--- It retrieves the spell message associated with the spell ID and dequeues the messages.
+--- It then prepares and sends a chat message using the prepared message queue.
+--- @param ... any -- The arguments passed to the function.
+--- @usage `SpellMessages:InterruptedSpellCast(...)`
 function SpellMessages:InterruptedSpellCast(...)
     local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = ...
     local playerGUID, petGUID = UnitGUID("player"), UnitGUID("pet")
@@ -233,6 +335,8 @@ function SpellMessages:InterruptedSpellCast(...)
     end
 end
 
+-- Event handlers and debouncing logic for spell messages block.
+-- ====================================================================================================================
 function RanothUtils:UNIT_SPELLCAST_SENT(self, unit, _, _, spellId)
     SpellMessages:PlayerCastSent(unit, _, _, spellId)
 end
@@ -266,6 +370,7 @@ function RanothUtils:COMBAT_LOG_EVENT_UNFILTERED()
         SpellMessages:InterruptedSpellCast(unpack(eventInfo))
     end
 end
+-- ====================================================================================================================
 
 function SpellMessages:OnEnable()
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_SENT")
