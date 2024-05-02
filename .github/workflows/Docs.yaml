@@ -21,6 +21,11 @@ jobs:
         with:
           luaVersion: "5.1"
 
+      - name: Install LuaRocks
+        run: |
+          sudo apt update
+          sudo apt install -y luarocks
+
       - name: Setup LDoc
         run: |
           sudo luarocks install ldoc
