@@ -1,6 +1,6 @@
 {
     "Lua.diagnostics.disable": [
-        "undefined-global",
-        "deprecated"
-    ]
+        "undefined-global"
+    ],
+    "Lua.runtime.version": "Lua 5.1"
 }
