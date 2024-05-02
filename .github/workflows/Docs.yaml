@@ -32,7 +32,7 @@ jobs:
 
       - name: Generate docs with LDoc
         run: |
-          ldoc *.lua -o ./docs
+          ldoc ./*.lua -o ./docs
 
       - name: Commit Documentation
         run: |

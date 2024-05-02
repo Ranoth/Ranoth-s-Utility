@@ -1,3 +1,5 @@
+--- @module "Printer"
+
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 
