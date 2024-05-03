@@ -11,6 +11,9 @@ local AutoOpen = RanothUtils:NewModule("AutoOpen")
 
 local canOpen
 
+--- Open all containers from the specified bag.
+--- @param bagID number
+--- @usage `AutoOpen:SingleBagOpenAllContainers(1)`
 function AutoOpen:SingleBagOpenAllContainers(bagID)
     local delay = 0
     for slot = 1, C_Container.GetContainerNumSlots(bagID) do
@@ -43,6 +46,7 @@ end
 --- Toggle the module off when the bank or guild bank is opened.
 --- @param eventName any
 --- @param closedEventName any
+--- @usage `AutoOpen:HandleFrameOpened("BANKFRAME_OPENED", "BANKFRAME_CLOSED")`
 function AutoOpen:HandleFrameOpened(eventName, closedEventName)
     RanothUtils:UnregisterEvent(eventName)
     Debug:Print(eventName)
@@ -54,6 +58,7 @@ end
 --- Toggle the module back on when the bank or guild bank is closed.
 --- @param eventName any
 --- @param openedEventName any
+--- @usage `AutoOpen:HandleFrameClosed("BANKFRAME_CLOSED", "BANKFRAME_OPENED")`
 function AutoOpen:HandleFrameClosed(eventName, openedEventName)
     RanothUtils:UnregisterEvent(eventName)
     Debug:Print(eventName)
@@ -62,18 +67,21 @@ function AutoOpen:HandleFrameClosed(eventName, openedEventName)
     RanothUtils:RegisterEvent(openedEventName)
 end
 
+--- Open all containers from the backpack.
 function AutoOpen:OpenAllContainers()
     for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
         AutoOpen:SingleBagOpenAllContainers(bag)
     end
 end
 
+--- Open all containers from the bag where the item has landed.
 function AutoOpen:Open(bagID)
     if not canOpen then return end
     Debug:Print("AutoOpen:Open(" .. bagID .. ")")
     AutoOpen:SingleBagOpenAllContainers(bagID)
 end
 
+--- Toggle the module on or off.
 function AutoOpen:Toggle()
     if AutoOpen:IsEnabled() then
         AutoOpen:Disable()
@@ -84,6 +92,8 @@ function AutoOpen:Toggle()
     Printer:Print("AutoOpen is now " .. (AutoOpen:IsEnabled() and "enabled" or "disabled"))
 end
 
+-- Event handlers block.
+-- ====================================================================================================================
 function RanothUtils:BAG_UPDATE(self, bagID)
     Debug:Print("BAG_UPDATE: " .. bagID)
     AutoOpen:Open(bagID)
@@ -104,6 +114,8 @@ end
 function RanothUtils:GUILDBANKFRAME_CLOSED()
     AutoOpen:HandleFrameClosed("GUILDBANKFRAME_CLOSED", "GUILDBANKFRAME_OPENED")
 end
+
+-- ====================================================================================================================
 
 function AutoOpen:OnInitialize()
     canOpen = true

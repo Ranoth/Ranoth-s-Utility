@@ -9,6 +9,10 @@ local chatFrameIndex = 1    -- replace with the index of your chat frame
 local chatFrame = _G["ChatFrame" .. chatFrameIndex] or DEFAULT_CHAT_FRAME
 local chatTab = chatTab or _G["ChatFrame" .. chatFrameIndex]
 
+--- Higher order function to neutralize each public function of the module when debug mode is disabled.
+--- @param func any
+--- @return function
+--- @usage `Debug.Print = createToggledFunction(function(self, ...)`
 local function createToggledFunction(func)
     return function(...)
         if not Debug:IsEnabled() then return end
@@ -16,6 +20,7 @@ local function createToggledFunction(func)
     end
 end
 
+--- Set the chat window to the one specified in the chatTabName variable.
 local function setChatWindow()
     for i = 1, NUM_CHAT_WINDOWS do
         local name = GetChatWindowInfo(i)
@@ -26,6 +31,7 @@ local function setChatWindow()
     end
 end
 
+--- Toggle debug mode on or off.
 function Debug:Toggle()
     if Debug:IsEnabled() then
         Debug:Disable()
@@ -35,6 +41,9 @@ function Debug:Toggle()
     chatTab:AddMessage(Debug:IsEnabled() and "Debug mode enabled" or "Debug mode disabled")
 end
 
+--- Print a message to the chat frame with the colorized addon's name prepended.
+--- @param ... any | string | table
+--- @usage `Debug:Print("Hello, world!")`
 Debug.Print = createToggledFunction(function(self, ...)
     local args = { ... }
     for i = 1, #args do
@@ -43,6 +52,19 @@ Debug.Print = createToggledFunction(function(self, ...)
     chatTab:AddMessage(table.concat(args, " "))
 end)
 
+--- Print the event and the name of the unit that triggered the event.
+--- @param event string
+--- @param unit string
+--- @usage `Debug:CombatLogUnitName("UNIT_NAME_UPDATE", "player")`
+Debug.CombatLogUnitName = createToggledFunction(function(self, event, unit)
+    Debug:Print(event, unit)
+end)
+
+--- Print the event, the name of the unit that triggered the event, and the unit's GUID.
+--- @param subevent string
+--- @param destName string
+--- @param destFlags number
+--- @usage `Debug:CombatLogGetUnitFlags(subevent, destName, destFlags)`
 Debug.CombatLogGetUnitFlags = createToggledFunction(function(self, subevent, destName, destFlags)
     local flags = {
         [COMBATLOG_OBJECT_AFFILIATION_MASK] = {

@@ -10,6 +10,7 @@ local colorizedAddonName = "|cffc66ff0" .. addon_name .. "|r"
 --- @name Print
 --- Print a message to the chat frame with the colorized addon's name prepended.
 --- @param ... any | string | table
+--- @usage Printer:Print("Hello, world!")
 function Printer:Print(...)
     local args = { ... }
     for i = 1, #args do
