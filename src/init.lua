@@ -1,3 +1,4 @@
+--- Initialize the addon and set up the settings database.
 --- @module "Init"
 
 local addon_name, _ = ...

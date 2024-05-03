@@ -9,9 +9,9 @@
 
 embeds.xml
 
-init.lua
-debug.lua
-printer.lua
-spellMessages.lua
-autoOpen.lua
-commands.lua
+src\init.lua
+src\debug.lua
+src\printer.lua
+src\spellMessages.lua
+src\autoOpen.lua
+src\commands.lua

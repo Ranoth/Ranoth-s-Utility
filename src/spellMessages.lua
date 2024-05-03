@@ -25,9 +25,11 @@ local function selectTarget()
     end
 end
 
---- @name selectChannel
---- @usage Select the appropriate chat channel based on the player's current group status.
---- @return string, string -- The chat channel and a flair message reflecting the channel selected.
+--[[
+Description of the function here.
+@return string, string -- The chat channel and a flair message reflecting the channel selected.
+@usage Select the appropriate chat channel based on the player's current group status.
+]]
 local function selectChannel()
     if IsInRaid(LE_PARTY_CATEGORY_INSTANCE) then
         return "INSTANCE_CHAT", "for the instance raid"
@@ -54,7 +56,6 @@ end
 --     end
 -- end
 
---- @name PrepareSendChatMessage
 --- Prepare the message to be sent to the relevent chat channel.
 --- @param message (string) -- message to be sent
 --- @usage `SpellMessages:PrepareSendChatMessage("Hello, World!")`
@@ -75,8 +76,8 @@ local spellMessagePrefixMap = {
     SUCCEEDED = "{Triangle} Successfully ",
 }
 
---- @class SpellMessage
 -- ===========================================================================================================================================================
+--- @class SpellMessage
 --- @field spellId number -- The ID of the spell associated with the message.
 --- @field itemId number|boolean -- The ID of the item associated with the message.
 --- @field plural boolean|nil -- Indicates whether the message should be pluralized.
@@ -125,9 +126,9 @@ function SpellMessage:new(spellId, itemId, sentMsg, startedMsg, interruptedMsg, 
 end
 
 --- Generates a message based on the given `msgType` and `isAlive` parameters.
---- @param msgType string -- The type of message. Defaults to "INTERRUPTED" if not provided.
---- @param isAlive boolean -- Indicates whether the player is alive. Defaults to `false` if not provided.
---- @return string -- The generated message based on the `msgType` and `isAlive` parameters.
+--- @param msgType string The type of message. Defaults to "INTERRUPTED" if not provided.
+--- @param isAlive boolean Indicates whether the player is alive. Defaults to `false` if not provided.
+--- @return string The generated message based on the `msgType` and `isAlive` parameters.
 --- @usage `soulstoneMessage(key, isAlive)` Intended to be used in the `buildString` function of a `newSpellMessage` object.
 function SpellMessage:soulstoneMessage(msgType, isAlive)
     local soulstoneMessages = {
@@ -196,6 +197,7 @@ function SpellMessage:dequeueMessages()
     if messageQueue == {} then return end
     messageQueue = {}
 end
+
 -- ===========================================================================================================================================================
 
 --- This table, `spellMessageDb`, stores the spell messages for various spells.
@@ -225,14 +227,13 @@ local spellMessageDb = {
     [200205] = SpellMessage:new(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
 }
 
---- @name PlayerCastSent
 --- This function is called when a player casts a spell and the cast is sent to the server.
 --- It retrieves the spell message associated with the spell ID and queues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
 --- @param unit string The unit that casted the spell.
 --- @param spellId number The ID of the spell that was casted.
---- @usage `SpellMessages:PlayerCastSent("player", _, _, 12345)`
-function SpellMessages:PlayerCastSent(unit, _, _, spellId)
+--- @usage `SpellMessages:PlayerCastSent("player", 12345)`
+function SpellMessages:PlayerCastSent(unit, spellId)
     local spellMessage = spellMessageDb[spellId]
     if not spellMessage then return end
     if unit ~= "player" then return end
@@ -242,14 +243,13 @@ function SpellMessages:PlayerCastSent(unit, _, _, spellId)
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.SENT])
 end
 
---- @name PlayerCastInterrupted
 --- This function is called when a player casts a spell and the cast is interrupted.
 --- It retrieves the spell message associated with the spell ID and dequeues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
 --- @param unit string The unit that casted the spell.
 --- @param spellId number The ID of the spell that was casted.
---- @usage `SpellMessages:PlayerCastInterrupted("player", _, 12345)`
-function SpellMessages:PlayerCastInterrupted(unit, _, spellId)
+--- @usage `SpellMessages:PlayerCastInterrupted("player", 12345)`
+function SpellMessages:PlayerCastInterrupted(unit, spellId)
     local spellMessage = spellMessageDb[spellId]
     if not spellMessage then return end
     if unit ~= "player" then return end
@@ -262,14 +262,13 @@ function SpellMessages:PlayerCastInterrupted(unit, _, spellId)
     spellMessage:dequeueMessages()
 end
 
---- @name PlayerCastSucceeded
 --- This function is called when a player casts a spell and the cast is successful.
 --- It retrieves the spell message associated with the spell ID and dequeues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
 --- @param unit string The unit that casted the spell.
 --- @param spellId number The ID of the spell that was casted.
---- @usage SpellMessages:PlayerCastSucceeded("player", _, 12345)
-function SpellMessages:PlayerCastSucceeded(unit, _, spellId)
+--- @usage SpellMessages:PlayerCastSucceeded("player", 12345)
+function SpellMessages:PlayerCastSucceeded(unit, spellId)
     local spellMessage = spellMessageDb[spellId]
     if not spellMessage then return end
     if unit ~= "player" then return end
@@ -279,7 +278,6 @@ function SpellMessages:PlayerCastSucceeded(unit, _, spellId)
     spellMessage:dequeueMessages()
 end
 
---- @name NpcCastStart
 --- This function is called when an NPC casts a spell and the cast is started.
 --- It retrieves the spell message associated with the spell ID and queues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
@@ -296,15 +294,13 @@ function SpellMessages:NpcCastStart(unit, castGUID, spellId)
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.STARTED])
 end
 
---- @name NpcCastSucceeded
 --- This function is called when an NPC casts a spell and the cast is successful.
 --- It retrieves the spell message associated with the spell ID and dequeues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
 --- @param unit string -- The unit that casted the spell.
---- @param castGUID string -- The GUID of the cast.
 --- @param spellId integer -- The ID of the spell that was casted.
 --- @usage `SpellMessages:NpcCastSucceeded("target", _, 12345)`
-function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
+function SpellMessages:NpcCastSucceeded(unit, spellId)
     -- Debug:Print("NpcCastSucceeded called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
     local spellMessage = spellMessageDb[spellId]
     if not spellMessage then return end
@@ -315,7 +311,6 @@ function SpellMessages:NpcCastSucceeded(unit, castGUID, spellId)
     spellMessage:dequeueMessages()
 end
 
---- @name SummonedGuardian
 --- This function is called when an NPC casts a spell and the cast is interrupted.
 --- It retrieves the spell message associated with the spell ID and dequeues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
@@ -329,7 +324,6 @@ function SpellMessages:SummonedGuardian(...)
     end
 end
 
---- @name InterruptedSpellCast
 --- This function is called when an NPC casts a spell and the cast is interrupted.
 --- It retrieves the spell message associated with the spell ID and dequeues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
@@ -348,7 +342,7 @@ end
 -- Event handlers and debouncing logic for spell messages block.
 -- ====================================================================================================================
 function RanothUtils:UNIT_SPELLCAST_SENT(self, unit, _, _, spellId)
-    SpellMessages:PlayerCastSent(unit, _, _, spellId)
+    SpellMessages:PlayerCastSent(unit, spellId)
 end
 
 function RanothUtils:UNIT_SPELLCAST_START(self, unit, castGUID, spellId)
@@ -358,7 +352,7 @@ end
 function RanothUtils:UNIT_SPELLCAST_INTERRUPTED(self, unit, _, spellId)
     if unit == "pet" then return end
     -- if SpellMessages:CheckDuplicateInterruptTrigger(unit, spellId) then return end
-    SpellMessages:PlayerCastInterrupted(unit, _, spellId)
+    SpellMessages:PlayerCastInterrupted(unit, spellId)
 
     RanothUtils:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     C_Timer.After(0.1, function()
@@ -368,8 +362,8 @@ end
 
 function RanothUtils:UNIT_SPELLCAST_SUCCEEDED(self, unit, _, spellId)
     if unit == "pet" then return end
-    SpellMessages:PlayerCastSucceeded(unit, _, spellId)
-    SpellMessages:NpcCastSucceeded(unit, _, spellId)
+    SpellMessages:PlayerCastSucceeded(unit, spellId)
+    SpellMessages:NpcCastSucceeded(unit, spellId)
 end
 
 function RanothUtils:COMBAT_LOG_EVENT_UNFILTERED()
@@ -380,6 +374,7 @@ function RanothUtils:COMBAT_LOG_EVENT_UNFILTERED()
         SpellMessages:InterruptedSpellCast(unpack(eventInfo))
     end
 end
+
 -- ====================================================================================================================
 
 function SpellMessages:OnEnable()

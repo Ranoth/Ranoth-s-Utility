@@ -1,3 +1,4 @@
+--- Auto Open containers from the backpack.
 --- @module "AutoOpen"
 
 local addon_name, _ = ...
@@ -25,7 +26,7 @@ function AutoOpen:SingleBagOpenAllContainers(bagID)
                 tooltipText = _G["ItemTooltipTextLeft" .. i]:GetText()
             end
         end
-        ---@diagnostic disable-next-line: undefined-field
+        --- @diagnostic disable-next-line: undefined-field
         if tooltipText and string.find(tooltipText, _G.ITEM_OPENABLE) then
             local _, _, locked = C_Container.GetContainerItemInfo(bagID, slot)
             if not locked then
@@ -39,6 +40,9 @@ function AutoOpen:SingleBagOpenAllContainers(bagID)
     end
 end
 
+--- Toggle the module off when the bank or guild bank is opened.
+--- @param eventName any
+--- @param closedEventName any
 function AutoOpen:HandleFrameOpened(eventName, closedEventName)
     RanothUtils:UnregisterEvent(eventName)
     Debug:Print(eventName)
@@ -47,6 +51,9 @@ function AutoOpen:HandleFrameOpened(eventName, closedEventName)
     RanothUtils:RegisterEvent(closedEventName)
 end
 
+--- Toggle the module back on when the bank or guild bank is closed.
+--- @param eventName any
+--- @param openedEventName any
 function AutoOpen:HandleFrameClosed(eventName, openedEventName)
     RanothUtils:UnregisterEvent(eventName)
     Debug:Print(eventName)
