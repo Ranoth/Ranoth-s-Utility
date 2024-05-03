@@ -32,13 +32,13 @@ jobs:
 
       - name: Generate docs with LDoc
         run: |
-          ldoc .
+          ldoc -d ./docs .
 
       - name: Commit Documentation
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          if [ -z "$(ls -A ./doc)" ]; then
+          if [ -z "$(ls -A ./docs)" ]; then
             echo "No documentation to commit."
           else
             git add ./doc
