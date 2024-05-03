@@ -1,0 +1,509 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Ranoth's Utility documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/AutoOpen.html">AutoOpen</a></li>
+  <li><a href="../modules/Commands.html">Commands</a></li>
+  <li><a href="../modules/Debug.html">Debug</a></li>
+  <li><a href="../modules/Init.html">Init</a></li>
+  <li><a href="../modules/Printer.html">Printer</a></li>
+  <li><strong>SpellMessages</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>SpellMessages</code></h1>
+<p></p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#PrepareSendChatMessage">PrepareSendChatMessage (message)</a></td>
+	<td class="summary">Prepare the message to be sent to the relevent chat channel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SpellMessage:new">SpellMessage:new (spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg, plural, target, group)</a></td>
+	<td class="summary">Creates a new spell message object with the given parameters.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SpellMessage:soulstoneMessage">SpellMessage:soulstoneMessage (msgType, isAlive)</a></td>
+	<td class="summary">Generates a message based on the given `msgType` and `isAlive` parameters.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SpellMessage:buildString">SpellMessage:buildString (prefix, key)</a></td>
+	<td class="summary">Builds a message based on the given `prefix` and `key` parameters as well as the fields of the object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SpellMessage:queueMessages">SpellMessage:queueMessages ()</a></td>
+	<td class="summary">Queues the messages to be sent to the chat channel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SpellMessage:dequeueMessages">SpellMessage:dequeueMessages ()</a></td>
+	<td class="summary">Dequeues the messages from the message queue.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PlayerCastSent">PlayerCastSent (unit, spellId)</a></td>
+	<td class="summary">This function is called when a player casts a spell and the cast is sent to the server.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PlayerCastInterrupted">PlayerCastInterrupted (unit, spellId)</a></td>
+	<td class="summary">This function is called when a player casts a spell and the cast is interrupted.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PlayerCastSucceeded">PlayerCastSucceeded (unit, spellId)</a></td>
+	<td class="summary">This function is called when a player casts a spell and the cast is successful.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#NpcCastStart">NpcCastStart (unit, castGUID, spellId)</a></td>
+	<td class="summary">This function is called when an NPC casts a spell and the cast is started.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#NpcCastSucceeded">NpcCastSucceeded (unit, spellId)</a></td>
+	<td class="summary">This function is called when an NPC casts a spell and the cast is successful.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#SummonedGuardian">SummonedGuardian (...)</a></td>
+	<td class="summary">This function is called when an NPC casts a spell and the cast is interrupted.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#InterruptedSpellCast">InterruptedSpellCast (...)</a></td>
+	<td class="summary">This function is called when an NPC casts a spell and the cast is interrupted.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "PrepareSendChatMessage"></a>
+    <strong>PrepareSendChatMessage (message)</strong>
+    </dt>
+    <dd>
+    Prepare the message to be sent to the relevent chat channel.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">message</span>
+         (string) -- message to be sent
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="backtick">`SpellMessages:PrepareSendChatMessage("Hello, World!")`</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "SpellMessage:new"></a>
+    <strong>SpellMessage:new (spellId, itemId, sentMsg, startedMsg, interruptedMsg, stoppedMsg, succeededMsg, plural, target, group)</strong>
+    </dt>
+    <dd>
+    Creates a new spell message object with the given parameters.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">spellId</span>
+         number -- The ID of the spell associated with the message.
+        </li>
+        <li><span class="parameter">itemId</span>
+         number|boolean -- The ID of the item associated with the message. If no item is associated with the message, set this to `false`.
+        </li>
+        <li><span class="parameter">sentMsg</span>
+         string -- The message to be displayed when the spell is sent.
+        </li>
+        <li><span class="parameter">startedMsg</span>
+         string -- The message to be displayed when the spell is started.
+        </li>
+        <li><span class="parameter">interruptedMsg</span>
+         string -- The message to be displayed when the spell is interrupted.
+        </li>
+        <li><span class="parameter">stoppedMsg</span>
+         string -- The message to be displayed when the spell is stopped.
+        </li>
+        <li><span class="parameter">succeededMsg</span>
+         string -- The message to be displayed when the spell is successful.
+        </li>
+        <li><span class="parameter">plural</span>
+         boolean|nil -- (optional) Indicates whether the message should be pluralized.
+        </li>
+        <li><span class="parameter">target</span>
+         boolean|nil -- (optional) Indicates whether the message should include the target's name.
+        </li>
+        <li><span class="parameter">group</span>
+         boolean|nil -- (optional) Indicates whether the message should include the group's name.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        table -- The new spell message object.
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="backtick">`SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true)`</span> Note it is intended that empty strings will <span class="keyword">not</span> generate a message.</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "SpellMessage:soulstoneMessage"></a>
+    <strong>SpellMessage:soulstoneMessage (msgType, isAlive)</strong>
+    </dt>
+    <dd>
+    Generates a message based on the given `msgType` and `isAlive` parameters.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">msgType</span>
+         string The type of message. Defaults to "INTERRUPTED" if not provided.
+        </li>
+        <li><span class="parameter">isAlive</span>
+         boolean Indicates whether the player is alive. Defaults to `false` if not provided.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string The generated message based on the `msgType` and `isAlive` parameters.
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="backtick">`soulstoneMessage(key, isAlive)`</span> Intended to be used <span class="keyword">in</span> the <span class="backtick">`buildString`</span> <span class="keyword">function</span> of a <span class="backtick">`newSpellMessage`</span> object.</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "SpellMessage:buildString"></a>
+    <strong>SpellMessage:buildString (prefix, key)</strong>
+    </dt>
+    <dd>
+    Builds a message based on the given `prefix` and `key` parameters as well as the fields of the object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">prefix</span>
+         (string) -- The prefix to be used in the message.
+        </li>
+        <li><span class="parameter">key</span>
+         (string) -- The key to be used to retrieve the message from the `messages` table.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        (string | nil) -- The generated message based on the `prefix` and `key` parameters. Returns `nil` if the message is empty.
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="backtick">`self:buildString(prefix, key)`</span> Intended to be used <span class="keyword">in</span> the <span class="backtick">`queueMessages`</span> <span class="keyword">function</span> of a <span class="backtick">`newSpellMessage`</span> object.</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "SpellMessage:queueMessages"></a>
+    <strong>SpellMessage:queueMessages ()</strong>
+    </dt>
+    <dd>
+    Queues the messages to be sent to the chat channel.
+
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="backtick">`self:queueMessages()`</span> Intended to be used when a cast starts.</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "SpellMessage:dequeueMessages"></a>
+    <strong>SpellMessage:dequeueMessages ()</strong>
+    </dt>
+    <dd>
+    Dequeues the messages from the message queue.
+
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="backtick">`self:dequeueMessages()`</span> Intended to be used when the spell cast is interrupted <span class="keyword">or</span> successful.</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "PlayerCastSent"></a>
+    <strong>PlayerCastSent (unit, spellId)</strong>
+    </dt>
+    <dd>
+    This function is called when a player casts a spell and the cast is sent to the server.
+ It retrieves the spell message associated with the spell ID and queues the messages.
+ It then prepares and sends a chat message using the prepared message queue.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">unit</span>
+         string The unit that casted the spell.
+        </li>
+        <li><span class="parameter">spellId</span>
+         number The ID of the spell that was casted.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="backtick">`SpellMessages:PlayerCastSent("player", 12345)`</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "PlayerCastInterrupted"></a>
+    <strong>PlayerCastInterrupted (unit, spellId)</strong>
+    </dt>
+    <dd>
+    This function is called when a player casts a spell and the cast is interrupted.
+ It retrieves the spell message associated with the spell ID and dequeues the messages.
+ It then prepares and sends a chat message using the prepared message queue.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">unit</span>
+         string The unit that casted the spell.
+        </li>
+        <li><span class="parameter">spellId</span>
+         number The ID of the spell that was casted.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="backtick">`SpellMessages:PlayerCastInterrupted("player", 12345)`</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "PlayerCastSucceeded"></a>
+    <strong>PlayerCastSucceeded (unit, spellId)</strong>
+    </dt>
+    <dd>
+    This function is called when a player casts a spell and the cast is successful.
+ It retrieves the spell message associated with the spell ID and dequeues the messages.
+ It then prepares and sends a chat message using the prepared message queue.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">unit</span>
+         string The unit that casted the spell.
+        </li>
+        <li><span class="parameter">spellId</span>
+         number The ID of the spell that was casted.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">SpellMessages:<span class="function-name">PlayerCastSucceeded</span>(<span class="string">"player"</span>, <span class="number">12345</span>)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "NpcCastStart"></a>
+    <strong>NpcCastStart (unit, castGUID, spellId)</strong>
+    </dt>
+    <dd>
+    This function is called when an NPC casts a spell and the cast is started.
+ It retrieves the spell message associated with the spell ID and queues the messages.
+ It then prepares and sends a chat message using the prepared message queue.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">unit</span>
+         any -- The unit that casted the spell.
+        </li>
+        <li><span class="parameter">castGUID</span>
+         any -- The GUID of the cast.
+        </li>
+        <li><span class="parameter">spellId</span>
+         any -- The ID of the spell that was casted.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "NpcCastSucceeded"></a>
+    <strong>NpcCastSucceeded (unit, spellId)</strong>
+    </dt>
+    <dd>
+    This function is called when an NPC casts a spell and the cast is successful.
+ It retrieves the spell message associated with the spell ID and dequeues the messages.
+ It then prepares and sends a chat message using the prepared message queue.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">unit</span>
+         string -- The unit that casted the spell.
+        </li>
+        <li><span class="parameter">spellId</span>
+         integer -- The ID of the spell that was casted.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="backtick">`SpellMessages:NpcCastSucceeded("target", _, 12345)`</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "SummonedGuardian"></a>
+    <strong>SummonedGuardian (...)</strong>
+    </dt>
+    <dd>
+    This function is called when an NPC casts a spell and the cast is interrupted.
+ It retrieves the spell message associated with the spell ID and dequeues the messages.
+ It then prepares and sends a chat message using the prepared message queue.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         any -- The arguments passed to the function.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="backtick">`SpellMessages:NpcCastInterrupted(...)`</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "InterruptedSpellCast"></a>
+    <strong>InterruptedSpellCast (...)</strong>
+    </dt>
+    <dd>
+    This function is called when an NPC casts a spell and the cast is interrupted.
+ It retrieves the spell message associated with the spell ID and dequeues the messages.
+ It then prepares and sends a chat message using the prepared message queue.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         any -- The arguments passed to the function.
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="backtick">`SpellMessages:InterruptedSpellCast(...)`</span></pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2024-05-03 05:48:57 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
