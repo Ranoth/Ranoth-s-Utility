@@ -1,7 +1,6 @@
 <!-- insert
 +++
 title = "Ranoth's Utility Static Site"
-date = 2024-05-07T01:29:00
 +++
 end_insert -->
 
