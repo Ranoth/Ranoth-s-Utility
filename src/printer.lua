@@ -1,3 +1,4 @@
+--- Printer module for RanothUtils.
 --- @module "Printer"
 
 local addon_name, _ = ...

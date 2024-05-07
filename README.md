@@ -1,3 +1,10 @@
+<!-- insert
++++
+title = "Ranoth's Utility Static Site"
+date = 2024-05-07T01:29:00
++++
+end_insert -->
+
 # Ranoth's Utility
 
 ## Description
@@ -18,10 +25,6 @@ Kind of like **LeatrixPlus** with features **I** specifically want.
 > - Make a persistent config to enable/disable speech on utility spells.
 > - Find out how to use the say and yell channels to advertize utility spells and successful interrupts.
 
-<!-- ## Installation
-
-To install Ranoth's Utility, follow these steps: -->
-
 ## Usage
 
 - Commands:
@@ -31,7 +34,7 @@ To install Ranoth's Utility, follow these steps: -->
   - /dumpii(bag, slot) - Prints the item info for the item in the specified bag and slot
     > Note that the slot is 1-indexed, not 0-indexed and you can know the bag and slot numbers by using the framestack debug feature
   - /swlang - Switches spoken language between all available languages for your character
-  - /calc - Calculates an expression and prints the result (e.g. /calc 1 + 1, /calc 2 * 2, /calc 2 / 2)
+  - /calc - Calculates an expression and prints the result (e.g. /calc 1 + 1, /calc 2 \* 2, /calc 2 / 2)
   - /toggledebug - Toggles debug mode on and off (prints in a "Debug" chat tab in the default chat frame instead of "General")
 
 ## Support

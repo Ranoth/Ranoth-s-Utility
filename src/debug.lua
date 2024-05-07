@@ -1,3 +1,4 @@
+--- Debug module for RanothUtils.
 --- @module "Debug"
 
 local addon_name, _ = ...
