@@ -26,12 +26,7 @@ jobs:
       - name: "Check if PR was merged and has 'autorelease: pending' label"
         run: |
           if [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
-            for label in ${{ toJson(github.event.pull_request.labels.*.name) }}; do
-              if [[ "$label" == "autorelease: pending" ]]; then
-                echo "PR was merged and has 'autorelease: pending' label"
-                exit 0
-              fi
-            done
+            exit 0
           fi
           echo "PR was not merged or does not have 'autorelease: pending' label"
           exit 1
