@@ -16,13 +16,19 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-
-    # env:
-    #   GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
-    #   CF_API_KEY: ${{ secrets.CF_API_KEY }}
-    #   # WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
-
     steps:
+      - name: "Check if PR was merged and has 'autorelease: pending' label"
+        run: |
+          if [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
+            for label in ${{ toJson(github.event.pull_request.labels.*.name) }}; do
+              if [[ "$label" == "autorelease: pending" ]]; then
+                echo "PR was merged and has 'autorelease: pending' label"
+                exit 0
+              fi
+            done
+          fi
+          echo "PR was not merged or does not have 'autorelease: pending' label"
+          exit 1
       - uses: actions/checkout@v2
       - uses: google-github-actions/release-please-action@v2
         id: release
@@ -35,33 +41,27 @@ jobs:
           VERSION=$(echo ${{ steps.release.outputs.release_version }} | sed 's/^v//')
           sed -i "s/## Version: .*/## Version: $VERSION/" Ranoth's\ utility.toc
       - name: Commit changes
-        if: ${{ steps.release.outputs.release_created }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -am "Update version in .toc file"
       - name: Push changes
-        if: ${{ steps.release.outputs.release_created }}
         run: git push
 
       - name: install commands
-        if: ${{ steps.release.outputs.release_created }}
         run: |
           sudo apt update
           sudo apt install subversion zip wget
           sudo wget https://github.com/mikefarah/yq/releases/download/v4.12.2/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
 
       - name: Build and compress addon
-        if: ${{ steps.release.outputs.release_created }}
         run: bash build.sh
 
       - name: Get zip name
-        if: ${{ steps.release.outputs.release_created }}
         id: get_addon_name
         run: echo "::set-output name=addonname::$(cat addonName.txt)"
 
       - name: Attach built addon to release
-        if: ${{ steps.release.outputs.release_created }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -72,7 +72,6 @@ jobs:
           asset_content_type: application/zip
 
       # - name: Upload to CurseForge
-      #   if: ${{ steps.release.outputs.release_created }}
       #   uses: itsmeow/curseforge-upload@v3
       #   with:
       #     file_path: "./build/${{ steps.get_addon_name.outputs.addonname }}/${{ steps.get_addon_name.outputs.addonname }}.zip"
