@@ -13,7 +13,7 @@ for toc in "${tocs[@]}"; do
     name=$(echo "$name" | tr -cd '[:alnum:]\n\r')
     version=$(grep -oP '## Version: \K.*' "$toc" | tr -d '\r')
     
-    includeFiles=("$toc" "README.md")
+    includeFiles=("$toc" "README.md" "CHANGELOG.md")
     while IFS=$'\r' read -r line; do
         # Ignore lines that do not represent file paths
         if [[ $line == \#* ]] || [[ $line == "" ]]; then
@@ -50,6 +50,8 @@ done
 
 # Copy external libraries to the build directory
 cd "$build_dir"
+mkdir "libs"
+cd "libs"
 for lib in "${externalLibs[@]}"; do
     # Split the library name and the URL
     IFS=':' read -r lib_name lib_url <<< "$lib"
@@ -61,7 +63,7 @@ for lib in "${externalLibs[@]}"; do
     svn export --force "$lib_url" "$lib_name"
 done
 # Zip the built addon
-cd ..
+cd ../..
 zip -r "$name-$version.zip" "$name-$version"
 # return the name of the addon
 echo "$name-$version" > addonName.txt
