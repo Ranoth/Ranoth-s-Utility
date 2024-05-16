@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.17](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.16...v1.3.17) (2024-05-16)
+
+
+### Bug Fixes
+
+* oke doke ([288c645](https://www.github.com/Ranoth/Ranoth-s-Utility/commit/288c64522387dd3e15d3ee300a438528172dc509))
+
 ### [1.3.16](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.15...v1.3.16) (2024-05-16)
 
 
