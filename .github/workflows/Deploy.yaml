@@ -2,7 +2,11 @@ name: Package and Release
 
 on:
   release:
-    types: [published]
+    types:
+      - published
+  pull_request:
+    branches:
+      - master
   workflow_dispatch:
 
 jobs:
@@ -13,7 +17,7 @@ jobs:
       - name: Update version in .toc file
         run: |
           VERSION="v$(cat version.txt)"
-          sed -i "s/## Version: .*/## Version: $VERSION/" Ranoth's\ utility.toc
+          sed -i "s/## Version: .*/## Version: $VERSION/" Ranoth''s\ utility.toc
       - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
