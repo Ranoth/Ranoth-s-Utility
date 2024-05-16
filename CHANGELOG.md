@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.13](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.12...v1.3.13) (2024-05-16)
+
+
+### Bug Fixes
+
+* çoizjefpjeo ([e87cfd8](https://www.github.com/Ranoth/Ranoth-s-Utility/commit/e87cfd8b3ec3d9a11568eb1b19b8e2139ab200ce))
+
 ### [1.3.12](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.11...v1.3.12) (2024-05-16)
 
 
