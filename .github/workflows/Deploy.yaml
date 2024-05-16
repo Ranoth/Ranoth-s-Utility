@@ -35,9 +35,11 @@ jobs:
         run: |
           dos2unix build.sh
           bash build.sh
-      - name: Get zip name
+      - name: Get addon name
         id: get_addon_name
-        run: echo "::set-output name=addonname::$(cat addonName.txt)"
+        run: |
+          ADDON_NAME=$(cat addonName.txt)
+          echo "::set-output name=addonname::$ADDON_NAME"
       - name: Get latest release
         id: get_release
         env:
