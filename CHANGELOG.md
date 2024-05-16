@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.19](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.18...v1.3.19) (2024-05-16)
+
+
+### Bug Fixes
+
+* moment of truth ([8797e35](https://www.github.com/Ranoth/Ranoth-s-Utility/commit/8797e35afe468554fa813c3abeda23147ba44125))
+
 ### [1.3.18](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.17...v1.3.18) (2024-05-16)
 
 
