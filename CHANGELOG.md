@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.18](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.17...v1.3.18) (2024-05-16)
+
+
+### Bug Fixes
+
+* ci pre final test before upload to curseforge ([6b4cbfc](https://www.github.com/Ranoth/Ranoth-s-Utility/commit/6b4cbfcfec91b2ff09018bc6b7c35e8982603c92))
+
 ### [1.3.17](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.16...v1.3.17) (2024-05-16)
 
 
