@@ -1,9 +1,8 @@
 name: Package and Release
 
 on:
-  pull_request:
-    branches:
-      - master
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
