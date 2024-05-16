@@ -12,6 +12,7 @@ on:
 jobs:
   post_pr:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
       - name: Update version in .toc file
@@ -39,6 +40,8 @@ jobs:
         run: echo "::set-output name=addonname::$(cat addonName.txt)"
       - name: Get latest release
         id: get_release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           RELEASE_URL=$(gh api repos/:owner/:repo/releases/latest --jq .upload_url)
           echo "RELEASE_URL=$RELEASE_URL" >> $GITHUB_ENV
