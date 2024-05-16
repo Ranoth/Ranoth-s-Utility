@@ -38,7 +38,7 @@ jobs:
       - name: Get addon name
         id: get_addon_name
         run: |
-          ADDON_NAME=$(cat addonName.txt)
+          ADDON_NAME=$(cat ./build/addonName.txt)
           echo "::set-output name=addonname::$ADDON_NAME"
       - name: Get latest release
         id: get_release
@@ -53,14 +53,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.RELEASE_URL }}
-          asset_path: ./build/${{ steps.get_addon_name.outputs.addonname }}/${{ steps.get_addon_name.outputs.addonname }}.zip
+          asset_path: ./build/${{ steps.get_addon_name.outputs.addonname }}.zip
           asset_name: ${{ steps.get_addon_name.outputs.addonname }}.zip
           asset_content_type: application/zip
 
       # - name: Upload to CurseForge
       #   uses: itsmeow/curseforge-upload@v3
       #   with:
-      #     file_path: "./build/${{ steps.get_addon_name.outputs.addonname }}/${{ steps.get_addon_name.outputs.addonname }}.zip"
+      #     file_path: "./build/${{ steps.get_addon_name.outputs.addonname }}.zip"
       #     game_endpoint: "wow"
       #     project_id: "1000615"
       #     token: ${{ secrets.CF_API_KEY }}
