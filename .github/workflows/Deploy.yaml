@@ -1,35 +1,19 @@
 name: Package and Release
 
 on:
-  push:
-    tags:
-      - "**"
+  pull_request:
     branches:
-      - "master"
+      - master
   workflow_dispatch:
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: google-github-actions/release-please-action@v2
-        id: release
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: simple
-      - name: Auto Merge
-        uses: ahmadnassri/action-dependabot-auto-merge@v2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-  post_release:
-    needs: release
+  post_pr:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Update version in .toc file
         run: |
-          VERSION=$(echo ${{ needs.release.outputs.release_version }} | sed 's/^v//')
+          VERSION="v$(cat version.txt)"
           sed -i "s/## Version: .*/## Version: $VERSION/" Ranoth's\ utility.toc
       - name: Commit changes
         run: |
@@ -48,12 +32,17 @@ jobs:
       - name: Get zip name
         id: get_addon_name
         run: echo "::set-output name=addonname::$(cat addonName.txt)"
+      - name: Get latest release
+        id: get_release
+        run: |
+          RELEASE_URL=$(gh api repos/:owner/:repo/releases/latest --jq .upload_url)
+          echo "RELEASE_URL=$RELEASE_URL" >> $GITHUB_ENV
       - name: Attach built addon to release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
+          upload_url: ${{ env.RELEASE_URL }}
           asset_path: ./build/${{ steps.get_addon_name.outputs.addonname }}/${{ steps.get_addon_name.outputs.addonname }}.zip
           asset_name: ${{ steps.get_addon_name.outputs.addonname }}.zip
           asset_content_type: application/zip
