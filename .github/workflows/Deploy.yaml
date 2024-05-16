@@ -1,10 +1,9 @@
 name: Package and Release
 
 on:
-  release:
-    types:
-      - published
   pull_request:
+    branches:
+      - master
     types:
       - closed
   workflow_dispatch:
@@ -66,3 +65,4 @@ jobs:
           token: ${{ secrets.CF_API_KEY }}
           changelog: CHANGELOG.md
           changelog_type: "markdown"
+          game_versions: "10.2.7"

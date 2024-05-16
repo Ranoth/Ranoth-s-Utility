@@ -14,13 +14,3 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
-    #   - name: Extract version
-    #     id: extract-version
-    #     run: |
-    #       VERSION=$(echo '${{ steps.release.outputs.body }}' | grep -oP 'v\K.*(?=:)')
-    #       echo "VERSION=$VERSION" >> $GITHUB_ENV
-    #   - name: Save version
-    #     uses: actions/upload-artifact@v2
-    #     with:
-    #       name: version
-    #       path: $GITHUB_ENV
