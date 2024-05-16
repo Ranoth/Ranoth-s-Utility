@@ -28,10 +28,12 @@ jobs:
       - name: install commands
         run: |
           sudo apt update
-          sudo apt install subversion zip wget
+          sudo apt install subversion zip wget dos2unix
           sudo wget https://github.com/mikefarah/yq/releases/download/v4.12.2/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
       - name: Build and compress addon
-        run: bash build.sh
+        run: |
+          dos2unix build.sh
+          bash build.sh
       - name: Get zip name
         id: get_addon_name
         run: echo "::set-output name=addonname::$(cat addonName.txt)"
