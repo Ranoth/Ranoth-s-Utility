@@ -10,7 +10,7 @@ readarray -d '' tocs < <(find . -name "*.toc" -print0)
 # Iterate over each .toc file
 for toc in "${tocs[@]}"; do
     name=$(grep -oP '## Title: \K.*' "$toc" | sed -r 's/(\|cff[a-fA-F0-9]{6})//g;s/(\|r)//g' | tr -d '\r')
-    name=$(echo "$name" | tr -cd '[:alnum:]\n\r')
+    # name=$(echo "$name" | tr -cd '[:alnum:]\n\r')
     version=$(grep -oP '## Version: \K.*' "$toc" | tr -d '\r')
     
     includeFiles=("$toc" "README.md" "CHANGELOG.md")
@@ -35,7 +35,7 @@ for toc in "${tocs[@]}"; do
 done
 
 # Create a directory for the build
-build_dir="build/$name-$version"
+build_dir="build/$name"
 mkdir -p "$build_dir"
 
 # Copy the addon files to the build directory
@@ -64,8 +64,8 @@ for lib in "${externalLibs[@]}"; do
 done
 # Zip the built addon
 cd ../..
-zip -r "$name-$version.zip" "$name-$version"
+zip -r "$name-$version.zip" "$name"
 # return the name of the addon
-echo "$name-$version" > addonName.txt
+echo "$name" > addonName.txt
 # return to the root directory
 cd -
