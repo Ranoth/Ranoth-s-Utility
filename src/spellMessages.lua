@@ -1,3 +1,4 @@
+--- Send messages to warn the party about party utilities being used.
 --- @module "SpellMessages"
 
 local addon_name, _ = ...

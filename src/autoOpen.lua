@@ -92,12 +92,57 @@ function AutoOpen:Toggle()
     Printer:Print("AutoOpen is now " .. (AutoOpen:IsEnabled() and "enabled" or "disabled"))
 end
 
+-- function AutoOpen:GetLootFromMessage(...)
+--     local message = select(1, ...)
+--     if AutoOpen:IsMyLoot(message) then return end
+--     local itemLink = string.match(message, "|c.-|h|r")
+--     local itemID = GetItemInfoFromHyperlink(itemLink)
+--     local tooltipText = AutoOpen:GetTooltipFromItemLink(itemLink)
+--     if not AutoOpen:GetOpennable(tooltipText) then return end
+--     AutoOpen:OpenAllContainers()
+-- end
+
+-- function AutoOpen:GetTooltipFromItemLink(itemLink)
+--     local itemTooltip = _G["ItemTooltip"] or
+--         CreateFrame("GameTooltip", "ItemTooltip", UIParent, "GameTooltipTemplate")
+--     itemTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+--     itemTooltip:SetHyperlink(itemLink)
+--     local tooltipText
+--     for i = 1, itemTooltip:NumLines() do
+--         tooltipText = _G["ItemTooltipTextLeft" .. i]:GetText()
+--         print(tooltipText)
+--     end
+--     return tooltipText
+-- end
+
+-- function AutoOpen:GetOpennable(tooltipText)
+--     --- @diagnostic disable-next-line: undefined-field
+--     if tooltipText and string.find(tooltipText, _G.ITEM_OPENABLE) then
+--         return true
+--     end
+--     return false
+-- end
+
+-- function AutoOpen:IsMyLoot(message)
+--     local lootString = LOOT_ITEM_SELF:gsub("%%s", ""):gsub("%.$", "")
+
+--     if (string.sub(message, 1, #lootString) == lootString) then
+--         return true
+--     end
+
+--     return false
+-- end
+
 -- Event handlers block.
 -- ====================================================================================================================
 function RanothUtils:BAG_UPDATE(self, bagID)
     Debug:Print("BAG_UPDATE: " .. bagID)
     AutoOpen:Open(bagID)
 end
+
+-- function RanothUtils:CHAT_MSG_LOOT(self, ...)
+--     AutoOpen:GetLootFromMessage(...)
+-- end
 
 function RanothUtils:BANKFRAME_OPENED()
     AutoOpen:HandleFrameOpened("BANKFRAME_OPENED", "BANKFRAME_CLOSED")
@@ -129,6 +174,7 @@ end
 
 function AutoOpen:OnEnable()
     RanothUtils.db.profile.autoOpen = AutoOpen:IsEnabled()
+    -- RanothUtils:RegisterEvent("CHAT_MSG_LOOT")
     RanothUtils:RegisterEvent("BAG_UPDATE")
     RanothUtils:RegisterEvent("BANKFRAME_OPENED")
     RanothUtils:RegisterEvent("GUILDBANKFRAME_OPENED")
