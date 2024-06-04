@@ -24,11 +24,8 @@ local function selectTarget()
     end
 end
 
---[[
-Description of the function here.
-@return string, string -- The chat channel and a flair message reflecting the channel selected.
-@usage Select the appropriate chat channel based on the player's current group status.
-]]
+--- @return string, string -- The chat channel and a flair message reflecting the channel selected.
+--- @usage Select the appropriate chat channel based on the player's current group status.
 local function selectChannel()
     if IsInRaid(LE_PARTY_CATEGORY_INSTANCE) then
         return "INSTANCE_CHAT", "for the instance raid"
