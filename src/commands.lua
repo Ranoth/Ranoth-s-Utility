@@ -16,12 +16,12 @@ local Commands = RanothUtils:NewModule("Commands")
 --- prints the help message for the addon's slash commands
 local function printHelp()
     Printer:Print("Available commands:")
-    Printer:Print(" /ranu toggledebug - Toggles debug mode")
-    Printer:Print(" /ranu swlang - Switches the language of the chat box")
-    Printer:Print(" /ranu openeggs - Opens all Brightly Colored Eggs in your bags")
-    Printer:Print(" /ranu openall - Opens all containers in your bags")
-    Printer:Print(" /ranu calc <expression> - Evaluates a mathematical expression")
-    Printer:Print(" /ranu autoopen - Toggles auto-opening containers in your bags")
+    Printer:Print("|cffffff00/ranu toggledebug|r - Toggles debug mode")
+    Printer:Print("|cffffff00/ranu swlang|r - Switches the language of the chat box")
+    Printer:Print("|cffffff00/ranu openeggs|r - Opens all Brightly Colored Eggs in your bags")
+    Printer:Print("|cffffff00/ranu openall|r - Opens all containers in your bags")
+    Printer:Print("|cffffff00/ranu calc|r |cff00ff00<expression>|r - Evaluates a mathematical expression")
+    Printer:Print("|cffffff00/ranu autoopen|r - Toggles auto-opening containers in your bags")
 end
 
 --- Registers additional slash commands for the addon
@@ -32,7 +32,7 @@ function Commands:RegisterAdditionalSlashCommands()
             printHelp()
             return
         end
-        commandList = {
+        local commandList = {
             ["help"] = printHelp,
             ["toggledebug"] = Debug.Toggle,
             ["swlang"] = function()
