@@ -13,66 +13,74 @@ local Debug = RanothUtils:GetModule("Debug")
 
 local Commands = RanothUtils:NewModule("Commands")
 
---- Registers additional slash commands for the addon.
+--- prints the help message for the addon's slash commands
+local function printHelp()
+    Printer:Print("Available commands:")
+    Printer:Print(" /ranu toggledebug - Toggles debug mode")
+    Printer:Print(" /ranu swlang - Switches the language of the chat box")
+    Printer:Print(" /ranu openeggs - Opens all Brightly Colored Eggs in your bags")
+    Printer:Print(" /ranu openall - Opens all containers in your bags")
+    Printer:Print(" /ranu calc <expression> - Evaluates a mathematical expression")
+    Printer:Print(" /ranu autoopen - Toggles auto-opening containers in your bags")
+end
+
+--- Registers additional slash commands for the addon
 function Commands:RegisterAdditionalSlashCommands()
-    SLASH_DEBUGTESTCOMMAND1 = "/toggledebug"
-    --- Toggles debug mode on or off.
-    SlashCmdList.DEBUGTESTCOMMAND = function()
-        Debug:Toggle()
-        Printer:Print(Debug:IsEnabled() and "Debug mode enabled" or "Debug mode disabled")
-    end
-
-    SLASH_SWITCHLANGUAGES1 = "/swlang"
-    --- Opens all containers in the specified bag.
-    SlashCmdList.SWITCHLANGUAGES = function()
-        local b, l, c, g = DEFAULT_CHAT_FRAME.editBox, "languageID", GetNumLanguages, GetLanguageByIndex
-        for i = 1, c() do
-            local n, id = g(i)
-            if id == b[l] then
-                if i == c() then i = 0 end
-                local nn, ni = g(i + 1)
-                b[l] = ni
-                Printer:Print("Speaking " .. nn)
-                break
-            end
+    RanothUtils:RegisterChatCommand("ranu", function(input)
+        local command, args = RanothUtils:GetArgs(input, 2)
+        if not command then
+            printHelp()
+            return
         end
-    end
-
-    SLASH_OPENEGGS1 = "/openeggs"
-    --- Opens all Brightly Colored Eggs in the player's bags.
-    SlashCmdList.OPENEGGS = function()
-        local delay = 0
-        for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
-            for slot = 1, C_Container.GetContainerNumSlots(bag) do
-                local itemlink = C_Container.GetContainerItemLink(bag, slot)
-                if itemlink and string.find(itemlink, "Brightly Colored Egg") then
-                    local _, _, locked = C_Container.GetContainerItemInfo(bag, slot)
-                    if not locked then
-                        C_Timer.After(delay, function()
-                            C_Container.UseContainerItem(bag, slot)
-                            CloseLoot()
-                        end)
-                        delay = delay + 0.4
+        commandList = {
+            ["help"] = printHelp,
+            ["toggledebug"] = Debug.Toggle,
+            ["swlang"] = function()
+                local b, l, c, g = DEFAULT_CHAT_FRAME.editBox, "languageID", GetNumLanguages, GetLanguageByIndex
+                for i = 1, c() do
+                    local n, id = g(i)
+                    if id == b[l] then
+                        if i == c() then i = 0 end
+                        local nn, ni = g(i + 1)
+                        b[l] = ni
+                        Printer:Print("Speaking " .. nn)
+                        break
                     end
                 end
-            end
+            end,
+            ["openeggs"] = function()
+                local delay = 0
+                for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
+                    for slot = 1, C_Container.GetContainerNumSlots(bag) do
+                        local itemlink = C_Container.GetContainerItemLink(bag, slot)
+                        if itemlink and string.find(itemlink, "Brightly Colored Egg") then
+                            local _, _, locked = C_Container.GetContainerItemInfo(bag, slot)
+                            if not locked then
+                                C_Timer.After(delay, function()
+                                    C_Container.UseContainerItem(bag, slot)
+                                    CloseLoot()
+                                end)
+                                delay = delay + 0.4
+                            end
+                        end
+                    end
+                end
+            end,
+            ["openall"] = AutoOpen.OpenAllContainers,
+            ["calc"] = function(args)
+                local expression = input:match("calc%s+(.+)")
+                local result = loadstring("return " .. expression)()
+                Printer:Print(result)
+            end,
+            ["autoopen"] = AutoOpen.Toggle
+        }
+        if commandList[command] then
+            commandList[command](args)
+        else
+            Printer:Print("Unknown command: " .. command)
+            printHelp()
         end
-    end
-
-    SLASH_OPENALLCONTAINERS1 = "/openall"
-    --- Opens all containers in the player's bags.
-    SlashCmdList.OPENALLCONTAINERS = AutoOpen.OpenAllContainers
-
-    SLASH_CALCULATRIX1 = "/calc"
-    --- Evaluates a mathematical expression and prints the result.
-    SlashCmdList.CALCULATRIX = function(expression)
-        local result = loadstring("return " .. expression)()
-        Printer:Print(result)
-    end
-
-    SLASH_TOGGLEAUTOOPEN1 = "/autoopen"
-    --- Toggles the AutoOpen module on or off.
-    SlashCmdList.TOGGLEAUTOOPEN = AutoOpen.Toggle
+    end)
 end
 
 function Commands:OnInitialize()
