@@ -15,9 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Update version in .toc file
+        id: get_version
         run: |
           VERSION="v$(cat version.txt)"
           sed -i "s/## Version: .*/## Version: $VERSION/" "Ranoth's utility.toc"
+          echo "::set-output name=version::$VERSION"
       - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
@@ -70,6 +72,7 @@ jobs:
           file_path: "./build/${{ steps.get_addon_name.outputs.addonname }}.zip"
           game_endpoint: "wow"
           project_id: "1000615"
+          display_name: ${{ steps.get_version.outputs.version }}
           token: ${{ secrets.CF_API_KEY }}
           changelog: ${{ steps.get_release.outputs.release_body }}
           changelog_type: "markdown"
