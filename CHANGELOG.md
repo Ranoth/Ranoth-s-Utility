@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.4.1](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.4.0...v1.4.1) (2024-06-04)
+
+
+### Bug Fixes
+
+* add AceConsole library to embeds ([6e00d06](https://www.github.com/Ranoth/Ranoth-s-Utility/commit/6e00d060514e1f017d42fd0d2525b1df1498b28e))
+* Make command help message more readable ([5bdb726](https://www.github.com/Ranoth/Ranoth-s-Utility/commit/5bdb7262b0ac7b57263613cb298c6041077b860b))
+
 ## [1.4.0](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.22...v1.4.0) (2024-06-04)
 
 
