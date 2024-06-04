@@ -66,6 +66,6 @@ done
 cd ../..
 zip -r "$name-$version.zip" "$name"
 # return the name of the addon
-echo "$name" > addonName.txt
+echo "$name-$version" > addonName.txt
 # return to the root directory
 cd -
