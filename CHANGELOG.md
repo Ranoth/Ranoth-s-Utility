@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.22](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.21...v1.3.22) (2024-06-04)
+
+
+### Bug Fixes
+
+* cold start bug and doc ([7e09f89](https://www.github.com/Ranoth/Ranoth-s-Utility/commit/7e09f899b3ca90bf5664f4abf79376a70c2183ac))
+
 ### [1.3.21](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.20...v1.3.21) (2024-06-04)
 
 
