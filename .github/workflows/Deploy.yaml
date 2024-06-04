@@ -52,8 +52,8 @@ jobs:
           LATEST_RELEASE_ID=$(gh api repos/:owner/:repo/releases/latest --jq .id)
           echo "::set-output name=latest_release_id::$LATEST_RELEASE_ID"
           RELEASE_JSON=$(curl --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases/$LATEST_RELEASE_ID")
-          RELEASE_BODY=$(echo $RELEASE_JSON | jq -r .body | sed ':a;N;$!ba;s/\n/\\n/g')
-          echo "::set-output name=release_body::$RELEASE_BODY"
+          RELEASE_BODY=$(echo $RELEASE_JSON | jq -r .body)
+          echo "::set-output name=release_body::${RELEASE_BODY//$'\n'/%0A}"
       - name: Attach built addon to release
         uses: actions/upload-release-asset@v1
         env:
