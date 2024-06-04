@@ -55,6 +55,12 @@ jobs:
           asset_path: ./build/${{ steps.get_addon_name.outputs.addonname }}.zip
           asset_name: ${{ steps.get_addon_name.outputs.addonname }}.zip
           asset_content_type: application/zip
+      - name: Get release body
+        id: get_release_body
+        run: |
+          RELEASE_JSON=$(curl --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases/${{ github.event.release.id }}")
+          RELEASE_BODY=$(echo $RELEASE_JSON | jq -r .body | sed ':a;N;$!ba;s/\n/\\n/g')
+          echo "::set-output name=release_body::$RELEASE_BODY"
 
       - name: Upload to CurseForge
         uses: itsmeow/curseforge-upload@v3
@@ -63,6 +69,6 @@ jobs:
           game_endpoint: "wow"
           project_id: "1000615"
           token: ${{ secrets.CF_API_KEY }}
-          changelog: CHANGELOG.md
+          changelog: ${{ steps.get_release_body.outputs.release_body }}
           changelog_type: "markdown"
           game_versions: "10.2.7"
