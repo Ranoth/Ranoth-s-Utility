@@ -130,10 +130,10 @@ end
 function SpellMessage:requestItemLink()
     if not self.itemId then return end
     if not C_Item.IsItemDataCachedByID(self.itemId) then
-        -- C_Item.RequestLoadItemDataByID(self.itemId)
-        local itemLink = select(2, GetItemInfo(self.itemId))
-        return itemLink
+        C_Item.RequestLoadItemDataByID(self.itemId)
     end
+    local itemLink = select(2, GetItemInfo(self.itemId))
+    if itemLink then self.itemLink = itemLink end
 end
 
 --- Generates a message based on the given `msgType` and `isAlive` parameters.
@@ -163,12 +163,12 @@ function SpellMessage:buildString(prefix, key)
     if msg == "" and not self.spellId == 20707 then return end
     local isAlive = select(2, selectTarget())
     local itemLink = self.itemLink or ""
-    if self.itemId and itemLink == "" then
-        if not C_Item.IsItemDataCachedByID(self.itemId) then
-            C_Item.RequestLoadItemDataByID(self.itemId)
-        end
-        itemLink = select(2, GetItemInfo(self.itemId))
-    end
+    -- if self.itemId and itemLink == "" then
+    --     if not C_Item.IsItemDataCachedByID(self.itemId) then
+    --         C_Item.RequestLoadItemDataByID(self.itemId)
+    --     end
+    --     itemLink = select(2, GetItemInfo(self.itemId))
+    -- end
     local spellLink = self.spellId and GetSpellLink(self.spellId) or ""
     local link = (itemLink ~= "" and itemLink or spellLink) .. (self.plural and "s" or "")
     local groupNameDisplay = self.group and (" " .. select(2, selectChannel())) or ""
@@ -402,14 +402,13 @@ end
 -- ====================================================================================================================
 
 function SpellMessages:OnEnable()
-    RanothUtils:RegisterEvent("GET_ITEM_INFO_RECEIVED")
-
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_SENT")
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_START")
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
     RanothUtils:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
+    RanothUtils:RegisterEvent("GET_ITEM_INFO_RECEIVED")
     SpellMessages:MakeSpellMessageDb()
     for _, spellMessage in pairs(spellMessageDb) do
         spellMessage:requestItemLink()
