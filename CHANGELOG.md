@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.20](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.19...v1.3.20) (2024-06-04)
+
+
+### Bug Fixes
+
+* Cold start not having spell links for NPC cast spells related to items (Reaves in auto hammer mode summons an auto-hammer and the summoned hammer should have been used instead of the spell) ([f3bcbc6](https://www.github.com/Ranoth/Ranoth-s-Utility/commit/f3bcbc6177ae2732aff5bb77b6e90658e6eadf1c))
+
 ### [1.3.19](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.18...v1.3.19) (2024-05-16)
 
 
