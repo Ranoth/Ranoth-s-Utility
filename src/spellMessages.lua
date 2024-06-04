@@ -3,13 +3,11 @@
 
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
-
 local Debug = RanothUtils:GetModule("Debug")
-
 local SpellMessages = RanothUtils:NewModule("SpellMessages")
 
+local spellMessageDb = {}
 local petOwners = {}
--- local lastInterruptedSpell = nil
 local messageQueue = {}
 
 local function selectTarget()
@@ -85,6 +83,7 @@ local spellMessagePrefixMap = {
 --- @field target boolean|nil -- Indicates whether the message should include the target's name.
 --- @field group boolean|nil -- Indicates whether the message should include the group's name.
 --- @field messages table -- The messages to be displayed when the spell is sent, started, interrupted, stopped, and successful.
+--- @field itemLink string -- The item link associated with the message.
 --- @field soulstoneMessage function -- A function to generate a message based on the given `msgType` and `isAlive` parameters.
 --- @field buildString function -- A function to build a message based on the given `prefix` and `key` parameters as well as the fields of the object.
 --- @field queueMessages function -- A function to queue the messages to be sent to the chat channel.
@@ -123,7 +122,18 @@ function SpellMessage:new(spellId, itemId, sentMsg, startedMsg, interruptedMsg, 
         SUCCEEDED = succeededMsg,
     }
 
+    obj.itemLink = ""
+
     return obj
+end
+
+function SpellMessage:requestItemLink()
+    if not self.itemId then return end
+    if not C_Item.IsItemDataCachedByID(self.itemId) then
+        -- C_Item.RequestLoadItemDataByID(self.itemId)
+        local itemLink = select(2, GetItemInfo(self.itemId))
+        return itemLink
+    end
 end
 
 --- Generates a message based on the given `msgType` and `isAlive` parameters.
@@ -152,12 +162,12 @@ function SpellMessage:buildString(prefix, key)
     local msg = self.messages[key] or ""
     if msg == "" and not self.spellId == 20707 then return end
     local isAlive = select(2, selectTarget())
-    local itemLink = ""
-    if self.itemId then
+    local itemLink = self.itemLink or ""
+    if self.itemId and itemLink == "" then
         if not C_Item.IsItemDataCachedByID(self.itemId) then
             C_Item.RequestLoadItemDataByID(self.itemId)
         end
-        itemLink = select(2, GetItemInfo(self.itemId)) or ""
+        itemLink = select(2, GetItemInfo(self.itemId))
     end
     local spellLink = self.spellId and GetSpellLink(self.spellId) or ""
     local link = (itemLink ~= "" and itemLink or spellLink) .. (self.plural and "s" or "")
@@ -201,32 +211,34 @@ end
 
 -- ===========================================================================================================================================================
 
---- This table, `spellMessageDb`, stores the spell messages for various spells.
---- Each entry in the table represents a spell and its associated messages.
---- The key of each entry is the spellId, and the value is an instance of the newSpellMessage function.
---- The newSpellMessage function takes several parameters to define the spell message entry.
---- The messages can be customized for different spells and items.
---- The messages are used to display information to the player when certain events related to the spell occur.
---- The messages can be queued in the messageQueue using the queueMessages function.
---- The dynamic data, such as the target's state, is added in the buildString function of the object.
-local spellMessageDb = {
-    -- Example entries:
-    -- [6201] = SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Healthstone, Healthstone
+function SpellMessages:MakeSpellMessageDb()
+    --- This table, `spellMessageDb`, stores the spell messages for various spells.
+    --- Each entry in the table represents a spell and its associated messages.
+    --- The key of each entry is the spellId, and the value is an instance of the newSpellMessage function.
+    --- The newSpellMessage function takes several parameters to define the spell message entry.
+    --- The messages can be customized for different spells and items.
+    --- The messages are used to display information to the player when certain events related to the spell occur.
+    --- The messages can be queued in the messageQueue using the queueMessages function.
+    --- The dynamic data, such as the target's state, is added in the buildString function of the object.
+    spellMessageDb = {
+        -- Example entries:
+        -- [6201] = SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Healthstone, Healthstone
 
-    [29893] = SpellMessage:new(29893, 5512, "Making", "", "make", "", "made", true, false, true),      -- Create Soulwell, Healthstone
-    [698] = SpellMessage:new(698, false, "Using", "", "", "", "", false),                              -- Ritual of Summoning, No Item
-    [20707] = SpellMessage:new(20707, false, "", "", "", "", "", false, true),                         -- Soulstone, No Item => messages are decided in spellMessageToString
-    [187748] = SpellMessage:new(187748, 127770, "Placing a", "", "place a", "", "placed a", false),    -- Brazier of Awakening, Brazier of Awakening
-    [67826] = SpellMessage:new(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
-    [256153] = SpellMessage:new(256153, 153647, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Tome of the Quiet Mind
-    [384908] = SpellMessage:new(384908, 198268, "Placing a", "", "place a", "", "placed a", false),    -- Portable Tinker's Workbench, Portable Tinker's Workbench
-    [299127] = SpellMessage:new(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
-    [126459] = SpellMessage:new(126459, 87214, "", "", "", "", "placed a", false),                     -- Blingtron 4000, Blingtron 4000
-    [161414] = SpellMessage:new(161414, 111821, "", "", "", "", "placed a", false),                    -- Blingtron 5000, Blingtron 5000
-    [200218] = SpellMessage:new(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron 6000, No Item
-    [298926] = SpellMessage:new(298926, 168667, "", "", "", "", "placed a", false),                    -- Blingtron 7000, Blingtron 7000
-    [200205] = SpellMessage:new(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
-}
+        [29893] = SpellMessage:new(29893, 5512, "Making", "", "make", "", "made", true, false, true),      -- Create Soulwell, Healthstone
+        [698] = SpellMessage:new(698, false, "Using", "", "", "", "", false),                              -- Ritual of Summoning, No Item
+        [20707] = SpellMessage:new(20707, false, "", "", "", "", "", false, true),                         -- Soulstone, No Item => messages are decided in spellMessageToString
+        [187748] = SpellMessage:new(187748, 127770, "Placing a", "", "place a", "", "placed a", false),    -- Brazier of Awakening, Brazier of Awakening
+        [67826] = SpellMessage:new(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
+        [256153] = SpellMessage:new(256153, 153647, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Tome of the Quiet Mind
+        [384908] = SpellMessage:new(384908, 198268, "Placing a", "", "place a", "", "placed a", false),    -- Portable Tinker's Workbench, Portable Tinker's Workbench
+        [299127] = SpellMessage:new(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
+        [126459] = SpellMessage:new(126459, 87214, "", "", "", "", "placed a", false),                     -- Blingtron 4000, Blingtron 4000
+        [161414] = SpellMessage:new(161414, 111821, "", "", "", "", "placed a", false),                    -- Blingtron 5000, Blingtron 5000
+        [200218] = SpellMessage:new(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron 6000, No Item
+        [298926] = SpellMessage:new(298926, 168667, "", "", "", "", "placed a", false),                    -- Blingtron 7000, Blingtron 7000
+        [200205] = SpellMessage:new(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
+    }
+end
 
 --- This function is called when a player casts a spell and the cast is sent to the server.
 --- It retrieves the spell message associated with the spell ID and queues the messages.
@@ -342,6 +354,17 @@ end
 
 -- Event handlers and debouncing logic for spell messages block.
 -- ====================================================================================================================
+function RanothUtils:GET_ITEM_INFO_RECEIVED(self, itemId, success)
+    if success then
+        for _, spellMessage in pairs(spellMessageDb) do
+            if spellMessage.itemId == itemId then
+                local itemLink = select(2, GetItemInfo(itemId))
+                spellMessage.itemLink = itemLink
+            end
+        end
+    end
+end
+
 function RanothUtils:UNIT_SPELLCAST_SENT(self, unit, _, _, spellId)
     SpellMessages:PlayerCastSent(unit, spellId)
 end
@@ -379,11 +402,18 @@ end
 -- ====================================================================================================================
 
 function SpellMessages:OnEnable()
+    RanothUtils:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_SENT")
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_START")
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
     RanothUtils:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+
+    SpellMessages:MakeSpellMessageDb()
+    for _, spellMessage in pairs(spellMessageDb) do
+        spellMessage:requestItemLink()
+    end
 end
 
 function SpellMessages:OnDisable()
