@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.22...v1.4.0) (2024-06-04)
+
+
+### Features
+
+* help menu for commands ([f90b419](https://www.github.com/Ranoth/Ranoth-s-Utility/commit/f90b4196a606b897d0bfcbfce8960ca82f3bc36e))
+
 ### [1.3.22](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.3.21...v1.3.22) (2024-06-04)
 
 
