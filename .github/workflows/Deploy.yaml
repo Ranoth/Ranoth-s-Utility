@@ -2,7 +2,10 @@ name: Package and Release
 
 on:
   release:
-    types: [published]
+    types:
+      # - created
+      - released
+      # - published
 
 jobs:
   post_pr:
@@ -40,7 +43,7 @@ jobs:
       - name: Get latest release
         id: get_release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT }}
         # run: |
         #   RELEASE_URL=$(gh api repos/:owner/:repo/releases/latest --jq .upload_url)
         #   echo "RELEASE_URL=$RELEASE_URL" >> $GITHUB_ENV
@@ -49,13 +52,13 @@ jobs:
           echo "::set-output name=release_url::$RELEASE_URL"
           LATEST_RELEASE_ID=$(gh api repos/:owner/:repo/releases/latest --jq .id)
           echo "::set-output name=latest_release_id::$LATEST_RELEASE_ID"
-          RELEASE_JSON=$(curl --header "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/releases/$LATEST_RELEASE_ID")
+          RELEASE_JSON=$(curl --header "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/releases/$LATEST_RELEASE_ID")
           RELEASE_BODY=$(echo $RELEASE_JSON | jq -r .body)
           echo "::set-output name=release_body::${RELEASE_BODY//$'\n'/%0A}"
       - name: Attach built addon to release
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
           upload_url: ${{ steps.get_release.outputs.release_url }}
           asset_path: ./build/${{ steps.get_addon_name.outputs.addonname }}.zip
