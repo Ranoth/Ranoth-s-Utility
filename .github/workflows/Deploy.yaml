@@ -1,19 +1,8 @@
 name: Package and Release
 
 on:
-  # pull_request:
-  #   branches:
-  #     - master
-  #   types:
-  #     - closed
-  #     - labeled
-  push:
-    tags:
-      - '**'
   release:
-    types:
-      - released
-  workflow_dispatch:
+    types: [published]
 
 jobs:
   post_pr:
