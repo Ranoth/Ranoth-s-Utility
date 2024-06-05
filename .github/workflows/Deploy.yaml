@@ -9,6 +9,7 @@ on:
   #     - labeled
   release:
     types:
+      - published
       - released
       - created
   workflow_dispatch:
