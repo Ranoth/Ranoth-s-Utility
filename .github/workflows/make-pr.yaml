@@ -22,8 +22,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup GitHub CLI
-        run: |
-          gh auth login --with-token ${{ secrets.GITHUB_TOKEN }}
+        run: echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
 
       - name: Merge PR
         run: |
