@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.4.2...v1.4.3) (2024-06-05)
+
+
+### Bug Fixes
+
+* testing CI ([c06422a](https://github.com/Ranoth/Ranoth-s-Utility/commit/c06422ac5334b4c158dbbdf5eb9bab141b987fcc))
+
 ### [1.4.1](https://www.github.com/Ranoth/Ranoth-s-Utility/compare/v1.4.0...v1.4.1) (2024-06-04)
 
 
