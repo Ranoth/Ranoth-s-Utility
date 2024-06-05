@@ -3,6 +3,7 @@ name: automerge
 on:
   pull_request:
     types:
+      - opened
       - labeled
   pull_request_review:
     types:
