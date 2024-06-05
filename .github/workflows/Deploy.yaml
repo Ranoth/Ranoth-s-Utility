@@ -10,6 +10,7 @@ on:
   release:
     types:
       - released
+      - created
   workflow_dispatch:
 
 jobs:
