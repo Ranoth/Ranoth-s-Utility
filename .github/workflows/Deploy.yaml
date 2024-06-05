@@ -12,7 +12,7 @@ on:
 jobs:
   post_pr:
     runs-on: ubuntu-latest
-    if: 'contains(toJson(github.event.pull_request.labels.*.name), "autorelease: tagged")'
+    if: contains(toJson(github.event.pull_request.labels.*.name), 'autorelease: tagged')
 
     steps:
       - uses: actions/checkout@v2
