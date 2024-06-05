@@ -18,3 +18,4 @@ ignore:
   - config.ld
   - docs
   - libs
+  - release-please-config.json
