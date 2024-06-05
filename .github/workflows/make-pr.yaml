@@ -18,16 +18,6 @@ jobs:
     needs: release-please
     runs-on: ubuntu-latest
     steps:
-      # - name: automerge
-      #   uses: pascalgn/automerge-action@v0.14.3
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     MERGE_LABELS: "autorelease: pending"
-      #     UPDATE_LABELS: "autorelease: pending"
-      #     MERGE_METHOD: "merge"
-      #     # MERGE_COMMIT_MESSAGE: "Automatic merge of successful PR #{pullRequest.number}"
-      #     MERGE_FORKS: "false"
-      #     LOG: "DEBUG"
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -43,7 +33,8 @@ jobs:
             git fetch origin pull/$PR_NUMBER/head:pr-$PR_NUMBER
             git checkout master
             git merge --no-ff pr-$PR_NUMBER
-            git push origin master
+            git fetch --tags
+            git push origin master --tags
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
