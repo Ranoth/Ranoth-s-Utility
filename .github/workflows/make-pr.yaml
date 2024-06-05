@@ -16,7 +16,6 @@ jobs:
           release-type: simple
   automerge:
     needs: release-please
-    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
