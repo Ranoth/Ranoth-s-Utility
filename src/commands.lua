@@ -15,7 +15,7 @@ local Commands = RanothUtils:NewModule("Commands")
 
 --- prints the help message for the addon's slash commands
 local function printHelp()
-    Printer:Print("Available commands:")
+    Printer:Print("Available commands")
     Printer:Print("|cffffff00/ranu toggledebug|r - Toggles debug mode")
     Printer:Print("|cffffff00/ranu swlang|r - Switches the language of the chat box")
     Printer:Print("|cffffff00/ranu openeggs|r - Opens all Brightly Colored Eggs in your bags")
