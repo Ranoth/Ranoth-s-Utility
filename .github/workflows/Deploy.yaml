@@ -5,14 +5,14 @@ on:
     branches:
       - master
     types:
-      - closed
+      # - closed
       - labeled
   workflow_dispatch:
 
 jobs:
   post_pr:
     runs-on: ubuntu-latest
-    if: contains(toJson(github.event.pull_request.labels.*.name), 'autorelease: tagged')
+    if: "${{ github.event.label.name == 'autorelease: tagged' }}"
 
     steps:
       - uses: actions/checkout@v2
