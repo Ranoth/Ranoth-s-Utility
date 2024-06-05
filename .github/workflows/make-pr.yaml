@@ -26,4 +26,4 @@ jobs:
           MERGE_METHOD: "merge"
           MERGE_COMMIT_MESSAGE: "Automatic merge of successful PR #{pullRequest.number}"
           MERGE_FORKS: "false"
-          UPDATE_LABELS: "autorelease: tagged"
+          # UPDATE_LABELS: "autorelease: tagged"
