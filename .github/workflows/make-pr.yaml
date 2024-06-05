@@ -23,7 +23,7 @@ jobs:
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MERGE_LABELS: "autorelease: pending"
-          MERGE_METHOD: "squash"
+          MERGE_METHOD: "merge"
           MERGE_COMMIT_MESSAGE: "Automatic merge of successful PR #{pullRequest.number}"
           MERGE_FORKS: "false"
           UPDATE_LABELS: "autorelease: merged"
