@@ -3,9 +3,7 @@ name: Package and Release
 on:
   release:
     types:
-      # - created
       - released
-      # - published
 
 jobs:
   post_pr:

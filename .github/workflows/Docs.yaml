@@ -1,7 +1,7 @@
 name: LDoc
 on:
   workflow_run:
-    workflows: ["Deploy"]
+    workflows: ["Package and Release"]
     types:
       completed
   workflow_dispatch:
