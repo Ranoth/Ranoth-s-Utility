@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.14](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.5.13...v1.5.14) (2024-06-05)
+
+
+### Bug Fixes
+
+* ci test deploy ([646e06b](https://github.com/Ranoth/Ranoth-s-Utility/commit/646e06b63c8ebd52f0244693152e8fb866f99806))
+
 ## [1.5.13](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.5.12...v1.5.13) (2024-06-05)
 
 
