@@ -1,22 +1,13 @@
 name: automerge
 
 on:
-  pull_request:
+  pull_request_target:
     types:
-      - labeled
-      - unlabeled
-      - synchronize
       - opened
-      - edited
-      - ready_for_review
-      - reopened
-      - unlocked
+      - labeled
   pull_request_review:
     types:
       - submitted
-  check_suite:
-    types:
-      - completed
 
 jobs:
   automerge:
