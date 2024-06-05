@@ -18,9 +18,11 @@ jobs:
     needs: release-please
     runs-on: ubuntu-latest
     steps:
+      - name: Wait for PR to be ready
+        run: sleep 30
       - name: automerge
         uses: pascalgn/automerge-action@v0.14.3
-        env: 
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           UPDATE_LABELS: "autorelease: pending"
           MERGE_LABELS: "autorelease: pending"
