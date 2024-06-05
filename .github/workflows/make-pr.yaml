@@ -20,8 +20,8 @@ jobs:
     steps:
       - name: automerge
         uses: pascalgn/automerge-action@v0.14.3
-        with:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MERGE_LABELS: "autorelease: pending"
           MERGE_METHOD: "squash"
           MERGE_COMMIT_MESSAGE: "Automatic merge of successful PR #{pullRequest.number}"
