@@ -21,7 +21,7 @@ jobs:
         run: |
           VERSION="v$(cat version.txt)"
           sed -i "s/## Version: .*/## Version: $VERSION/" "Ranoth's utility.toc"
-          echo "::set-output name=version::$VERSION"
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
       - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
@@ -42,7 +42,7 @@ jobs:
         id: get_addon_name
         run: |
           ADDON_NAME=$(cat ./build/addonName.txt)
-          echo "::set-output name=addonname::$ADDON_NAME"
+          echo "ADDONNAME=$ADDON_NAME" >> "$GITHUB_OUTPUT"
       - name: Get latest release
         id: get_release
         env:
@@ -52,30 +52,30 @@ jobs:
         #   echo "RELEASE_URL=$RELEASE_URL" >> $GITHUB_ENV
         run: |
           RELEASE_URL=$(gh api repos/:owner/:repo/releases/latest --jq .upload_url)
-          echo "::set-output name=release_url::$RELEASE_URL"
+          echo "RELEASE_URL=$RELEASE_URL" >> "$GITHUB_OUTPUT"
           LATEST_RELEASE_ID=$(gh api repos/:owner/:repo/releases/latest --jq .id)
-          echo "::set-output name=latest_release_id::$LATEST_RELEASE_ID"
+          echo "latest_release_id=$LATEST_RELEASE_ID" >> "$GITHUB_OUTPUT"
           RELEASE_JSON=$(curl --header "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/releases/$LATEST_RELEASE_ID")
           RELEASE_BODY=$(echo $RELEASE_JSON | jq -r .body)
-          echo "::set-output name=release_body::${RELEASE_BODY//$'\n'/%0A}"
+          echo "RELEASE_BODY=${RELEASE_BODY//$'\n'/%0A}" >> "$GITHUB_OUTPUT"
       - name: Attach built addon to release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
-          upload_url: ${{ steps.get_release.outputs.release_url }}
-          asset_path: ./build/${{ steps.get_addon_name.outputs.addonname }}.zip
-          asset_name: ${{ steps.get_addon_name.outputs.addonname }}.zip
+          upload_url: ${{ steps.get_release.outputs.RELEASE_URL }}
+          asset_path: ./build/${{ steps.get_addon_name.outputs.ADDONNAME }}.zip
+          asset_name: ${{ steps.get_addon_name.outputs.ADDONNAME }}.zip
           asset_content_type: application/zip
 
       - name: Upload to CurseForge
         uses: itsmeow/curseforge-upload@v3
         with:
-          file_path: "./build/${{ steps.get_addon_name.outputs.addonname }}.zip"
+          file_path: "./build/${{ steps.get_addon_name.outputs.ADDONNAME }}.zip"
           game_endpoint: "wow"
           project_id: "1000615"
-          display_name: ${{ steps.get_version.outputs.version }}
+          display_name: ${{ steps.get_version.outputs.VERSION }}
           token: ${{ secrets.CF_API_KEY }}
-          changelog: ${{ steps.get_release.outputs.release_body }}
+          changelog: ${{ steps.get_release.outputs.RELEASE_BODY }}
           changelog_type: "markdown"
           game_versions: "10.2.7"
