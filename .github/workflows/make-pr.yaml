@@ -14,37 +14,3 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
-
-  automerge:
-    needs: release-please
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup GitHub CLI
-        run: echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
-
-      - name: Merge PR
-        run: |
-          PR_NUMBER=$(gh pr list --label "autorelease: pending" --json number -q '.[0].number')
-          if [ -n "$PR_NUMBER" ]; then
-            gh pr merge $PR_NUMBER --merge
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  release:
-    needs: automerge
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ needs.release-please.outputs.tag_name }}
-          release_name: Release ${{ needs.release-please.outputs.tag_name }}
-          draft: false
-          prerelease: false
