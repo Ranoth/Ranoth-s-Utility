@@ -33,8 +33,7 @@ jobs:
             git fetch origin pull/$PR_NUMBER/head:pr-$PR_NUMBER
             git checkout master
             git merge --no-ff pr-$PR_NUMBER
-            git fetch --tags
-            git push origin master --tags
+            git push origin master
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
