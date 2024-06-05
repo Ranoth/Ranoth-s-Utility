@@ -16,6 +16,7 @@ jobs:
           release-type: simple
   automerge:
     needs: release-please
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
