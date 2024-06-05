@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.15](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.5.14...v1.5.15) (2024-06-05)
+
+
+### Bug Fixes
+
+* dopzpoqf ([cc3464a](https://github.com/Ranoth/Ranoth-s-Utility/commit/cc3464ab261677309e0b327e8d3b6bf580353ddd))
+
 ## [1.5.14](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.5.13...v1.5.14) (2024-06-05)
 
 
