@@ -1,18 +1,20 @@
 name: Package and Release
 
 on:
-  pull_request:
-    branches:
-      - master
+  # pull_request:
+  #   branches:
+  #     - master
+  #   types:
+  #     - closed
+  #     - labeled
+  release:
     types:
-      - closed
-      - labeled
+      - released
   workflow_dispatch:
 
 jobs:
   post_pr:
     runs-on: ubuntu-latest
-    if: "${{ github.event.label.name == 'autorelease: tagged' }}"
 
     steps:
       - uses: actions/checkout@v2
