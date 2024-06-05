@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.12](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.5.11...v1.5.12) (2024-06-05)
+
+
+### Bug Fixes
+
+* fuiheisfu ([0902aa7](https://github.com/Ranoth/Ranoth-s-Utility/commit/0902aa76effb0b0580eb7bf72ab005e05ad29880))
+
 ## [1.5.11](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.5.10...v1.5.11) (2024-06-05)
 
 
