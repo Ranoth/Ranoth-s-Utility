@@ -5,7 +5,7 @@ on:
       - master
 
 jobs:
-  make-pr:
+  release-please:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -14,4 +14,16 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
-          skip-github-release: true
+  automerge:
+    needs: release-please
+    runs-on: ubuntu-latest
+    steps:
+      - name: automerge
+        uses: pascalgn/automerge-action@v0.14.3
+        with:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_LABELS: "autorelease: pending"
+          MERGE_METHOD: "squash"
+          MERGE_COMMIT_MESSAGE: "Automatic merge of successful PR #{pullRequest.number}"
+          MERGE_FORKS: "false"
+          UPDATE_LABELS: "autorelease: merged"

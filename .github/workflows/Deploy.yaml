@@ -14,6 +14,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: check_if_autorelease
+        id: check_if_autorelease
+        run: |
+          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          LABELS=$(gh pr view $PR_NUMBER --json labels -q '.labels.nodes[].name')
+          if echo "$LABELS" | grep -q "autorelease: tagged"; then
+            echo "::set-output name=has_autorelease_label::true"
+          else
+            echo "::set-output name=has_autorelease_label::false"
+            exit 1
+          fi
+        env: 
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Update version in .toc file
         id: get_version
         run: |
