@@ -5,6 +5,7 @@ on:
     branches:
       - master
     types:
+      - closed
       - labeled
   workflow_dispatch:
 
