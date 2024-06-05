@@ -7,13 +7,14 @@ on:
   #   types:
   #     - closed
   #     - labeled
-  create:
+  push:
+    tags:
+      - '*'
   workflow_dispatch:
 
 jobs:
   post_pr:
     runs-on: ubuntu-latest
-    if: github.event.ref_type == 'tag'
 
     steps:
       - uses: actions/checkout@v2
