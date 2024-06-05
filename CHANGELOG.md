@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.2](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.5.1...v1.5.2) (2024-06-05)
+
+
+### Bug Fixes
+
+* axe the whole auto merge thing, its not working properly ([56e6793](https://github.com/Ranoth/Ranoth-s-Utility/commit/56e67935ee61ec7affb129634c58892f524d6c0b))
+
 ## [1.5.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.5.0...v1.5.1) (2024-06-05)
 
 
