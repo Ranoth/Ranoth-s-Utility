@@ -79,14 +79,14 @@ jobs:
           asset_name: ${{ steps.get_addon_name.outputs.addonname }}.zip
           asset_content_type: application/zip
 
-      # - name: Upload to CurseForge
-      #   uses: itsmeow/curseforge-upload@v3
-      #   with:
-      #     file_path: "./build/${{ steps.get_addon_name.outputs.addonname }}.zip"
-      #     game_endpoint: "wow"
-      #     project_id: "1000615"
-      #     display_name: ${{ steps.get_version.outputs.version }}
-      #     token: ${{ secrets.CF_API_KEY }}
-      #     changelog: ${{ steps.get_release.outputs.release_body }}
-      #     changelog_type: "markdown"
-      #     game_versions: "10.2.7"
+      - name: Upload to CurseForge
+        uses: itsmeow/curseforge-upload@v3
+        with:
+          file_path: "./build/${{ steps.get_addon_name.outputs.addonname }}.zip"
+          game_endpoint: "wow"
+          project_id: "1000615"
+          display_name: ${{ steps.get_version.outputs.version }}
+          token: ${{ secrets.CF_API_KEY }}
+          changelog: ${{ steps.get_release.outputs.release_body }}
+          changelog_type: "markdown"
+          game_versions: "10.2.7"
