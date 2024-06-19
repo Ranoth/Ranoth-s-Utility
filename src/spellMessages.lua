@@ -226,7 +226,7 @@ function SpellMessages:MakeSpellMessageDb()
         [20707] = SpellMessage:new(20707, false, "", "", "", "", "", false, true),                         -- Soulstone, No Item => messages are decided in spellMessageToString
         [187748] = SpellMessage:new(187748, 127770, "Placing a", "", "place a", "", "placed a", false),    -- Brazier of Awakening, Brazier of Awakening
         [67826] = SpellMessage:new(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
-        [256153] = SpellMessage:new(256153, 153647, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Tome of the Quiet Mind
+        [256153] = SpellMessage:new(256153, 153597, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Deployable Attire Rearranger
         [384908] = SpellMessage:new(384908, 198268, "Placing a", "", "place a", "", "placed a", false),    -- Portable Tinker's Workbench, Portable Tinker's Workbench
         [299127] = SpellMessage:new(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
         [126459] = SpellMessage:new(126459, 87214, "", "", "", "", "placed a", false),                     -- Blingtron 4000, Blingtron 4000
