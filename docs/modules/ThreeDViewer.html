@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Ranoth's Utility documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/AutoOpen.html">AutoOpen</a></li>
+  <li><a href="../modules/Commands.html">Commands</a></li>
+  <li><a href="../modules/Debug.html">Debug</a></li>
+  <li><a href="../modules/Init.html">Init</a></li>
+  <li><a href="../modules/Printer.html">Printer</a></li>
+  <li><a href="../modules/SpellMessages.html">SpellMessages</a></li>
+  <li><strong>ThreeDViewer</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>ThreeDViewer</code></h1>
+<p>A module to handle the 3D viewer for the addon.</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#modelViewer:SetRotation">modelViewer:SetRotation (deltaX)</a></td>
+	<td class="summary">Set the facing of the model viewer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#modelViewer:UpdatePosition">modelViewer:UpdatePosition (x, y, z)</a></td>
+	<td class="summary">Update the position of the model viewer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#modelViewer:UpdatePositionZoom">modelViewer:UpdatePositionZoom (x, y, z)</a></td>
+	<td class="summary">Update the position and zoom of the model viewer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#modelWidget:Release">modelWidget:Release ()</a></td>
+	<td class="summary">Release the model widget.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#RanothUtils:CreateThreeDViewerFrame">RanothUtils:CreateThreeDViewerFrame (unitGUID, unitID)</a></td>
+	<td class="summary">Create a frame for the 3D viewer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#RanothUtils:UnitPopup_ShowMenu">RanothUtils:UnitPopup_ShowMenu (dropdownMenu, which, unitID, name, userData)</a></td>
+	<td class="summary">Show the 3D viewer in the dropdown menu.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "modelViewer:SetRotation"></a>
+    <strong>modelViewer:SetRotation (deltaX)</strong>
+    </dt>
+    <dd>
+    Set the facing of the model viewer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">deltaX</span>
+         number
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "modelViewer:UpdatePosition"></a>
+    <strong>modelViewer:UpdatePosition (x, y, z)</strong>
+    </dt>
+    <dd>
+    Update the position of the model viewer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         number
+        </li>
+        <li><span class="parameter">y</span>
+         number
+        </li>
+        <li><span class="parameter">z</span>
+         number
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "modelViewer:UpdatePositionZoom"></a>
+    <strong>modelViewer:UpdatePositionZoom (x, y, z)</strong>
+    </dt>
+    <dd>
+    Update the position and zoom of the model viewer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         number
+        </li>
+        <li><span class="parameter">y</span>
+         number
+        </li>
+        <li><span class="parameter">z</span>
+         number
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "modelWidget:Release"></a>
+    <strong>modelWidget:Release ()</strong>
+    </dt>
+    <dd>
+    Release the model widget.  Needed because the model viewer is not an AceGUI widget.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "RanothUtils:CreateThreeDViewerFrame"></a>
+    <strong>RanothUtils:CreateThreeDViewerFrame (unitGUID, unitID)</strong>
+    </dt>
+    <dd>
+    Create a frame for the 3D viewer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">unitGUID</span>
+         string
+        </li>
+        <li><span class="parameter">unitID</span>
+         any
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "RanothUtils:UnitPopup_ShowMenu"></a>
+    <strong>RanothUtils:UnitPopup_ShowMenu (dropdownMenu, which, unitID, name, userData)</strong>
+    </dt>
+    <dd>
+    Show the 3D viewer in the dropdown menu.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">dropdownMenu</span>
+         any
+        </li>
+        <li><span class="parameter">which</span>
+         string
+        </li>
+        <li><span class="parameter">unitID</span>
+         any
+        </li>
+        <li><span class="parameter">name</span>
+         string
+        </li>
+        <li><span class="parameter">userData</span>
+         any
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/lunarmodules/LDoc">LDoc 1.5.0</a></i>
+<i style="float:right;">Last updated 2024-06-29 04:41:23 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
