@@ -17,8 +17,9 @@ local which_list = {
 
 --- Create a model widget for the 3D viewer.
 --- @param unitID any
+--- @param displayID number?
 --- @return unknown
-local function CreateModelWidget(unitID)
+local function CreateModelWidget(unitID, displayID)
     local modelWidget = RanothUtilsGUI:Create("SimpleGroup")
     modelWidget:SetFullWidth(true)
     modelWidget:SetFullHeight(true)
@@ -26,7 +27,11 @@ local function CreateModelWidget(unitID)
 
     local modelViewer = CreateFrame("PlayerModel", nil, modelWidget.frame)
     modelViewer:SetAllPoints()
-    modelViewer:SetUnit(unitID)
+    if not displayID then
+        modelViewer:SetUnit(unitID)
+    elseif displayID then
+        modelViewer:SetDisplayInfo(displayID)
+    end
 
     modelViewer.x = 0
     modelViewer.y = 0
@@ -104,24 +109,33 @@ end
 --- Create a frame for the 3D viewer.
 --- @param unitGUID string
 --- @param unitID any
-function RanothUtils:CreateThreeDViewerFrame(unitGUID, unitID)
-    if not unitGUID then
-        Debug:Print("Error: unitGUID is nil in CreateThreeDViewerFrame")
-        return
+--- @param displayID number?
+function RanothUtils:CreateThreeDViewerFrame(unitGUID, unitID, displayID)
+    local unitName
+    if not displayID then
+        if not unitGUID then
+            Debug:Print("Error: unitGUID is nil in CreateThreeDViewerFrame")
+            return
+        end
+
+        _, _, _, _, _, unitName = GetPlayerInfoByGUID(unitGUID)
+        if unitName == nil then unitName = UnitName(unitID) end
     end
 
-    local _, _, _, _, _, unitName = GetPlayerInfoByGUID(unitGUID)
-    if unitName == null then unitName = UnitName(unitID) end
-    
-
     local frame = RanothUtilsGUI:Create("Frame")
-    frame:SetTitle(unitName or unitGUID)
-    frame:SetStatusText(unitGUID)
+    if not displayID then
+        frame:SetTitle(unitName or unitGUID)
+        frame:SetStatusText("GUID: " .. unitGUID)
+    else
+        frame:SetTitle("Name unavailable")
+        frame:SetStatusText("Display ID: " .. displayID)
+    end
     frame:SetHeight(800)
     frame:SetWidth(700)
     frame:SetLayout("Flow")
 
-    local modelWidget = CreateModelWidget(unitID)
+    local modelWidget
+    if not displayID then modelWidget = CreateModelWidget(unitID) else modelWidget = CreateModelWidget(nil, displayID) end
     frame:AddChild(modelWidget)
 
     frame:SetCallback("OnClose", function(widget)
