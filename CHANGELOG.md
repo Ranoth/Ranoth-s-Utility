@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.6.0...v1.7.0) (2024-06-29)
+
+
+### Features
+
+* Model viewer can be opened from an NPC's Display ID ([8f55278](https://github.com/Ranoth/Ranoth-s-Utility/commit/8f5527880ef4cde4439833ca9c8d8ac2f546d846))
+
 ## [1.6.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.5.20...v1.6.0) (2024-06-29)
 
 
