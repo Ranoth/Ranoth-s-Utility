@@ -22,6 +22,7 @@ local function printHelp()
     Printer:Print("|cffffff00/ranu openall|r - Opens all containers in your bags")
     Printer:Print("|cffffff00/ranu calc|r |cff00ff00<expression>|r - Evaluates a mathematical expression")
     Printer:Print("|cffffff00/ranu autoopen|r - Toggles auto-opening containers in your bags")
+    Printer:Print("|cffffff00/ranu view|r - Opens a 3D viewer of the unit under your mouse")
 end
 
 --- Registers additional slash commands for the addon
@@ -72,7 +73,11 @@ function Commands:RegisterAdditionalSlashCommands()
                 local result = loadstring("return " .. expression)()
                 Printer:Print(result)
             end,
-            ["autoopen"] = AutoOpen.Toggle
+            ["autoopen"] = AutoOpen.Toggle,
+            ["view"] = function()
+                local unit = "mouseover"
+                RanothUtils:CreateThreeDViewerFrame(UnitGUID(unit), unit)
+            end
         }
         if commandList[command] then
             commandList[command](args)

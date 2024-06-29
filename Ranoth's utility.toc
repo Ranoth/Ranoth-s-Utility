@@ -14,4 +14,5 @@ src\debug.lua
 src\printer.lua
 src\spellMessages.lua
 src\autoOpen.lua
+src\threeDViewer.lua
 src\commands.lua
