@@ -55,7 +55,7 @@ jobs:
           echo "latest_release_id=$LATEST_RELEASE_ID" >> "$GITHUB_OUTPUT"
           RELEASE_JSON=$(curl --header "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/releases/$LATEST_RELEASE_ID")
           RELEASE_BODY=$(echo $RELEASE_JSON | jq -r .body)
-          # echo "RELEASE_BODY=${RELEASE_BODY//$'\n'/%0A}" >> "$GITHUB_OUTPUT"
+          echo "RELEASE_BODY=${RELEASE_BODY//$'\n'/%0A}" >> "$GITHUB_OUTPUT"
       - name: Attach built addon to release
         uses: actions/upload-release-asset@v1
         env:
