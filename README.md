@@ -17,6 +17,8 @@ Kind of like **LeatrixPlus** with features **I** specifically want.
 - Slash command to calculate an expression (e.g. /calc 1 + 1 = 2).
 - Warlock and engineer utility spells trigger a chat response to advertize their availability to other players.
 - Will detect an interrupt from the player or its pet and will trigger a chat response to advertize successfully interrupted spells by link in chat.
+- 3D Model viewer for NPCs.
+- Toggle on or of automatically opening looted containers.
 
 > TODO:
 >
@@ -32,8 +34,9 @@ Kind of like **LeatrixPlus** with features **I** specifically want.
   - /ranu openeggs - Opens all Noblegarden eggs in your inventory
   - /ranu autoopen - Toggle automation to open all containers in a bag when a container is looted (depending on which bag the container is in)
   - /ranu swlang - Switches spoken language between all available languages for your character
-  - /ranu calc - Calculates an expression and prints the result (e.g. /calc 1 + 1, /calc 2 \* 2, /calc 2 / 2)
+  - /ranu calc *expression* - Calculates an expression and prints the result (e.g. /ranu calc 1 + 1, /ranu calc 2 \* 2, /ranu calc 2 / 2)
   - /ranu toggledebug - Toggles debug mode on and off (prints in a "Debug" chat tab in the default chat frame instead of "General")
+  - /ranu view *(optional)displayID* - Displays the 3D model viewer for the NPC with the given displayID (if no displayID is given, it will display the model of the NPC that is mouseovered)
 
 ## Support
 
