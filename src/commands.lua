@@ -30,6 +30,8 @@ function Commands:RegisterAdditionalSlashCommands()
             printHelp()
             return
         end
+
+        --- @type table<string, function>
         local commandList = {
             ["help"] = printHelp,
             ["toggledebug"] = Debug.Toggle,
