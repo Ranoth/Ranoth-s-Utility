@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.12](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.7.11...v1.7.12) (2024-06-29)
+
+
+### Bug Fixes
+
+* ci ([2ecfb5c](https://github.com/Ranoth/Ranoth-s-Utility/commit/2ecfb5c0536f2c5def32ff3401789f7ba5d5de71))
+
 ## [1.7.11](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.7.10...v1.7.11) (2024-06-29)
 
 
