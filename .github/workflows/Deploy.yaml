@@ -56,7 +56,6 @@ jobs:
           RELEASE_JSON=$(curl --header "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/releases/$LATEST_RELEASE_ID")
           RELEASE_BODY=$(echo $RELEASE_JSON | jq -r .body)
           # echo "RELEASE_BODY=${RELEASE_BODY//$'\n'/%0A}" >> "$GITHUB_OUTPUT"
-          echo "RELEASE_BODY=${RELEASE_BODY}" >> "$GITHUB_OUTPUT"
       - name: Attach built addon to release
         uses: actions/upload-release-asset@v1
         env:
@@ -67,13 +66,6 @@ jobs:
           asset_name: ${{ steps.get_addon_name.outputs.ADDONNAME }}.zip
           asset_content_type: application/zip
 
-      # - name: Prepare changelog for CurseForge
-      #   id: prepare_changelog
-      #   run: |
-      #     DECODED_CHANGELOG="${{ steps.get_release.outputs.RELEASE_BODY }}"
-      #     DECODED_CHANGELOG="${DECODED_CHANGELOG//$'%0A'/$'\n'}"
-      #     echo "changelog=${DECODED_CHANGELOG}" >> "$GITHUB_OUTPUT"
-
       - name: Upload to CurseForge
         uses: itsmeow/curseforge-upload@v3
         with:
@@ -82,7 +74,6 @@ jobs:
           project_id: "1000615"
           display_name: ${{ steps.get_version.outputs.VERSION }}
           token: ${{ secrets.CF_API_KEY }}
-          # changelog: ${{ steps.prepare_changelog.outputs.changelog }}
           changelog: ${{ steps.get_release.outputs.RELEASE_BODY }}
           changelog_type: "markdown"
           game_versions: "10.2.7"
