@@ -55,19 +55,12 @@ jobs:
           echo "latest_release_id=$LATEST_RELEASE_ID" >> "$GITHUB_OUTPUT"
           RELEASE_JSON=$(curl --header "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/releases/$LATEST_RELEASE_ID")
           RELEASE_BODY=$(echo $RELEASE_JSON | jq -r .body)
-          RELEASE_BODY=$(echo "$RELEASE_BODY" | iconv -f utf-8 -t utf-8 -c)
-          printf -v ESCAPED_RELEASE_BODY "%q" "$RELEASE_BODY"
-          echo "RELEASE_BODY=$ESCAPED_RELEASE_BODY" >> "$GITHUB_OUTPUT"
-        
-      - name: Prepare Changelog
-        id: prepare_changelog
-        run: |
-          # Example of unescaping newlines; adjust according to your escaping method
-          UNESCAPED_RELEASE_BODY=$(echo "${{ steps.get_release.outputs.RELEASE_BODY }}" | sed 's/\\n/\n/g')
-          echo "UNESCAPED_RELEASE_BODY<<EOF" >> $GITHUB_ENV
-          echo "$UNESCAPED_RELEASE_BODY" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-          
+          {
+            echo 'RELEASE_BODY<<EOF'
+            echo $RELEASE_BODY
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
       - name: Attach built addon to release
         uses: actions/upload-release-asset@v1
         env:
@@ -86,6 +79,6 @@ jobs:
           project_id: "1000615"
           display_name: ${{ steps.get_version.outputs.VERSION }}
           token: ${{ secrets.CF_API_KEY }}
-          changelog: ${{ env.UNESCAPED_RELEASE_BODY }}
+          changelog: ${{ steps.get_release.outputs.RELEASE_BODY }}
           changelog_type: "markdown"
           game_versions: "10.2.7"
