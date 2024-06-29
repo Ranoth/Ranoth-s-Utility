@@ -1,9 +1,6 @@
 --- Registers additional slash commands for the addon and some utility without strings attached.
 --- @module "Commands"
 
--- TODO: Change the way commands are registered to use the AceConsole-3.0 library.
--- TODO: use /ranu as a prefix instead of commands without a prefix to minimize chances of conflicts with other addons.
-
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 
