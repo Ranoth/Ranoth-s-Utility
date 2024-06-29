@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.5.20...v1.6.0) (2024-06-29)
+
+
+### Features
+
+* Implement model viewer ([24627e7](https://github.com/Ranoth/Ranoth-s-Utility/commit/24627e7ab99dedd2536868ae44b14f12d92afd00))
+
+
+### Bug Fixes
+
+* Incorrect ID for Deployable Attire Rearranger in Spell Messages module ([235bc20](https://github.com/Ranoth/Ranoth-s-Utility/commit/235bc201ca0992c2f80e8458774fdac5487a026f))
+
 ## [1.5.20](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.5.19...v1.5.20) (2024-06-05)
 
 
