@@ -1,3 +1,5 @@
+package-as: RanothsUtility
+
 externals:
   LibStub: https://repos.wowace.com/wow/libstub/trunk
   CallbackHandler-1.0: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
@@ -22,4 +24,3 @@ ignore:
   - config.ld
   - docs
   - version.txt
-  - "*.md"

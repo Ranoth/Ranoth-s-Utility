@@ -24,23 +24,38 @@ jobs:
           echo "RELEASE_URL=$RELEASE_URL" >> "$GITHUB_OUTPUT"
 
           LATEST_RELEASE_ID=$(gh api repos/:owner/:repo/releases/latest --jq .id)
-          echo "latest_release_id=$LATEST_RELEASE_ID" >> "$GITHUB_OUTPUT"
+          echo "LATEST_RELEASE_ID=$LATEST_RELEASE_ID" >> "$GITHUB_OUTPUT"
+
+          LATEST_RELEASE_TAG=$(gh api repos/:owner/:repo/releases/latest --jq .tag_name)
+          echo "LATEST_RELEASE_TAG=$LATEST_RELEASE_TAG" >> "$GITHUB_OUTPUT"
 
           RELEASE_JSON=$(curl --header "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/releases/$LATEST_RELEASE_ID")
           RELEASE_BODY=$(echo "$RELEASE_JSON" | jq -r .body)
 
           echo "$RELEASE_BODY" > "RELEASE.md"
 
-      - name: Package and release
+      - name: Update version in toc
+        id: update_toc
+        run: |
+          VERSION="v$(cat version.txt)"
+          toc_files=$(find . -type f -name "*.toc")
+          for toc_file in ${toc_files[@]}; do
+            sed -i "s/## Version: .*/## Version: $VERSION/" "$toc_file"
+          done
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Package addon
         uses: BigWigsMods/packager@v2
         env:
           GITHUB_OAUTH: ${{ secrets.PAT }}
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
+        with:
+          args: -n "{package-name}-${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}:${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}"
 
       - name: Get zip name
         id: get_zip_name
         run: |
-          ZIP_NAME=$(basename $(ls release/*.zip) .zip)
+          ZIP_NAME=$(basename $(ls .release/*.zip) .zip)
           echo "ZIP_NAME=$ZIP_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Attach built addon to release
@@ -49,6 +64,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
           upload_url: ${{ steps.get_release.outputs.RELEASE_URL }}
-          asset_path: ./release/${{ steps.get_zip_name.outputs.ZIP_NAME }}.zip
+          asset_path: .release/${{ steps.get_zip_name.outputs.ZIP_NAME }}.zip
           asset_name: ${{steps.get_zip_name.outputs.ZIP_NAME}}
           asset_content_type: application/zip
