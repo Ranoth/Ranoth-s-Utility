@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
           ref: refs/heads/master
@@ -33,16 +33,17 @@ jobs:
           RELEASE_BODY=$(echo "$RELEASE_JSON" | jq -r .body)
 
           echo "$RELEASE_BODY" > "RELEASE.md"
-
       - name: Update version in toc
         id: update_toc
         run: |
           VERSION="v$(cat version.txt)"
-          toc_files=$(find . -type f -name "*.toc")
+          mapfile -d '' toc_files < <(find . -maxdepth 1 -name "*.toc" -print0)
           for toc_file in ${toc_files[@]}; do
             sed -i "s/## Version: .*/## Version: $VERSION/" "$toc_file"
           done
           echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+        shell: /usr/bin/bash -e {0}
+        
       - name: Commit and push changes
         run: |
           git config user.name 'github-actions[bot]'
