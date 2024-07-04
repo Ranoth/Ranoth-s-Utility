@@ -32,7 +32,8 @@ jobs:
           RELEASE_JSON=$(curl --header "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/releases/$LATEST_RELEASE_ID")
           RELEASE_BODY=$(echo "$RELEASE_JSON" | jq -r .body)
 
-          echo "$RELEASE_BODY" > "RELEASE.md"
+          echo "$RELEASE_BODY" >> RELEASE.md
+          cat RELEASE.md
       - name: Update version in toc
         id: update_toc
         run: |
@@ -42,7 +43,6 @@ jobs:
             sed -i "s/## Version: .*/## Version: $VERSION/" "$toc_file"
           done
           echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-        shell: /usr/bin/bash -e {0}
         
       - name: Commit and push changes
         run: |
@@ -72,5 +72,5 @@ jobs:
         with:
           upload_url: ${{ steps.get_release.outputs.RELEASE_URL }}
           asset_path: .release/${{ steps.get_zip_name.outputs.ZIP_NAME }}.zip
-          asset_name: ${{steps.get_zip_name.outputs.ZIP_NAME}}
+          asset_name: "${{steps.get_zip_name.outputs.ZIP_NAME}}.zip"
           asset_content_type: application/zip
