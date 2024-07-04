@@ -53,9 +53,3 @@ jobs:
         env:
           GITHUB_OAUTH: ${{ secrets.PAT }}
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
-
-      - name: Get zip name
-        id: get_zip_name
-        run: |
-          ZIP_NAME=$(basename $(ls .release/*.zip) .zip)
-          echo "ZIP_NAME=$ZIP_NAME" >> "$GITHUB_OUTPUT"
