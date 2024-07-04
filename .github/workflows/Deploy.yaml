@@ -69,12 +69,12 @@ jobs:
           ZIP_NAME=$(basename $(ls .release/*.zip) .zip)
           echo "ZIP_NAME=$ZIP_NAME" >> "$GITHUB_OUTPUT"
 
-      - name: Attach built addon to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.RELEASE_URL }}
-          asset_path: .release/${{ steps.get_zip_name.outputs.ZIP_NAME }}.zip
-          asset_name: "${{steps.get_zip_name.outputs.ZIP_NAME}}.zip"
-          asset_content_type: application/zip
+      # - name: Attach built addon to release
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.PAT }}
+      #   with:
+      #     upload_url: ${{ steps.get_release.outputs.RELEASE_URL }}
+      #     asset_path: .release/${{ steps.get_zip_name.outputs.ZIP_NAME }}.zip
+      #     asset_name: "${{steps.get_zip_name.outputs.ZIP_NAME}}.zip"
+      #     asset_content_type: application/zip
