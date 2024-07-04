@@ -49,7 +49,7 @@ jobs:
           RELEASE_JSON=$(curl --header "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/releases/$LATEST_RELEASE_ID")
           RELEASE_BODY=$(echo "$RELEASE_JSON" | jq -r .body)
 
-          echo "$RELEASE_BODY" >> RELEASE.md
+          echo "$RELEASE_BODY" > RELEASE.md
 
       - name: Package addon
         uses: BigWigsMods/packager@v2
@@ -57,7 +57,7 @@ jobs:
           GITHUB_OAUTH: ${{ secrets.PAT }}
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
         with:
-          args: -n "{package-name}-${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}:${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}"
+          args: -r release -n "{package-name}-${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}:${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}"
 
       - name: Get zip name
         id: get_zip_name
@@ -69,7 +69,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
-          RELEASE: 1
         with:
           upload_url: ${{ steps.get_release.outputs.RELEASE_URL }}
           asset_path: .release/${{ steps.get_zip_name.outputs.ZIP_NAME }}.zip
