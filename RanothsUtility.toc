@@ -1,0 +1,18 @@
+## Interface: 100207
+## Title: |cffc66ff0Ranoth's Utility|r
+## Notes: A collection of things I want in the game.
+## Author: Ranoth_
+## Version: v1.7.13
+## DefaultState: Enabled
+## SavedVariables: RanothUtilityDB
+## X-Curse-Project-ID: 1000615
+
+embeds.xml
+
+src\init.lua
+src\debug.lua
+src\printer.lua
+src\spellMessages.lua
+src\autoOpen.lua
+src\threeDViewer.lua
+src\commands.lua
