@@ -2,7 +2,7 @@
 ## Title: |cffc66ff0Ranoth's Utility|r
 ## Notes: A collection of things I want in the game.
 ## Author: Ranoth_
-## Version: v1.7.18
+## Version: v1.7.19
 ## DefaultState: Enabled
 ## SavedVariables: RanothUtilityDB
 ## X-Curse-Project-ID: 1000615
