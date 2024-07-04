@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.7.27...v1.8.0) (2024-07-04)
+
+
+### Features
+
+* Now possible to toggle the model viewer button on or off ([15df77d](https://github.com/Ranoth/Ranoth-s-Utility/commit/15df77db9d7cbdb238b12f4904df4060ffb3f147))
+
 ## [1.7.27](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.7.26...v1.7.27) (2024-07-04)
 
 
