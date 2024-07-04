@@ -19,22 +19,15 @@ jobs:
           ref: refs/heads/master
           fetch-depth: 0
 
-      # - name: Update version in toc
-      #   id: update_toc
-      #   run: |
-      #     VERSION="v$(cat version.txt)"
-      #     mapfile -d '' toc_files < <(find . -maxdepth 1 -name "*.toc" -print0)
-      #     for toc_file in ${toc_files[@]}; do
-      #     sed -i "s/## Version: .*/## Version: $VERSION/" "$toc_file"
-      #     done
-      #     echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-
-      # - name: Commit and push changes
-      #   run: |
-      #     git config user.name 'github-actions[bot]'
-      #     git config user.email 'github-actions[bot]@users.noreply.github.com'
-      #     git commit -am "Update version in .toc file"
-      #     git push
+      - name: Update version in toc
+        id: update_toc
+        run: |
+          VERSION="v$(cat version.txt)"
+          mapfile -d '' toc_files < <(find . -maxdepth 1 -name "*.toc" -print0)
+          for toc_file in ${toc_files[@]}; do
+          sed -i "s/## Version: .*/## Version: $VERSION/" "$toc_file"
+          done
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Get latest release
         id: get_release
@@ -60,21 +53,9 @@ jobs:
         env:
           GITHUB_OAUTH: ${{ secrets.PAT }}
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
-        with:
-          args: -n "{package-name}-${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}:${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}"
 
       - name: Get zip name
         id: get_zip_name
         run: |
           ZIP_NAME=$(basename $(ls .release/*.zip) .zip)
           echo "ZIP_NAME=$ZIP_NAME" >> "$GITHUB_OUTPUT"
-
-      # - name: Attach built addon to release
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.PAT }}
-      #   with:
-      #     upload_url: ${{ steps.get_release.outputs.RELEASE_URL }}
-      #     asset_path: .release/${{ steps.get_zip_name.outputs.ZIP_NAME }}.zip
-      #     asset_name: "${{steps.get_zip_name.outputs.ZIP_NAME}}.zip"
-      #     asset_content_type: application/zip
