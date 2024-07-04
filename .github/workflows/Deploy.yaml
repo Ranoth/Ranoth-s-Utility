@@ -1,9 +1,12 @@
 name: Package and Release
 
 on:
-  release:
-    types:
-      - released
+  # release:
+  #   types:
+  #     - released
+  push:
+    tags:
+      - "v*"
 
 jobs:
   post_pr:
@@ -57,7 +60,7 @@ jobs:
           GITHUB_OAUTH: ${{ secrets.PAT }}
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
         with:
-          args: -r release -n "{package-name}-${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}:${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}"
+          args: -n "{package-name}-${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}:${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}"
 
       - name: Get zip name
         id: get_zip_name
