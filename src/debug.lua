@@ -4,6 +4,7 @@
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 local Debug = RanothUtils:NewModule("Debug")
+local Printer = RanothUtils:GetModule("Printer")
 
 local chatTabName = "Debug" -- replace with the name of your chat tab
 local chatFrameIndex = 1    -- replace with the index of your chat frame
@@ -39,7 +40,7 @@ function Debug:Toggle()
     else
         Debug:Enable()
     end
-    chatTab:AddMessage(Debug:IsEnabled() and "Debug mode enabled" or "Debug mode disabled")
+    Printer:Print(Debug:IsEnabled() and "Debug mode enabled" or "Debug mode disabled")
 end
 
 --- Print a message to the chat frame with the colorized addon's name prepended.

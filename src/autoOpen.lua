@@ -88,7 +88,6 @@ function AutoOpen:Toggle()
     else
         AutoOpen:Enable()
     end
-    Debug:Print("Toggled AutoOpen " .. (AutoOpen:IsEnabled() and "enabled" or "disabled"))
     Printer:Print("AutoOpen is now " .. (AutoOpen:IsEnabled() and "enabled" or "disabled"))
 end
 

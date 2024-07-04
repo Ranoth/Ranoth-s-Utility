@@ -4,6 +4,7 @@
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 local Debug = RanothUtils:GetModule("Debug")
+local Printer = RanothUtils:GetModule("Printer")
 local ThreeDViewer = RanothUtils:NewModule("ThreeDViewer")
 
 local RanothUtilsGUI = LibStub("AceGUI-3.0")
@@ -13,7 +14,6 @@ local which_list = {
     "SELF",
     "PET"
 }
-
 
 --- Create a model widget for the 3D viewer.
 --- @param unitID any
@@ -56,11 +56,11 @@ local function CreateModelWidget(unitID, displayID)
         self:SetPosition(self.x, self.y, self.z)
     end
 
-    --- Update the position and zoom of the model viewer.
+    --- Update the position of the model viewer quicker.
     --- @param x number
     --- @param y number
     --- @param z number
-    function modelViewer:UpdatePositionZoom(x, y, z)
+    function modelViewer:UpdatePositionFaster(x, y, z)
         self.x = self.x + (x * 0.2)
         self.y = self.y + (y * 0.02)
         self.z = self.z + (z * 0.02)
@@ -68,7 +68,7 @@ local function CreateModelWidget(unitID, displayID)
     end
 
     modelViewer:SetScript("OnMouseWheel", function(self, delta)
-        modelViewer:UpdatePositionZoom(delta, 0, 0)
+        modelViewer:UpdatePositionFaster(delta, 0, 0)
     end)
 
     local isDragging = false
@@ -110,7 +110,7 @@ end
 --- @param unitGUID string
 --- @param unitID any
 --- @param displayID number?
-function RanothUtils:CreateThreeDViewerFrame(unitGUID, unitID, displayID)
+function ThreeDViewer:CreateThreeDViewerFrame(unitGUID, unitID, displayID)
     local unitName
     if not displayID then
         if not unitGUID then
@@ -174,13 +174,38 @@ end
 --- @param name string
 --- @param userData any
 function RanothUtils:UnitPopup_ShowMenu(dropdownMenu, which, unitID, name, userData)
-    if not tContains(which_list, which) then return end
+    if not tContains(which_list, which) or not ThreeDViewer:IsEnabled() then return end
 
     addButton("View model", 1, function()
-        RanothUtils:CreateThreeDViewerFrame(UnitGUID(unitID), unitID)
+        ThreeDViewer:CreateThreeDViewerFrame(UnitGUID(unitID), unitID)
     end)
+end
+
+--- Toggle button on or off.
+function ThreeDViewer:Toggle()
+    if ThreeDViewer:IsEnabled() then
+        ThreeDViewer:Disable()
+    else
+        ThreeDViewer:Enable()
+    end
+    Printer:Print(ThreeDViewer:IsEnabled() and "3D Viewer button enabled" or "3D Viewer button disabled")
+end
+
+function ThreeDViewer:OnInitialize()
+    self.db = RanothUtils.db.profile.threeDViewer
+    if self.db then
+        self:Enable()
+    else
+        self:Disable()
+    end
 end
 
 function ThreeDViewer:OnEnable()
     RanothUtils:Hook("UnitPopup_ShowMenu", true)
+    RanothUtils.db.profile.threeDViewer = ThreeDViewer:IsEnabled()
+end
+
+function ThreeDViewer:OnDisable()
+    RanothUtils:Unhook("UnitPopup_ShowMenu")
+    RanothUtils.db.profile.threeDViewer = ThreeDViewer:IsEnabled()
 end

@@ -9,6 +9,7 @@ local defaults = {
         language = "enUS",
         debug = false,
         autoOpen = true,
+        threeDViewer = true,
     },
 }
 

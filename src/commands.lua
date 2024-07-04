@@ -7,6 +7,7 @@ local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 local AutoOpen = RanothUtils:GetModule("AutoOpen")
 local Printer = RanothUtils:GetModule("Printer")
 local Debug = RanothUtils:GetModule("Debug")
+local ThreeDViewer = RanothUtils:GetModule("ThreeDViewer")
 
 local Commands = RanothUtils:NewModule("Commands")
 
@@ -77,11 +78,12 @@ function Commands:RegisterAdditionalSlashCommands()
                 local arguments = input:match("view%s+(.+)")
                 if not arguments then
                     local unit = "mouseover"
-                    RanothUtils:CreateThreeDViewerFrame(UnitGUID(unit), unit)
+                    ThreeDViewer:CreateThreeDViewerFrame(UnitGUID(unit), unit)
                 else
-                    RanothUtils:CreateThreeDViewerFrame(nil, nil, tonumber(arguments))
+                    ThreeDViewer:CreateThreeDViewerFrame(nil, nil, tonumber(arguments))
                 end
-            end
+            end,
+            ["toggleviewer"] = ThreeDViewer.Toggle,
         }
         if commandList[command] then
             commandList[command](args)
