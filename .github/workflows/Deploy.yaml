@@ -17,6 +17,7 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           ref: refs/heads/master
+          fetch-depth: 0
 
       - name: Update version in toc
         id: update_toc
@@ -55,12 +56,12 @@ jobs:
           echo "$RELEASE_BODY" > RELEASE.md
 
       - name: Build addon
-        uses: BigWigsMods/packager@v2
+        uses: BigWigsMods/packager@master
         env:
           GITHUB_OAUTH: ${{ secrets.PAT }}
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
         with:
-          args: -g mainline -n "{package-name}-${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}:${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}"
+          args: -n "{package-name}-${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}:${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}"
 
       - name: Get zip name
         id: get_zip_name
