@@ -15,6 +15,23 @@ jobs:
           token: ${{ secrets.PAT }}
           ref: refs/heads/master
 
+      - name: Update version in toc
+        id: update_toc
+        run: |
+          VERSION="v$(cat version.txt)"
+          mapfile -d '' toc_files < <(find . -maxdepth 1 -name "*.toc" -print0)
+          for toc_file in ${toc_files[@]}; do
+          sed -i "s/## Version: .*/## Version: $VERSION/" "$toc_file"
+          done
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git commit -am "Update version in .toc file"
+          git push
+
       - name: Get latest release
         id: get_release
         env:
@@ -33,23 +50,6 @@ jobs:
           RELEASE_BODY=$(echo "$RELEASE_JSON" | jq -r .body)
 
           echo "$RELEASE_BODY" >> RELEASE.md
-          cat RELEASE.md
-      - name: Update version in toc
-        id: update_toc
-        run: |
-          VERSION="v$(cat version.txt)"
-          mapfile -d '' toc_files < <(find . -maxdepth 1 -name "*.toc" -print0)
-          for toc_file in ${toc_files[@]}; do
-            sed -i "s/## Version: .*/## Version: $VERSION/" "$toc_file"
-          done
-          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-        
-      - name: Commit and push changes
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -am "Update version in .toc file"
-          git push
 
       - name: Package addon
         uses: BigWigsMods/packager@v2
@@ -69,6 +69,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
+          RELEASE: 1
         with:
           upload_url: ${{ steps.get_release.outputs.RELEASE_URL }}
           asset_path: .release/${{ steps.get_zip_name.outputs.ZIP_NAME }}.zip
