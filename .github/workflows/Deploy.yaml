@@ -10,54 +10,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
           ref: refs/heads/master
-      - name: Update version in .toc file
-        id: get_version
-        run: |
-          VERSION="v$(cat version.txt)"
-          sed -i "s/## Version: .*/## Version: $VERSION/" "Ranoth's utility.toc"
-          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-      - name: Commit changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git commit -am "Update version in .toc file"
-      - name: Push changes
-        run: git push
-      - name: install commands
-        run: |
-          sudo apt update
-          sudo apt install subversion zip wget dos2unix
-          sudo wget https://github.com/mikefarah/yq/releases/download/v4.12.2/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
-      - name: Build and compress addon
-        run: |
-          dos2unix build.sh
-          bash build.sh
-      - name: Get addon name
-        id: get_addon_name
-        run: |
-          ADDON_NAME=$(cat ./build/addonName.txt)
-          echo "ADDONNAME=$ADDON_NAME" >> "$GITHUB_OUTPUT"
+
       - name: Get latest release
         id: get_release
         env:
           GH_TOKEN: ${{ secrets.PAT }}
-        # run: |
-        #   RELEASE_URL=$(gh api repos/:owner/:repo/releases/latest --jq .upload_url)
-        #   echo "RELEASE_URL=$RELEASE_URL" >> $GITHUB_ENV
         run: |
           RELEASE_URL=$(gh api repos/:owner/:repo/releases/latest --jq .upload_url)
           echo "RELEASE_URL=$RELEASE_URL" >> "$GITHUB_OUTPUT"
+
           LATEST_RELEASE_ID=$(gh api repos/:owner/:repo/releases/latest --jq .id)
           echo "latest_release_id=$LATEST_RELEASE_ID" >> "$GITHUB_OUTPUT"
+
           RELEASE_JSON=$(curl --header "Authorization: token ${{ secrets.PAT }}" "https://api.github.com/repos/${{ github.repository }}/releases/$LATEST_RELEASE_ID")
           RELEASE_BODY=$(echo "$RELEASE_JSON" | jq -r .body)
-          echo "CHANGELOG<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$RELEASE_BODY" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
+
+          echo "$RELEASE_BODY" > "RELEASE.md"
+
+      - name: Package and release
+        uses: BigWigsMods/packager@v2
+        env:
+          GITHUB_OAUTH: ${{ secrets.PAT }}
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+
+      - name: Get zip name
+        id: get_zip_name
+        run: |
+          ZIP_NAME=$(basename $(ls release/*.zip) .zip)
+          echo "ZIP_NAME=$ZIP_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Attach built addon to release
         uses: actions/upload-release-asset@v1
@@ -65,18 +49,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
           upload_url: ${{ steps.get_release.outputs.RELEASE_URL }}
-          asset_path: ./build/${{ steps.get_addon_name.outputs.ADDONNAME }}.zip
-          asset_name: ${{ steps.get_addon_name.outputs.ADDONNAME }}.zip
+          asset_path: ./release/${{ steps.get_zip_name.outputs.ZIP_NAME }}.zip
+          asset_name: ${{steps.get_zip_name.outputs.ZIP_NAME}}
           asset_content_type: application/zip
-
-      - name: Upload to CurseForge
-        uses: itsmeow/curseforge-upload@v3
-        with:
-          file_path: "./build/${{ steps.get_addon_name.outputs.ADDONNAME }}.zip"
-          game_endpoint: "wow"
-          project_id: "1000615"
-          display_name: ${{ steps.get_version.outputs.VERSION }}
-          token: ${{ secrets.CF_API_KEY }}
-          changelog: ${{ steps.get_release.outputs.CHANGELOG }}
-          changelog_type: "markdown"
-          game_versions: "10.2.7"
