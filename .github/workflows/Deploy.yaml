@@ -1,12 +1,12 @@
 name: Package and Release
 
 on:
-  # release:
-  #   types:
-  #     - released
-  push:
-    tags:
-      - "v*"
+  release:
+    types:
+      - released
+  # push:
+  #   tags:
+  #     - "v*"
 
 jobs:
   post_pr:
@@ -54,13 +54,13 @@ jobs:
 
           echo "$RELEASE_BODY" > RELEASE.md
 
-      - name: Package addon
+      - name: Build addon
         uses: BigWigsMods/packager@v2
         env:
           GITHUB_OAUTH: ${{ secrets.PAT }}
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
         with:
-          args: -n "{package-name}-${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}:${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}"
+          args: -g mainline -n "{package-name}-${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}:${{ steps.get_release.outputs.LATEST_RELEASE_TAG }}"
 
       - name: Get zip name
         id: get_zip_name
