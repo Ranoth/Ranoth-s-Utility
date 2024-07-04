@@ -21,6 +21,7 @@ local function printHelp()
     Printer:Print("|cffffff00/ranu calc|r |cff00ff00<expression>|r - Evaluates a mathematical expression")
     Printer:Print("|cffffff00/ranu autoopen|r - Toggles auto-opening containers in your bags")
     Printer:Print("|cffffff00/ranu view|r |cff00ff00<(optionnal)displayID>|r - Opens a 3D viewer of the unit under your mouse or from the provided Display ID")
+    Printer:Print("|cffffff00/ranu toggleviewer|r - Toggles the model viewer's button")
 end
 
 --- Registers additional slash commands for the addon
