@@ -19,22 +19,22 @@ jobs:
           ref: refs/heads/master
           fetch-depth: 0
 
-      - name: Update version in toc
-        id: update_toc
-        run: |
-          VERSION="v$(cat version.txt)"
-          mapfile -d '' toc_files < <(find . -maxdepth 1 -name "*.toc" -print0)
-          for toc_file in ${toc_files[@]}; do
-          sed -i "s/## Version: .*/## Version: $VERSION/" "$toc_file"
-          done
-          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+      # - name: Update version in toc
+      #   id: update_toc
+      #   run: |
+      #     VERSION="v$(cat version.txt)"
+      #     mapfile -d '' toc_files < <(find . -maxdepth 1 -name "*.toc" -print0)
+      #     for toc_file in ${toc_files[@]}; do
+      #     sed -i "s/## Version: .*/## Version: $VERSION/" "$toc_file"
+      #     done
+      #     echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Commit and push changes
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -am "Update version in .toc file"
-          git push
+      # - name: Commit and push changes
+      #   run: |
+      #     git config user.name 'github-actions[bot]'
+      #     git config user.email 'github-actions[bot]@users.noreply.github.com'
+      #     git commit -am "Update version in .toc file"
+      #     git push
 
       - name: Get latest release
         id: get_release
