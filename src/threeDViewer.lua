@@ -3,9 +3,10 @@
 
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
+local ThreeDViewer = RanothUtils:NewModule("ThreeDViewer")
+
 local Debug = RanothUtils:GetModule("Debug")
 local Printer = RanothUtils:GetModule("Printer")
-local ThreeDViewer = RanothUtils:NewModule("ThreeDViewer")
 
 local RanothUtilsGUI = LibStub("AceGUI-3.0")
 local which_list = {

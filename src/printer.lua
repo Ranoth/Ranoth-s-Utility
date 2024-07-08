@@ -3,7 +3,6 @@
 
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
-
 local Printer = RanothUtils:NewModule("Printer")
 
 local colorizedAddonName = "|cffc66ff0" .. "Ranoth's Utility" .. "|r"

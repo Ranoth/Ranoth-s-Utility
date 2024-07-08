@@ -4,6 +4,7 @@
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 local Debug = RanothUtils:NewModule("Debug")
+
 local Printer = RanothUtils:GetModule("Printer")
 
 local chatTabName = "Debug" -- replace with the name of your chat tab

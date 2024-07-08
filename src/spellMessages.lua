@@ -3,8 +3,9 @@
 
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
-local Debug = RanothUtils:GetModule("Debug")
 local SpellMessages = RanothUtils:NewModule("SpellMessages")
+
+local Debug = RanothUtils:GetModule("Debug")
 
 local spellMessageDb = {}
 local petOwners = {}

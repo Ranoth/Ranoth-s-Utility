@@ -3,11 +3,10 @@
 
 local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
+local AutoOpen = RanothUtils:NewModule("AutoOpen")
 
 local Debug = RanothUtils:GetModule("Debug")
 local Printer = RanothUtils:GetModule("Printer")
-
-local AutoOpen = RanothUtils:NewModule("AutoOpen")
 
 local canOpen
 
