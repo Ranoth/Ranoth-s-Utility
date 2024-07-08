@@ -21,20 +21,5 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
 
-      - name: Install Lua
-        uses: leafo/gh-actions-lua@v8
-        with:
-          luaVersion: "5.1"
-
-      - name: Install LuaRocks
-        run: |
-          sudo apt update
-          sudo apt install -y luarocks
-
-      - name: Install luacheck
-        run: |
-          sudo luarocks install luacheck
-
-      - name: Run luacheck
-        run: |
-          luacheck src
+      - name: Run Luacheck
+        uses: nebularg/actions-luacheck@v1.1.0
