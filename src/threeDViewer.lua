@@ -80,17 +80,17 @@ local function CreateModelWidget(unitID, displayID)
         buttonDown = button
     end)
 
-    modelViewer:SetScript("OnMouseUp", function(self, button)
+    modelViewer:SetScript("OnMouseUp", function(self, _)
         isDragging = false
         buttonDown = nil
     end)
 
-    modelViewer:SetScript("OnUpdate", function(self, elapsed)
+    modelViewer:SetScript("OnUpdate", function(self, _)
         if isDragging and buttonDown == "LeftButton" then
-            local deltaX, deltaY = GetScaledCursorDelta()
+            local deltaX, _ = GetScaledCursorDelta()
             modelViewer:SetRotation(deltaX)
         elseif isDragging and buttonDown == "RightButton" then
-            local x, y, z = GetScaledCursorDelta()
+            local x, y, _ = GetScaledCursorDelta()
             modelViewer:UpdatePosition(0, x, y)
         end
     end)
@@ -162,19 +162,16 @@ local function addButton(name, level, func)
     if buttonExists then return end
 
     local info = UIDropDownMenu_CreateInfo()
-    info.text, info.notCheckable, info.owner = name, true, which
+    info.text, info.notCheckable = name, true
     info.func = func
 
     UIDropDownMenu_AddButton(info, level)
 end
 
 --- Show the 3D viewer in the dropdown menu.
---- @param dropdownMenu any
 --- @param which string
 --- @param unitID any
---- @param name string
---- @param userData any
-function RanothUtils:UnitPopup_ShowMenu(dropdownMenu, which, unitID, name, userData)
+function RanothUtils:UnitPopup_ShowMenu(_, which, unitID, _, _)
     if not tContains(which_list, which) or not ThreeDViewer:IsEnabled() then return end
 
     addButton("View model", 1, function()

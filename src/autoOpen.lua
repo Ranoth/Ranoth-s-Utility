@@ -133,6 +133,7 @@ end
 
 -- Event handlers block.
 -- ====================================================================================================================
+---@diagnostic disable-next-line: redefined-local, unused-local
 function RanothUtils:BAG_UPDATE(self, bagID)
     Debug:Print("BAG_UPDATE: " .. bagID)
     AutoOpen:Open(bagID)

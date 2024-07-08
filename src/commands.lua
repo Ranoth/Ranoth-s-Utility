@@ -11,7 +11,7 @@ local Debug = RanothUtils:GetModule("Debug")
 local ThreeDViewer = RanothUtils:GetModule("ThreeDViewer")
 
 --- prints the help message for the addon's slash commands
-local function printHelp()
+function Commands:PrintHelp()
     Printer:Print("Available commands")
     Printer:Print("|cffffff00/ranu toggledebug|r - Toggles debug mode")
     Printer:Print("|cffffff00/ranu swlang|r - Switches the language of the chat box")
@@ -28,18 +28,18 @@ end
 RanothUtils:RegisterChatCommand("ranu", function(input)
     local command, args = RanothUtils:GetArgs(input, 2)
     if not command then
-        printHelp()
+        Commands:PrintHelp()
         return
     end
 
     --- @type table<string, function>
     local commandList = {
-        ["help"] = printHelp,
+        ["help"] = Commands.PrintHelp,
         ["toggledebug"] = Debug.Toggle,
         ["swlang"] = function()
             local b, l, c, g = DEFAULT_CHAT_FRAME.editBox, "languageID", GetNumLanguages, GetLanguageByIndex
             for i = 1, c() do
-                local n, id = g(i)
+                local _, id = g(i)
                 if id == b[l] then
                     if i == c() then i = 0 end
                     local nn, ni = g(i + 1)

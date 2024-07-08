@@ -4,6 +4,7 @@ exclude_files = {
 	"Libs/",
 	".luacheckrc"
 }
+no_warnings = true
 ignore = {
 	"11./SLASH_.*", -- Setting an undefined (Slash handler) global variable
 	"11./BINDING_.*", -- Setting an undefined (Keybinding header) global variable
