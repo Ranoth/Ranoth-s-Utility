@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.8.0...v1.8.1) (2024-07-08)
+
+
+### Bug Fixes
+
+* Name of addon in messages ([e76789c](https://github.com/Ranoth/Ranoth-s-Utility/commit/e76789c9d4e9366bf434064bb2a85e9474e44721))
+* Update help for commands ([72ed567](https://github.com/Ranoth/Ranoth-s-Utility/commit/72ed56702923e97f2c2497e309d8417bc1671976))
+
 ## [1.8.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.7.27...v1.8.0) (2024-07-04)
 
 
