@@ -6,7 +6,7 @@ local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 
 local Printer = RanothUtils:NewModule("Printer")
 
-local colorizedAddonName = "|cffc66ff0" .. addon_name .. "|r"
+local colorizedAddonName = "|cffc66ff0" .. "Ranoth's Utility" .. "|r"
 
 --- @name Print
 --- Print a message to the chat frame with the colorized addon's name prepended.
