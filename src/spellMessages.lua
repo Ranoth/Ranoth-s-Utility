@@ -350,7 +350,7 @@ end
 
 -- Event handlers and debouncing logic for spell messages block.
 -- ====================================================================================================================
-function RanothUtils:GET_ITEM_INFO_RECEIVED(self, itemId, success)
+function RanothUtils:GET_ITEM_INFO_RECEIVED(_, itemId, success)
     if success then
         for _, spellMessage in pairs(spellMessageDb) do
             if spellMessage.itemId == itemId then
@@ -360,16 +360,16 @@ function RanothUtils:GET_ITEM_INFO_RECEIVED(self, itemId, success)
         end
     end
 end
---- @diagnostic disable-next-line: redefined-local, unused-local
-function RanothUtils:UNIT_SPELLCAST_SENT(self, unit, _, _, spellId)
+
+function RanothUtils:UNIT_SPELLCAST_SENT(_, unit, _, _, spellId)
     SpellMessages:PlayerCastSent(unit, spellId)
 end
---- @diagnostic disable-next-line: redefined-local, unused-local
-function RanothUtils:UNIT_SPELLCAST_START(self, unit, castGUID, spellId)
+
+function RanothUtils:UNIT_SPELLCAST_START(_, unit, castGUID, spellId)
     SpellMessages:NpcCastStart(unit, castGUID, spellId)
 end
---- @diagnostic disable-next-line: redefined-local, unused-local
-function RanothUtils:UNIT_SPELLCAST_INTERRUPTED(self, unit, _, spellId)
+
+function RanothUtils:UNIT_SPELLCAST_INTERRUPTED(_, unit, _, spellId)
     if unit == "pet" then return end
     -- if SpellMessages:CheckDuplicateInterruptTrigger(unit, spellId) then return end
     SpellMessages:PlayerCastInterrupted(unit, spellId)
@@ -379,8 +379,8 @@ function RanothUtils:UNIT_SPELLCAST_INTERRUPTED(self, unit, _, spellId)
         RanothUtils:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     end)
 end
---- @diagnostic disable-next-line: redefined-local, unused-local
-function RanothUtils:UNIT_SPELLCAST_SUCCEEDED(self, unit, _, spellId)
+
+function RanothUtils:UNIT_SPELLCAST_SUCCEEDED(_, unit, _, spellId)
     if unit == "pet" then return end
     SpellMessages:PlayerCastSucceeded(unit, spellId)
     SpellMessages:NpcCastSucceeded(unit, spellId)

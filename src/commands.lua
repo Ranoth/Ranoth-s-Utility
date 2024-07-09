@@ -43,7 +43,7 @@ RanothUtils:RegisterChatCommand("ranu", function(input)
                 if id == b[l] then
                     if i == c() then i = 0 end
                     local nn, ni = g(i + 1)
-                    --- @diagnostic disable-next-line: redefined-local
+                    --- @diagnostic disable-next-line: assign-type-mismatch
                     b[l] = ni
                     Printer:Print("Speaking " .. nn)
                     break
