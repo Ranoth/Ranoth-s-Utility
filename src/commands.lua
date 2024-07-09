@@ -43,7 +43,8 @@ RanothUtils:RegisterChatCommand("ranu", function(input)
                 if id == b[l] then
                     if i == c() then i = 0 end
                     local nn, ni = g(i + 1)
-                    b[l] = ni --- luacheck: ignore
+                    
+                    b[l] = ni -- luacheck: ignore
                     Printer:Print("Speaking " .. nn)
                     break
                 end
@@ -68,13 +69,13 @@ RanothUtils:RegisterChatCommand("ranu", function(input)
             end
         end,
         ["openall"] = AutoOpen.OpenAllContainers,
-        ["calc"] = function(args) --- luacheck: ignore
+        ["calc"] = function(args) -- luacheck: no unused args
             local expression = input:match("calc%s+(.+)")
             local result = loadstring("return " .. expression)()
             Printer:Print(result)
         end,
         ["autoopen"] = AutoOpen.Toggle,
-        ["view"] = function(args) --- luacheck: ignore
+        ["view"] = function(args) -- luacheck: no unused args
             local arguments = input:match("view%s+(.+)")
             if not arguments then
                 local unit = "mouseover"
