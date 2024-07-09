@@ -9,8 +9,7 @@ local Printer = RanothUtils:GetModule("Printer")
 
 local chatTabName = "Debug" -- replace with the name of your chat tab
 local chatFrameIndex = 1    -- replace with the index of your chat frame
-local chatFrame = _G["ChatFrame" .. chatFrameIndex] or DEFAULT_CHAT_FRAME
-local chatTab = chatTab or _G["ChatFrame" .. chatFrameIndex]
+local chatTab = _G["ChatFrame" .. chatFrameIndex] or DEFAULT_CHAT_FRAME
 
 --- Higher order function to neutralize each public function of the module when debug mode is disabled.
 --- @param func any

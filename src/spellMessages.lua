@@ -57,7 +57,6 @@ end
 --- @param message (string) -- message to be sent
 --- @usage `SpellMessages:PrepareSendChatMessage("Hello, World!")`
 function SpellMessages:PrepareSendChatMessage(message)
-    local message = message or false
     if not message then return end
     local channel, _ = selectChannel()
     if channel == nil then return end
@@ -130,7 +129,7 @@ function SpellMessage:requestItemLink()
     if not C_Item.IsItemDataCachedByID(self.itemId) then
         C_Item.RequestLoadItemDataByID(self.itemId)
     end
-    local itemLink = select(2, GetItemInfo(self.itemId))
+    local itemLink = select(2, C_Item.GetItemInfo(self.itemId))
     if itemLink then self.itemLink = itemLink end
 end
 
@@ -158,14 +157,14 @@ end
 --- @usage `self:buildString(prefix, key)` Intended to be used in the `queueMessages` function of a `newSpellMessage` object.
 function SpellMessage:buildString(prefix, key)
     local msg = self.messages[key] or ""
-    if msg == "" and not self.spellId == 20707 then return end
+    if msg == "" and self.spellId ~= 20707 then return end
     local isAlive = select(2, selectTarget())
     local itemLink = self.itemLink or ""
     -- if self.itemId and itemLink == "" then
     --     if not C_Item.IsItemDataCachedByID(self.itemId) then
     --         C_Item.RequestLoadItemDataByID(self.itemId)
     --     end
-    --     itemLink = select(2, GetItemInfo(self.itemId))
+    --     itemLink = select(2, C_Item.GetItemInfo(self.itemId))
     -- end
     local spellLink = self.spellId and GetSpellLink(self.spellId) or ""
     local link = (itemLink ~= "" and itemLink or spellLink) .. (self.plural and "s" or "")
@@ -293,9 +292,8 @@ end
 --- It retrieves the spell message associated with the spell ID and queues the messages.
 --- It then prepares and sends a chat message using the prepared message queue.
 --- @param unit any -- The unit that casted the spell.
---- @param castGUID any -- The GUID of the cast.
 --- @param spellId any -- The ID of the spell that was casted.
-function SpellMessages:NpcCastStart(unit, castGUID, spellId)
+function SpellMessages:NpcCastStart(unit, _, spellId)
     local spellMessage = spellMessageDb[spellId]
     if not spellMessage then return end
     if unit ~= "target" then return end
@@ -328,7 +326,7 @@ end
 --- @param ... any -- The arguments passed to the function.
 --- @usage `SpellMessages:NpcCastInterrupted(...)`
 function SpellMessages:SummonedGuardian(...)
-    local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = ...
+    local _, subevent, _, sourceGUID, _, _, _, destGUID, destName, destFlags, _ = ...
     Debug:CombatLogGetUnitFlags(subevent, destName, destFlags)
     if sourceGUID and destGUID then
         petOwners[destGUID] = sourceGUID
@@ -341,7 +339,7 @@ end
 --- @param ... any -- The arguments passed to the function.
 --- @usage `SpellMessages:InterruptedSpellCast(...)`
 function SpellMessages:InterruptedSpellCast(...)
-    local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = ...
+    local _, _, _, sourceGUID, _, _, _, _, destName, _, _ = ...
     local playerGUID, petGUID = UnitGUID("player"), UnitGUID("pet")
     Debug:Print(petOwners[sourceGUID] == playerGUID or "failed")
     if sourceGUID == playerGUID or sourceGUID == petGUID or petOwners[sourceGUID] == playerGUID then
@@ -356,21 +354,21 @@ function RanothUtils:GET_ITEM_INFO_RECEIVED(self, itemId, success)
     if success then
         for _, spellMessage in pairs(spellMessageDb) do
             if spellMessage.itemId == itemId then
-                local itemLink = select(2, GetItemInfo(itemId))
+                local itemLink = select(2, C_Item.GetItemInfo(itemId))
                 spellMessage.itemLink = itemLink
             end
         end
     end
 end
-
+--- @diagnostic disable-next-line: redefined-local, unused-local
 function RanothUtils:UNIT_SPELLCAST_SENT(self, unit, _, _, spellId)
     SpellMessages:PlayerCastSent(unit, spellId)
 end
-
+--- @diagnostic disable-next-line: redefined-local, unused-local
 function RanothUtils:UNIT_SPELLCAST_START(self, unit, castGUID, spellId)
     SpellMessages:NpcCastStart(unit, castGUID, spellId)
 end
-
+--- @diagnostic disable-next-line: redefined-local, unused-local
 function RanothUtils:UNIT_SPELLCAST_INTERRUPTED(self, unit, _, spellId)
     if unit == "pet" then return end
     -- if SpellMessages:CheckDuplicateInterruptTrigger(unit, spellId) then return end
@@ -381,7 +379,7 @@ function RanothUtils:UNIT_SPELLCAST_INTERRUPTED(self, unit, _, spellId)
         RanothUtils:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     end)
 end
-
+--- @diagnostic disable-next-line: redefined-local, unused-local
 function RanothUtils:UNIT_SPELLCAST_SUCCEEDED(self, unit, _, spellId)
     if unit == "pet" then return end
     SpellMessages:PlayerCastSucceeded(unit, spellId)

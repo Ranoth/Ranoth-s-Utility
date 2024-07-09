@@ -43,6 +43,7 @@ RanothUtils:RegisterChatCommand("ranu", function(input)
                 if id == b[l] then
                     if i == c() then i = 0 end
                     local nn, ni = g(i + 1)
+                    --- @diagnostic disable-next-line: redefined-local
                     b[l] = ni
                     Printer:Print("Speaking " .. nn)
                     break
@@ -68,12 +69,14 @@ RanothUtils:RegisterChatCommand("ranu", function(input)
             end
         end,
         ["openall"] = AutoOpen.OpenAllContainers,
+        ---@diagnostic disable-next-line: redefined-local, unused-local
         ["calc"] = function(args)
             local expression = input:match("calc%s+(.+)")
             local result = loadstring("return " .. expression)()
             Printer:Print(result)
         end,
         ["autoopen"] = AutoOpen.Toggle,
+        ---@diagnostic disable-next-line: redefined-local, unused-local
         ["view"] = function(args)
             local arguments = input:match("view%s+(.+)")
             if not arguments then
@@ -95,6 +98,6 @@ RanothUtils:RegisterChatCommand("ranu", function(input)
         commandList[command](args)
     else
         Printer:Print("Unknown command: " .. command)
-        printHelp()
+        Commands:PrintHelp()
     end
 end)
