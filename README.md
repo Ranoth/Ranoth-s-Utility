@@ -6,6 +6,9 @@ end_insert -->
 
 # Ranoth's Utility
 
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ranoth/Ranoth-s-Utility)
+![Lint](https://github.com/Ranoth/Ranoth-s-Utility/actions/workflows/lint.yaml/badge.svg)
+
 ## Description
 
 Ranoth's Utility is a World of Warcraft addon designed to make **my** life easier.
