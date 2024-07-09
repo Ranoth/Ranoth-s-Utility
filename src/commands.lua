@@ -43,7 +43,6 @@ RanothUtils:RegisterChatCommand("ranu", function(input)
                 if id == b[l] then
                     if i == c() then i = 0 end
                     local nn, ni = g(i + 1)
-                    
                     b[l] = ni -- luacheck: ignore
                     Printer:Print("Speaking " .. nn)
                     break
