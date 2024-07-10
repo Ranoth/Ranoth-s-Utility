@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.8.1...v1.9.0) (2024-07-10)
+
+
+### Features
+
+* 3D Viewer can be closed by pressing escape ([190e5e3](https://github.com/Ranoth/Ranoth-s-Utility/commit/190e5e39a0f0f0cd2e1e91353a313fc2d50dff6c))
+
 ## [1.8.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.8.0...v1.8.1) (2024-07-08)
 
 
