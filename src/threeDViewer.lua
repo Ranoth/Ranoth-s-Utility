@@ -143,6 +143,9 @@ function ThreeDViewer:CreateThreeDViewerFrame(unitGUID, unitID, displayID)
         RanothUtilsGUI:Release(widget)
         modelWidget:Release()
     end)
+
+    _G["ThreeDViewerFrame"] = frame
+    table.insert(UISpecialFrames, "ThreeDViewerFrame")
 end
 
 --- Add a button to the dropdown menu.
