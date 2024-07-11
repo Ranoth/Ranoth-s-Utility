@@ -193,8 +193,9 @@ end
 function SpellMessage:queueMessages()
     for k, _ in pairs(self.messages) do
         local message = self:buildString(spellMessagePrefixMap[k], k)
-        if message == nil then return end
-        messageQueue[spellMessagePrefixMap[k]] = message
+        if message ~= nil then
+            messageQueue[spellMessagePrefixMap[k]] = message
+        end
     end
 end
 
@@ -244,8 +245,7 @@ end
 --- @usage `SpellMessages:PlayerCastSent("player", 12345)`
 function SpellMessages:PlayerCastSent(unit, spellId)
     local spellMessage = spellMessageDb[spellId]
-    if not spellMessage then return end
-    if unit ~= "player" then return end
+    if not spellMessage or unit ~= "player" then return end
 
     spellMessage:queueMessages()
 
