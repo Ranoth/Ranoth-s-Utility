@@ -245,7 +245,8 @@ end
 --- @usage `SpellMessages:PlayerCastSent("player", 12345)`
 function SpellMessages:PlayerCastSent(unit, spellId)
     local spellMessage = spellMessageDb[spellId]
-    if not spellMessage or unit ~= "player" then return end
+    if not spellMessage then return end
+    if unit ~= "player" then return end
 
     spellMessage:queueMessages()
 
@@ -260,7 +261,8 @@ end
 --- @usage `SpellMessages:PlayerCastInterrupted("player", 12345)`
 function SpellMessages:PlayerCastInterrupted(unit, spellId)
     local spellMessage = spellMessageDb[spellId]
-    if not spellMessage or unit ~= "player" then return end
+    if not spellMessage then return end
+    if unit ~= "player" then return end
 
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.INTERRUPTED])
     for key, message in pairs(messageQueue) do Debug:Print(key, message) end
@@ -276,7 +278,8 @@ end
 --- @usage SpellMessages:PlayerCastSucceeded("player", 12345)
 function SpellMessages:PlayerCastSucceeded(unit, spellId)
     local spellMessage = spellMessageDb[spellId]
-    if not spellMessage or unit ~= "player" then return end
+    if not spellMessage then return end
+    if unit ~= "player" then return end
 
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.SUCCEEDED])
 
@@ -290,7 +293,8 @@ end
 --- @param spellId any -- The ID of the spell that was casted.
 function SpellMessages:NpcCastStart(unit, _, spellId)
     local spellMessage = spellMessageDb[spellId]
-    if not spellMessage or unit ~= "target" then return end
+    if not spellMessage then return end
+    if unit ~= "target" then return end
 
     spellMessage:queueMessages()
 
@@ -306,7 +310,8 @@ end
 function SpellMessages:NpcCastSucceeded(unit, spellId)
     -- Debug:Print("NpcCastSucceeded called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
     local spellMessage = spellMessageDb[spellId]
-    if not spellMessage or unit ~= "target" then return end
+    if not spellMessage then return end
+    if unit ~= "target" then return end
 
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.SUCCEEDED])
 
@@ -343,11 +348,13 @@ end
 -- Event handlers and debouncing logic for spell messages block.
 -- ====================================================================================================================
 function RanothUtils:GET_ITEM_INFO_RECEIVED(_, itemId, success)
-    if not success then return end
-    for _, spellMessage in pairs(spellMessageDb) do
-        if spellMessage.itemId ~= itemId then return end
-        local itemLink = select(2, C_Item.GetItemInfo(itemId))
-        spellMessage.itemLink = itemLink
+    if success then
+        for _, spellMessage in pairs(spellMessageDb) do
+            if spellMessage.itemId == itemId then
+                local itemLink = select(2, GetItemInfo(itemId))
+                spellMessage.itemLink = itemLink
+            end
+        end
     end
 end
 
