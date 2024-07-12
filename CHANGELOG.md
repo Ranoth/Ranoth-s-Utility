@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.2](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.1...v1.9.2) (2024-07-12)
+
+
+### Bug Fixes
+
+* spell message not loading item links ([14dcc43](https://github.com/Ranoth/Ranoth-s-Utility/commit/14dcc43c66374404cad1544e7d456129b520d362))
+
 ## [1.9.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.0...v1.9.1) (2024-07-11)
 
 
