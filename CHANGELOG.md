@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.0...v1.9.1) (2024-07-11)
+
+
+### Bug Fixes
+
+* Spell messages not firing or with spell link instead of item link ([844c98a](https://github.com/Ranoth/Ranoth-s-Utility/commit/844c98aa6284b99f6f2d9e8d84f29a1ef723ceb8))
+
 ## [1.9.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.8.1...v1.9.0) (2024-07-10)
 
 
