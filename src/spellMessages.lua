@@ -351,7 +351,7 @@ function RanothUtils:GET_ITEM_INFO_RECEIVED(_, itemId, success)
     if success then
         for _, spellMessage in pairs(spellMessageDb) do
             if spellMessage.itemId == itemId then
-                local itemLink = select(2, GetItemInfo(itemId))
+                local itemLink = select(2, C_Item.GetItemInfo(itemId))
                 spellMessage.itemLink = itemLink
             end
         end
