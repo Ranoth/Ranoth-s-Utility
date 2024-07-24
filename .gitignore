@@ -2,3 +2,4 @@ libs
 .vscode
 build
 build.sh
+*.bat
