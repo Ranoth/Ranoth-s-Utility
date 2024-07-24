@@ -89,6 +89,9 @@ RanothUtils:RegisterChatCommand("ranu", function(input)
             end
         end,
         ["toggleviewer"] = ThreeDViewer.Toggle,
+        ["interfaceVersion"] = function()
+            Printer:Print("Interface version: " .. select(4, GetBuildInfo()))
+        end
     }
 
     if commandList[command] then
