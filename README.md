@@ -28,6 +28,7 @@ Kind of like **LeatrixPlus** with features **I** specifically want.
 > - Add a command to toggle the speech on utility spells.
 > - Make a persistent config to enable/disable speech on utility spells.
 > - Find out how to use the say and yell channels to advertize utility spells and successful interrupts.
+> - Make a TESO style mount selection menu with a keybind for the selected mount.
 
 ## Usage
 
