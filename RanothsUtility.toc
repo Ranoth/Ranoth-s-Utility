@@ -1,11 +1,11 @@
-## Interface: 100207
+## Interface: 110000
 ## Title: |cffc66ff0Ranoth's Utility|r
 ## Notes: A collection of things I want in the game.
 ## Author: Ranoth_
 ## Version: v1.7.27
 ## DefaultState: Enabled
 ## SavedVariables: RanothUtilityDB
-## X-Curse-Project-ID: 110000
+## X-Curse-Project-ID: 1000615
 
 embeds.xml
 
