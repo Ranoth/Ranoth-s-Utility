@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.5](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.4...v1.9.5) (2024-07-25)
+
+
+### Bug Fixes
+
+* GetSpellLink to C_Spell.GetSpellLink ([9c049ae](https://github.com/Ranoth/Ranoth-s-Utility/commit/9c049ae3a96a7af26af3ab648840b38882998ac3))
+
 ## [1.9.4](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.3...v1.9.4) (2024-07-25)
 
 
