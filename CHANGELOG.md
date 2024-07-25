@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.4](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.3...v1.9.4) (2024-07-25)
+
+
+### Bug Fixes
+
+* Invalid project ID ([b304d0b](https://github.com/Ranoth/Ranoth-s-Utility/commit/b304d0b678845fdd9cbc9c0b78b7e8a1cdd6367a))
+
 ## [1.9.3](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.2...v1.9.3) (2024-07-25)
 
 
