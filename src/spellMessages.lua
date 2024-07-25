@@ -166,7 +166,7 @@ function SpellMessage:buildString(prefix, key)
     --     end
     --     itemLink = select(2, C_Item.GetItemInfo(self.itemId))
     -- end
-    local spellLink = self.spellId and GetSpellLink(self.spellId) or ""
+    local spellLink = self.spellId and C_Spell.GetSpellLink(self.spellId) or ""
     local link = (itemLink ~= "" and itemLink or spellLink) .. (self.plural and "s" or "")
     local groupNameDisplay = self.group and (" " .. select(2, selectChannel())) or ""
     local targetDisplay = self.target and (" " .. select(1, selectTarget())) or ""
@@ -341,7 +341,7 @@ function SpellMessages:InterruptedSpellCast(...)
     Debug:Print(petOwners[sourceGUID] == playerGUID or "failed")
     if sourceGUID == playerGUID or sourceGUID == petGUID or petOwners[sourceGUID] == playerGUID then
         local extraSpellId = select(15, CombatLogGetCurrentEventInfo())
-        SpellMessages:PrepareSendChatMessage("Interrupted " .. destName .. "'s " .. GetSpellLink(extraSpellId) .. "!")
+        SpellMessages:PrepareSendChatMessage("Interrupted " .. destName .. "'s " .. C_Spell.GetSpellLink(extraSpellId) .. "!")
     end
 end
 
