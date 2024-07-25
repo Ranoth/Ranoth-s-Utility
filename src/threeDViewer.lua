@@ -9,12 +9,6 @@ local Debug = RanothUtils:GetModule("Debug")
 local Printer = RanothUtils:GetModule("Printer")
 
 local RanothUtilsGUI = LibStub("AceGUI-3.0")
-local which_list = {
-    "PLAYER",
-    "TARGET",
-    "SELF",
-    "PET"
-}
 
 --- Create a model widget for the 3D viewer.
 --- @param unitID any
@@ -112,7 +106,7 @@ end
 --- @param unitID any
 --- @param displayID number?
 function ThreeDViewer:CreateThreeDViewerFrame(unitGUID, unitID, displayID)
-    -- local unitName
+    local unitName
     if not displayID then
         if not unitGUID then
             Debug:Print("Error: unitGUID is nil in CreateThreeDViewerFrame")
@@ -146,29 +140,6 @@ function ThreeDViewer:CreateThreeDViewerFrame(unitGUID, unitID, displayID)
 
     _G["ThreeDViewerFrame"] = frame
     table.insert(UISpecialFrames, "ThreeDViewerFrame")
-end
-
---- Add a button to the dropdown menu.
---- @param name string
---- @param level number
---- @param func function
-local function addButton(name, level, func)
-    local buttonExists = false
-    for i = 1, UIDROPDOWNMENU_MAXBUTTONS do
-        local button = _G["DropDownList1Button" .. i]
-        if button and button:IsShown() and button:GetText() == name then
-            buttonExists = true
-            break
-        end
-    end
-
-    if buttonExists then return end
-
-    local info = UIDropDownMenu_CreateInfo()
-    info.text, info.notCheckable = name, true
-    info.func = func
-
-    UIDropDownMenu_AddButton(info, level)
 end
 
 --- Inject the button in the unit menu.
@@ -215,12 +186,10 @@ function ThreeDViewer:OnInitialize()
 end
 
 function ThreeDViewer:OnEnable()
-    -- RanothUtils:Hook("OpenMenuTag", true)
     InjectButtonInUnitMenu()
     RanothUtils.db.profile.threeDViewer = ThreeDViewer:IsEnabled()
 end
 
 function ThreeDViewer:OnDisable()
-    -- RanothUtils:Unhook("OpenMenuTag")
     RanothUtils.db.profile.threeDViewer = ThreeDViewer:IsEnabled()
 end
