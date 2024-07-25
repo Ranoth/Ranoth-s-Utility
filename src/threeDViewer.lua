@@ -112,7 +112,7 @@ end
 --- @param unitID any
 --- @param displayID number?
 function ThreeDViewer:CreateThreeDViewerFrame(unitGUID, unitID, displayID)
-    local unitName
+    -- local unitName
     if not displayID then
         if not unitGUID then
             Debug:Print("Error: unitGUID is nil in CreateThreeDViewerFrame")
@@ -171,15 +171,28 @@ local function addButton(name, level, func)
     UIDropDownMenu_AddButton(info, level)
 end
 
---- Show the 3D viewer in the dropdown menu.
---- @param which string
---- @param unitID any
-function RanothUtils:UnitPopup_ShowMenu(_, which, unitID, _, _)
-    if not tContains(which_list, which) or not ThreeDViewer:IsEnabled() then return end
+--- Inject the button in the unit menu.
+local function InjectButtonInUnitMenu()
+    local unitMenus = {
+        "MENU_UNIT_PLAYER",
+        "MENU_UNIT_ENEMY_PLAYER",
+        "MENU_UNIT_TARGET",
+        "MENU_UNIT_SELF",
+        "MENU_UNIT_PET",
+        "MENU_UNIT_PARTY1",
+        "MENU_UNIT_RAID",
+    }
 
-    addButton("View model", 1, function()
-        ThreeDViewer:CreateThreeDViewerFrame(UnitGUID(unitID), unitID)
-    end)
+    for _, menu in pairs(unitMenus) do
+        if not ThreeDViewer:IsEnabled() then return end
+        Menu.ModifyMenu(menu, function(_, rootDescription, contextData)
+            rootDescription:CreateDivider()
+            rootDescription:CreateTitle("Ranoth's Utility")
+            rootDescription:CreateButton("View model", function()
+                ThreeDViewer:CreateThreeDViewerFrame(UnitGUID(contextData.unit), contextData.unit)
+            end)
+        end)
+    end
 end
 
 --- Toggle button on or off.
@@ -202,11 +215,12 @@ function ThreeDViewer:OnInitialize()
 end
 
 function ThreeDViewer:OnEnable()
-    RanothUtils:Hook("UnitPopup_ShowMenu", true)
+    -- RanothUtils:Hook("OpenMenuTag", true)
+    InjectButtonInUnitMenu()
     RanothUtils.db.profile.threeDViewer = ThreeDViewer:IsEnabled()
 end
 
 function ThreeDViewer:OnDisable()
-    RanothUtils:Unhook("UnitPopup_ShowMenu")
+    -- RanothUtils:Unhook("OpenMenuTag")
     RanothUtils.db.profile.threeDViewer = ThreeDViewer:IsEnabled()
 end
