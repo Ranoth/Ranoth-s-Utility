@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.3](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.2...v1.9.3) (2024-07-25)
+
+
+### Bug Fixes
+
+* Add a command to get the interface version ([27047cc](https://github.com/Ranoth/Ranoth-s-Utility/commit/27047cc92b3a03b1b495d763d45f11bb55fa061d))
+* Update button injection into unit popup menus according to API changes ([c984de6](https://github.com/Ranoth/Ranoth-s-Utility/commit/c984de6519a4d8b6a474f2bb9545fdd0f7ddce5f))
+
 ## [1.9.2](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.1...v1.9.2) (2024-07-12)
 
 
