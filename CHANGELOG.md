@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.6](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.5...v1.9.6) (2024-09-08)
+
+
+### Bug Fixes
+
+* Bump interface version ([e070892](https://github.com/Ranoth/Ranoth-s-Utility/commit/e070892512b543b26ecbe72e204268ac4727af49))
+
 ## [1.9.5](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.4...v1.9.5) (2024-07-25)
 
 
