@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.7](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.6...v1.9.7) (2024-10-15)
+
+
+### Bug Fixes
+
+* push because curseforge does not want to process previous update ([84b5420](https://github.com/Ranoth/Ranoth-s-Utility/commit/84b5420e27f1891657f4a9f39685709dedfbcac2))
+
 ## [1.9.6](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.5...v1.9.6) (2024-09-08)
 
 
