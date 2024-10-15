@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.8](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.7...v1.9.8) (2024-10-15)
+
+
+### Bug Fixes
+
+* libs folder miss named ([97bbf69](https://github.com/Ranoth/Ranoth-s-Utility/commit/97bbf6942e9adf6e91a4241b91f4a7d549b8daa5))
+
 ## [1.9.7](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.6...v1.9.7) (2024-10-15)
 
 
