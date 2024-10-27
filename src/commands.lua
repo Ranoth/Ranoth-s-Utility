@@ -10,33 +10,28 @@ local Printer = RanothUtils:GetModule("Printer")
 local Debug = RanothUtils:GetModule("Debug")
 local ThreeDViewer = RanothUtils:GetModule("ThreeDViewer")
 
---- prints the help message for the addon's slash commands
-function Commands:PrintHelp()
-    Printer:Print("Available commands")
-    Printer:Print("|cffffff00/ranu toggledebug|r - Toggles debug mode")
-    Printer:Print("|cffffff00/ranu swlang|r - Switches the language of the chat box")
-    Printer:Print("|cffffff00/ranu openeggs|r - Opens all Brightly Colored Eggs in your bags")
-    Printer:Print("|cffffff00/ranu openall|r - Opens all containers in your bags")
-    Printer:Print("|cffffff00/ranu calc|r |cff00ff00<expression>|r - Evaluates a mathematical expression")
-    Printer:Print("|cffffff00/ranu autoopen|r - Toggles auto-opening containers in your bags")
-    Printer:Print(
-        "|cffffff00/ranu view|r |cff00ff00<(optionnal)displayID>|r - Opens a 3D viewer of the unit under your mouse or from the provided Display ID")
-    Printer:Print("|cffffff00/ranu toggleviewer|r - Toggles the model viewer's button")
+local addonShortHand = string.lower("ranu")
+
+local function colorizeShortHand(shortHand)
+    return "|cffffff00" .. shortHand .. "|r"
 end
 
---- Registers additional slash commands for the addon
-RanothUtils:RegisterChatCommand("ranu", function(input)
-    local command, args = RanothUtils:GetArgs(input, 2)
-    if not command then
-        Commands:PrintHelp()
-        return
-    end
+local function colorizeArgHelp(argsHelp)
+    return "|cff00ff00" .. argsHelp .. "|r"
+end
 
-    --- @type table<string, function>
-    local commandList = {
-        ["help"] = Commands.PrintHelp,
-        ["toggledebug"] = Debug.Toggle,
-        ["swlang"] = function()
+--- @type table<string, table>
+local commandList = {
+    ["help"] = {
+        func = Commands.PrintHelp,
+        help = "Prints the help message for the addon's slash commands"
+    },
+    ["toggledebug"] = {
+        func = Debug.Toggle,
+        help = "Toggles debug mode"
+    },
+    ["swlang"] = {
+        func = function()
             local b, l, c, g = DEFAULT_CHAT_FRAME.editBox, "languageID", GetNumLanguages, GetLanguageByIndex
             for i = 1, c() do
                 local _, id = g(i)
@@ -49,7 +44,10 @@ RanothUtils:RegisterChatCommand("ranu", function(input)
                 end
             end
         end,
-        ["openeggs"] = function()
+        help = "Switches the language of the chat box"
+    },
+    ["openeggs"] = {
+        func = function()
             local delay = 0
             for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
                 for slot = 1, C_Container.GetContainerNumSlots(bag) do
@@ -67,15 +65,32 @@ RanothUtils:RegisterChatCommand("ranu", function(input)
                 end
             end
         end,
-        ["openall"] = AutoOpen.OpenAllContainers,
-        ["calc"] = function(args) -- luacheck: no unused args
-            local expression = input:match("calc%s+(.+)")
+        help = "Opens all Brightly Colored Eggs in your bags"
+    },
+    ["openall"] = {
+        func = AutoOpen.OpenAllContainers,
+        help = "Opens all containers in your bags"
+    },
+    ["calc"] = {
+        func = function(args) -- luacheck: no unused args
+            local expression = args:gsub("[^%d%+%-%*/%%%^%.%s%(%)]", ""):gsub("%s+", "")
+            if not expression then
+                Printer:Print("No expression provided")
+                return
+            end
             local result = loadstring("return " .. expression)()
             Printer:Print(result)
         end,
-        ["autoopen"] = AutoOpen.Toggle,
-        ["view"] = function(args) -- luacheck: no unused args
-            local arguments = input:match("view%s+(.+)")
+        help = "Evaluates a mathematical expression",
+        argsHelp = "<expression>"
+    },
+    ["autoopen"] = {
+        func = AutoOpen.Toggle,
+        help = "Toggles auto-opening containers in your bags"
+    },
+    ["view"] = {
+        func = function(args) -- luacheck: no unused args
+            local arguments = tonumber(args)
             if not arguments then
                 local unit = "mouseover"
                 local GUID = UnitGUID(unit)
@@ -88,16 +103,58 @@ RanothUtils:RegisterChatCommand("ranu", function(input)
                 ThreeDViewer:CreateThreeDViewerFrame(nil, nil, tonumber(arguments))
             end
         end,
-        ["toggleviewer"] = ThreeDViewer.Toggle,
-        ["interfaceVersion"] = function()
+        help =
+        "Opens a 3D viewer of the unit under your mouse or from the provided Display ID",
+        argsHelp = "<(optionnal)displayID>"
+    },
+    ["toggleviewer"] = {
+        func = ThreeDViewer.Toggle,
+        help = "Toggles the model viewer's button. UI Reload needed to toggle off."
+    },
+    ["interfaceVersion"] = {
+        func = function()
             Printer:Print("Interface version: " .. select(4, GetBuildInfo()))
-        end
+        end,
+        help = "Prints the interface version"
+    },
+    ["dumpplayerbuffs"] = {
+        func = function()
+            for i = 1, 40 do
+                local aura = C_UnitAuras.GetBuffDataByIndex("player", i)
+                if not aura then return end
+                for k, v in pairs(aura) do
+                    Printer:Print(k .. ": " .. tostring(v))
+                    if type(v) == "table" then
+                        for kk, vv in pairs(v) do
+                            Printer:Print(k .. "." .. kk .. ": " .. tostring(vv))
+                        end
+                    end
+                end
+                Printer:Print("--------------------------------------------")
+            end
+        end,
+        help = "Dumps the player's buffs data"
     }
+}
 
-    if commandList[command] then
-        commandList[command](args)
+--- prints the help message for the addon's slash commands
+function Commands:PrintHelp()
+    Printer:Print("Available commands")
+    for command, info in pairs(commandList) do
+        local argText = info.argsHelp and " " .. colorizeArgHelp(info.argsHelp) or ""
+        Printer:Print(colorizeShortHand(addonShortHand) .. " " .. command .. argText .. " - " .. info.help)
+    end
+end
+
+--- Registers additional slash commands for the addon
+RanothUtils:RegisterChatCommand(addonShortHand, function(input)
+    local command, args = input:match("^(%S*)%s*(.-)$") -- match the first word as command then the rest of the input as a string of arguments
+
+    local commandInfo = commandList[command]
+    if commandInfo and commandInfo.func then
+        commandInfo.func(args)
     else
-        Printer:Print("Unknown command: " .. command)
+        Printer:Print("Unknown or invalid command " .. command)
         Commands:PrintHelp()
     end
 end)
