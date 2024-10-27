@@ -174,6 +174,9 @@ function ThreeDViewer:Toggle()
         ThreeDViewer:Enable()
     end
     Printer:Print(ThreeDViewer:IsEnabled() and "3D Viewer button enabled" or "3D Viewer button disabled")
+    if not ThreeDViewer:IsEnabled() then
+        ReloadUI()
+    end
 end
 
 function ThreeDViewer:OnInitialize()
