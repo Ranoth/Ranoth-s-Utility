@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.8...v1.10.0) (2024-10-27)
+
+
+### Features
+
+* Add automatic ui reload when toggling off the model viewer's right click menu button ([cd96f2a](https://github.com/Ranoth/Ranoth-s-Utility/commit/cd96f2a3b43209d23c8f0a503e07600a13d5ff8a))
+
 ## [1.9.8](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.7...v1.9.8) (2024-10-15)
 
 
