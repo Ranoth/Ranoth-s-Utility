@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.10.0...v1.10.1) (2024-10-27)
+
+
+### Bug Fixes
+
+* Bump UI version ([3a27d53](https://github.com/Ranoth/Ranoth-s-Utility/commit/3a27d538c9d87ba1aa0afefec89e866c19ec50af))
+
 ## [1.10.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.9.8...v1.10.0) (2024-10-27)
 
 
