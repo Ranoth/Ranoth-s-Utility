@@ -103,8 +103,7 @@ local commandList = {
                 ThreeDViewer:CreateThreeDViewerFrame(nil, nil, tonumber(arguments))
             end
         end,
-        help =
-        "Opens a 3D viewer of the unit under your mouse or from the provided Display ID",
+        help = "Opens a 3D viewer of the unit under your mouse or from the provided Display ID",
         argsHelp = "<(optionnal)displayID>"
     },
     ["toggleviewer"] = {
