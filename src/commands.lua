@@ -155,7 +155,7 @@ end
 
 --- Registers additional slash commands for the addon
 RanothUtils:RegisterChatCommand(addonShortHand, function(input)
-    local command, args = input:match("^(%S*)%s*(.-)$") -- match the first word as command then the rest of the input as a string of arguments
+    local command, args = input:match("^(%S*)%s*(.-)$") -- match the first word as the command then the rest of the input as a string of arguments
 
     local commandInfo = commandList[command]
     if commandInfo and commandInfo.func then
