@@ -110,7 +110,7 @@ local commandList = {
         func = ThreeDViewer.Toggle,
         help = "Toggles the model viewer's button. UI Reload needed to toggle off."
     },
-    ["interfaceVersion"] = {
+    ["interfaceversion"] = {
         func = function()
             Printer:Print("Interface version: " .. select(4, GetBuildInfo()))
         end,
