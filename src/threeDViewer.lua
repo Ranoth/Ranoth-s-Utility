@@ -156,7 +156,7 @@ local function InjectButtonInUnitMenu()
 
     for _, menu in pairs(unitMenus) do
         if not ThreeDViewer:IsEnabled() then return end
-        Menu.ModifyMenu(menu, function(_, rootDescription, contextData)
+        Menu.ModifyMenu(menu, function(_, rootDescription, contextData) -- luacheck: ignore
             rootDescription:CreateDivider()
             rootDescription:CreateTitle("Ranoth's Utility")
             rootDescription:CreateButton("View model", function()
