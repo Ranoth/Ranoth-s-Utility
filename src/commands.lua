@@ -134,6 +134,13 @@ local commandList = {
             end
         end,
         help = "Dumps the player's buffs data"
+    },
+    ["catalyst"] = {
+        func = function()
+            local charges = C_CurrencyInfo.GetCurrencyInfo(2813).quantity or 0
+            Printer:Print("Catalyst charges: " .. charges)
+        end,
+        help = "Prints the current amount of catalyst charges"
     }
 }
 
