@@ -9568,6 +9568,7 @@ read_globals = {
 	"C_Spell.DoesSpellExist",
 	"C_Spell.GetMawPowerBorderAtlasBySpellID",
 	"C_Spell.GetMawPowerLinkBySpellID",
+	"C_Spell.GetSpellLink",
 	"C_Spell.GetSchoolString",
 	"C_Spell.GetSpellQueueWindow",
 	"C_Spell.IsSpellDataCached",
