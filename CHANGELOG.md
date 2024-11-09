@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.12.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.12.0...v1.12.1) (2024-11-09)
+
+
+### Bug Fixes
+
+* remove macro manager ([a864398](https://github.com/Ranoth/Ranoth-s-Utility/commit/a8643987355da1c9e5a6a6d0c7598bfb9ea839ee))
+* Remove macro manager ([fd564db](https://github.com/Ranoth/Ranoth-s-Utility/commit/fd564dbebd3933c430c251bc3ea5406646e7dd6e))
+* Removed macro manager because macros can't be updated in combat ([08933a4](https://github.com/Ranoth/Ranoth-s-Utility/commit/08933a4853540818757256cbff7e930f473ec7da))
+
 ## [1.12.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.11.0...v1.12.0) (2024-11-09)
 
 
