@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.12.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.11.0...v1.12.0) (2024-11-09)
+
+
+### Features
+
+* macro manager to update my HS macro to use a healing pot of HS is on CD ([7b3a93d](https://github.com/Ranoth/Ranoth-s-Utility/commit/7b3a93d4f29d8589b42c6860f3970e12cf12c9a7))
+
+
+### Bug Fixes
+
+* Linting ([c81ade5](https://github.com/Ranoth/Ranoth-s-Utility/commit/c81ade5ba3dd5e8af87ed8d8408fc9bc7de18637))
+
 ## [1.11.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.10.1...v1.11.0) (2024-11-06)
 
 
