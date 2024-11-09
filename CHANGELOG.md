@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.11.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.10.1...v1.11.0) (2024-11-06)
+
+
+### Features
+
+* Add command to see remaining current season catalyst charges ([6eb71a9](https://github.com/Ranoth/Ranoth-s-Utility/commit/6eb71a943e6c734c603dc3b379e8b925e9676e6d))
+
+
+### Bug Fixes
+
+* interfaceversion command ([d72e01f](https://github.com/Ranoth/Ranoth-s-Utility/commit/d72e01f0e4c01ad0f4dae782ddaf3f1065997ce7))
+* Linting errors ([baec787](https://github.com/Ranoth/Ranoth-s-Utility/commit/baec787dd357ddd7b6996cc873d63a5f7421e51b))
+
 ## [1.10.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.10.0...v1.10.1) (2024-10-27)
 
 
