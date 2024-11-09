@@ -341,7 +341,8 @@ function SpellMessages:InterruptedSpellCast(...)
     Debug:Print(petOwners[sourceGUID] == playerGUID or "failed")
     if sourceGUID == playerGUID or sourceGUID == petGUID or petOwners[sourceGUID] == playerGUID then
         local extraSpellId = select(15, CombatLogGetCurrentEventInfo())
-        SpellMessages:PrepareSendChatMessage("Interrupted " .. destName .. "'s " .. C_Spell.GetSpellLink(extraSpellId) .. "!")
+        SpellMessages:PrepareSendChatMessage("Interrupted " ..
+        destName .. "'s " .. C_Spell.GetSpellLink(extraSpellId) .. "!")
     end
 end
 
@@ -400,8 +401,8 @@ function SpellMessages:OnEnable()
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
     RanothUtils:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-
     RanothUtils:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+
     SpellMessages:MakeSpellMessageDb()
     for _, spellMessage in pairs(spellMessageDb) do
         spellMessage:requestItemLink()
@@ -409,5 +410,10 @@ function SpellMessages:OnEnable()
 end
 
 function SpellMessages:OnDisable()
-    RanothUtils:UnregisterAllEvents()
+    RanothUtils:UneregisterEvent("UNIT_SPELLCAST_SENT")
+    RanothUtils:UneregisterEvent("UNIT_SPELLCAST_START")
+    RanothUtils:UneregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+    RanothUtils:UneregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+    RanothUtils:UneregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    RanothUtils:UneregisterEvent("GET_ITEM_INFO_RECEIVED")
 end

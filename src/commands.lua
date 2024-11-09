@@ -9,6 +9,7 @@ local AutoOpen = RanothUtils:GetModule("AutoOpen")
 local Printer = RanothUtils:GetModule("Printer")
 local Debug = RanothUtils:GetModule("Debug")
 local ThreeDViewer = RanothUtils:GetModule("ThreeDViewer")
+local MacroManager = RanothUtils:GetModule("MacroManager")
 
 local addonShortHand = string.lower("ranu")
 
@@ -140,7 +141,11 @@ local commandList = {
             Printer:Print("Catalyst charges: " .. charges)
         end,
         help = "Prints the current amount of catalyst charges"
-    }
+    },
+    ["updatehealme"] = {
+        func = MacroManager.UpdateHEALME,
+        help = "Updates the HEALME macro, which is one of my warlock macros."
+    },
 }
 
 --- prints the help message for the addon's slash commands

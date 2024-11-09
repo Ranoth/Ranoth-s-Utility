@@ -15,4 +15,5 @@ src\debug.lua
 src\spellMessages.lua
 src\autoOpen.lua
 src\threeDViewer.lua
+src\macroManager.lua
 src\commands.lua
