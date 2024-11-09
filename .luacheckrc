@@ -9570,6 +9570,7 @@ read_globals = {
 	"C_Spell.GetMawPowerLinkBySpellID",
 	"C_Spell.GetSpellLink",
 	"C_Spell.GetSchoolString",
+	"C_Spell.GetSpellCooldown",
 	"C_Spell.GetSpellQueueWindow",
 	"C_Spell.IsSpellDataCached",
 	"C_Spell.RequestLoadSpellData",

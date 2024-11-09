@@ -2,21 +2,21 @@ local addon_name, _ = ...
 local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 local MacroManager = RanothUtils:NewModule("MacroManager")
 
-local Debug = RanothUtils:GetModule("Debug")
-local Printer = RanothUtils:GetModule("Printer")
+-- local Debug = RanothUtils:GetModule("Debug")
+-- local Printer = RanothUtils:GetModule("Printer")
 
-local function CheckIfSpellOnCD(spellId)
-    local startTime, duration, enable = C_Spell.GetSpellCooldown(spellId)
-    local cd = startTime + duration - GetTime()
-    if cd > 0 then
-        return true
-    else
-        return false
-    end
-end
+-- local function CheckIfSpellOnCD(spellId)
+--     local startTime, duration, _ = C_Spell.GetSpellCooldown(spellId)
+--     local cd = startTime + duration - GetTime()
+--     if cd > 0 then
+--         return true
+--     else
+--         return false
+--     end
+-- end
 
 local function CheckIfItemOnCD(itemId)
-    local startTime, duration, enable = C_Container.GetItemCooldown(itemId)
+    local startTime, duration, _ = C_Container.GetItemCooldown(itemId)
     local cd = startTime + duration - GetTime()
     if cd > 0 then
         return true
