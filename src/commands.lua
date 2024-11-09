@@ -9,7 +9,6 @@ local AutoOpen = RanothUtils:GetModule("AutoOpen")
 local Printer = RanothUtils:GetModule("Printer")
 local Debug = RanothUtils:GetModule("Debug")
 local ThreeDViewer = RanothUtils:GetModule("ThreeDViewer")
-local MacroManager = RanothUtils:GetModule("MacroManager")
 
 local addonShortHand = string.lower("ranu")
 
