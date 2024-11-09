@@ -142,10 +142,6 @@ local commandList = {
         end,
         help = "Prints the current amount of catalyst charges"
     },
-    ["updatehealme"] = {
-        func = MacroManager.UpdateHEALME,
-        help = "Updates the HEALME macro, which is one of my warlock macros."
-    },
 }
 
 --- prints the help message for the addon's slash commands
