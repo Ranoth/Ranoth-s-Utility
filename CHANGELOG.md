@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.3](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.12.2...v1.12.3) (2024-11-18)
+
+
+### Bug Fixes
+
+* Add handling for cases where commands don't have help text ([e171eb1](https://github.com/Ranoth/Ranoth-s-Utility/commit/e171eb19ddace0681a6172b08ebbebb40f5c78c1))
+
 ## [1.12.2](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.12.1...v1.12.2) (2024-11-18)
 
 
