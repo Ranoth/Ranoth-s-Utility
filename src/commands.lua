@@ -155,7 +155,10 @@ function Commands:PrintHelp()
     Printer:Print("Available commands")
     for command, info in pairs(commandList) do
         local argText = info.argsHelp and " " .. colorizeArgHelp(info.argsHelp) or ""
-        Printer:Print(colorizeShortHand(addonShortHand) .. " " .. command .. argText .. " - " .. info.help)
+        if info.help then
+            Printer:Print(colorizeShortHand(addonShortHand) ..
+                " " .. command .. argText .. " - " .. info.help)
+        end
     end
 end
 
