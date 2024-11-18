@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.2](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.12.1...v1.12.2) (2024-11-18)
+
+
+### Features
+
+* Add command to holler the AFK so they click on your warlock TP ([d1d8538](https://github.com/Ranoth/Ranoth-s-Utility/commit/d1d85388ea7d8331524b01d4c1beba71b17b0554))
+
 ## [1.12.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.12.0...v1.12.1) (2024-11-09)
 
 
