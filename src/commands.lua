@@ -9,6 +9,7 @@ local AutoOpen = RanothUtils:GetModule("AutoOpen")
 local Printer = RanothUtils:GetModule("Printer")
 local Debug = RanothUtils:GetModule("Debug")
 local ThreeDViewer = RanothUtils:GetModule("ThreeDViewer")
+local SpellMessages = RanothUtils:GetModule("SpellMessages")
 
 local addonShortHand = string.lower("ranu")
 
@@ -140,6 +141,12 @@ local commandList = {
             Printer:Print("Catalyst charges: " .. charges)
         end,
         help = "Prints the current amount of catalyst charges"
+    },
+    ["click"] = {
+        func = function()
+            SpellMessages:PrepareSendChatMessage("CLICK ON THE TP")
+        end,
+        help = "Sends a click message to the raid"
     },
 }
 
