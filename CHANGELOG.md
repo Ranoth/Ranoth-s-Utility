@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.4](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.12.3...v1.12.4) (2024-12-11)
+
+
+### Bug Fixes
+
+* Change order in which help message and invalid command message are displayed. ([4136e5b](https://github.com/Ranoth/Ranoth-s-Utility/commit/4136e5b6df8e9055d4215c7ebeee77741d526c79))
+
 ## [1.12.3](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.12.2...v1.12.3) (2024-11-18)
 
 
