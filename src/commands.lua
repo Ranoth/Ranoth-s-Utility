@@ -156,8 +156,7 @@ function Commands:PrintHelp()
     for command, info in pairs(commandList) do
         local argText = info.argsHelp and " " .. colorizeArgHelp(info.argsHelp) or ""
         if info.help then
-            Printer:Print(colorizeShortHand(addonShortHand) ..
-                " " .. command .. argText .. " - " .. info.help)
+            Printer:Print(colorizeShortHand(addonShortHand) .. " " .. command .. argText .. " - " .. info.help)
         end
     end
 end
@@ -170,7 +169,7 @@ RanothUtils:RegisterChatCommand(addonShortHand, function(input)
     if commandInfo and commandInfo.func then
         commandInfo.func(args)
     else
-        Printer:Print("Unknown or invalid command " .. command)
         Commands:PrintHelp()
+        Printer:Print("Unknown or invalid command: " .. "\"" .. command .. "\"")
     end
 end)
