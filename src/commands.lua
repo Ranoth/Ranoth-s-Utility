@@ -145,7 +145,7 @@ local commandList = {
     ["click"] = {
         func = function()
             SpellMessages:PrepareSendChatMessage("CLICK ON THE TP")
-            InteractUnit("target")
+            C_PlayerInteractionManager.InteractUnit("target")
         end,
         help = "Sends a click message to the raid"
     },
