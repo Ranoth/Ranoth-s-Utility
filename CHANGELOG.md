@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.7](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.12.6...v1.12.7) (2025-04-22)
+
+
+### Bug Fixes
+
+* Update deprecated call to global ([07d8cef](https://github.com/Ranoth/Ranoth-s-Utility/commit/07d8cef24df16ebd467945272592bc40f5c58316))
+
 ## [1.12.6](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.12.5...v1.12.6) (2025-04-21)
 
 
