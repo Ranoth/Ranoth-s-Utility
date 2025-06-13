@@ -217,24 +217,36 @@ function SpellMessages:MakeSpellMessageDb()
     --- The messages are used to display information to the player when certain events related to the spell occur.
     --- The messages can be queued in the messageQueue using the queueMessages function.
     --- The dynamic data, such as the target's state, is added in the buildString function of the object.
-    spellMessageDb = {
-        -- Example entries:
-        -- [6201] = SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Healthstone, Healthstone
+    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+        spellMessageDb = {
+            -- Example entries:
+            -- [6201] = SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Healthstone, Healthstone
 
-        [29893] = SpellMessage:new(29893, 5512, "Making", "", "make", "", "made", true, false, true),      -- Create Soulwell, Healthstone
-        [698] = SpellMessage:new(698, false, "Using", "", "", "", "", false),                              -- Ritual of Summoning, No Item
-        [20707] = SpellMessage:new(20707, false, "", "", "", "", "", false, true),                         -- Soulstone, No Item => messages are decided in spellMessageToString
-        [187748] = SpellMessage:new(187748, 127770, "Placing a", "", "place a", "", "placed a", false),    -- Brazier of Awakening, Brazier of Awakening
-        [67826] = SpellMessage:new(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
-        [256153] = SpellMessage:new(256153, 153597, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Deployable Attire Rearranger
-        [384908] = SpellMessage:new(384908, 198268, "Placing a", "", "place a", "", "placed a", false),    -- Portable Tinker's Workbench, Portable Tinker's Workbench
-        [299127] = SpellMessage:new(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
-        [126459] = SpellMessage:new(126459, 87214, "", "", "", "", "placed a", false),                     -- Blingtron 4000, Blingtron 4000
-        [161414] = SpellMessage:new(161414, 111821, "", "", "", "", "placed a", false),                    -- Blingtron 5000, Blingtron 5000
-        [200218] = SpellMessage:new(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron 6000, No Item
-        [298926] = SpellMessage:new(298926, 168667, "", "", "", "", "placed a", false),                    -- Blingtron 7000, Blingtron 7000
-        [200205] = SpellMessage:new(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
-    }
+            [29893] = SpellMessage:new(29893, 5512, "Making", "", "make", "", "made", true, false, true),      -- Create Soulwell, Healthstone
+            [698] = SpellMessage:new(698, false, "Using", "", "", "", "", false),                              -- Ritual of Summoning, No Item
+            [20707] = SpellMessage:new(20707, false, "", "", "", "", "", false, true),                         -- Soulstone, No Item => messages are decided in spellMessageToString
+            [187748] = SpellMessage:new(187748, 127770, "Placing a", "", "place a", "", "placed a", false),    -- Brazier of Awakening, Brazier of Awakening
+            [67826] = SpellMessage:new(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
+            [256153] = SpellMessage:new(256153, 153597, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Deployable Attire Rearranger
+            [384908] = SpellMessage:new(384908, 198268, "Placing a", "", "place a", "", "placed a", false),    -- Portable Tinker's Workbench, Portable Tinker's Workbench
+            [299127] = SpellMessage:new(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
+            [126459] = SpellMessage:new(126459, 87214, "", "", "", "", "placed a", false),                     -- Blingtron 4000, Blingtron 4000
+            [161414] = SpellMessage:new(161414, 111821, "", "", "", "", "placed a", false),                    -- Blingtron 5000, Blingtron 5000
+            [200218] = SpellMessage:new(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron 6000, No Item
+            [298926] = SpellMessage:new(298926, 168667, "", "", "", "", "placed a", false),                    -- Blingtron 7000, Blingtron 7000
+            [200205] = SpellMessage:new(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
+        }
+    elseif WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC then
+        spellMessageDb = {
+            -- Example entries:
+            -- [6201] = SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Healthstone, Healthstone
+
+            [29893] = SpellMessage:new(29893, 5512, "Creating", "", "", "", "", true),                         -- Create Soulwell, Healthstone
+            [698] = SpellMessage:new(698, false, "Using", "", "", "", "", false),                              -- Ritual of Summoning, No Item
+            [20707] = SpellMessage:new(20707, 5232, "", "", "", "", "", false, true),                          -- Soulstone resurrection, Soulstone => messages are decided in spellMessageToString
+            [67826] = SpellMessage:new(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
+        }
+    end
 end
 
 --- This function is called when a player casts a spell and the cast is sent to the server.
@@ -342,7 +354,7 @@ function SpellMessages:InterruptedSpellCast(...)
     if sourceGUID == playerGUID or sourceGUID == petGUID or petOwners[sourceGUID] == playerGUID then
         local extraSpellId = select(15, CombatLogGetCurrentEventInfo())
         SpellMessages:PrepareSendChatMessage("Interrupted " ..
-        destName .. "'s " .. C_Spell.GetSpellLink(extraSpellId) .. "!")
+            destName .. "'s " .. C_Spell.GetSpellLink(extraSpellId) .. "!")
     end
 end
 
