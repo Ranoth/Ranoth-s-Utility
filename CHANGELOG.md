@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.12.8...v1.13.0) (2025-06-13)
+
+
+### Features
+
+* Port spellMessages module to cata classic ([15715a2](https://github.com/Ranoth/Ranoth-s-Utility/commit/15715a29b4fa0875257919617730047ae68957f5))
+
 ## [1.12.8](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.12.7...v1.12.8) (2025-04-23)
 
 
