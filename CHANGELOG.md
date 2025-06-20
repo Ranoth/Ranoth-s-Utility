@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.13.0...v1.13.1) (2025-06-20)
+
+
+### Bug Fixes
+
+* bump interface version for TWW new patch ([755371c](https://github.com/Ranoth/Ranoth-s-Utility/commit/755371c8f03912aa37b1cedc42aeeec50a44e241))
+
 ## [1.13.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.12.8...v1.13.0) (2025-06-13)
 
 
