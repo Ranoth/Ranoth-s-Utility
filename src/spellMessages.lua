@@ -174,15 +174,17 @@ function SpellMessage:buildString(prefix, key)
     local groupNameDisplay = self.group and (" " .. select(2, selectChannel())) or ""
     local targetDisplay = self.target and (" " .. select(1, selectTarget())) or ""
     local groupOrTarget = groupNameDisplay ~= "" and groupNameDisplay or targetDisplay
+    local soulstoneSpellId = 20707
+    local blingtron6000SpellId = 200218
 
-    if self.spellId == 200218 then
+    if self.spellId == blingtron6000SpellId then
         link = "Blingtron 6000"
-    elseif self.spellId == 20707 and not isAlive then
+    elseif self.spellId == soulstoneSpellId and not isAlive then
         msg = self:soulstoneMessage(key, isAlive)
         link = ""
         groupOrTarget = groupOrTarget:match("^%s*(.-)%s*$")
         groupOrTarget = groupOrTarget:gsub("^on ", "")
-    elseif self.spellId == 20707 and isAlive then
+    elseif self.spellId == soulstoneSpellId and isAlive then
         msg = self:soulstoneMessage(key, isAlive)
     end
 
