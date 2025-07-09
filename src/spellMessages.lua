@@ -207,13 +207,8 @@ end
 --- Dequeues the messages from the message queue.
 --- @usage `self:dequeueMessages()` Intended to be used when the spell cast is interrupted or successful.
 function SpellMessage:dequeueMessages()
-    -- Check if messageQueue has any entries
-    local hasMessages = false
-    for _ in pairs(messageQueue) do
-        hasMessages = true
-        break
-    end
-    if not hasMessages then return end
+    -- Check if messageQueue has any entries using next() function
+    if next(messageQueue) == nil then return end
     messageQueue = {}
 end
 
