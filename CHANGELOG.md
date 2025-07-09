@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.2](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.13.1...v1.13.2) (2025-07-09)
+
+
+### Bug Fixes
+
+* Fix empty table comparison always true ([c7778a0](https://github.com/Ranoth/Ranoth-s-Utility/commit/c7778a0e79d825b3ec5f74e0838ab42a4ab95dbf))
+
 ## [1.13.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.13.0...v1.13.1) (2025-06-20)
 
 
