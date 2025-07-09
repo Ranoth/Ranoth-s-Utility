@@ -25,7 +25,7 @@ local function selectTarget()
     end
 end
 
---- @return string, string -- The chat channel and a flair message reflecting the channel selected.
+--- @return string, string -- The chat channel and a flair message reflecting the selected channel.
 --- @usage Select the appropriate chat channel based on the player's current group status.
 local function selectChannel()
     if IsInRaid(LE_PARTY_CATEGORY_INSTANCE) then
@@ -92,9 +92,9 @@ SpellMessage.__index = SpellMessage
 --- @param spellId number -- The ID of the spell associated with the message.
 --- @param itemId number|boolean -- The ID of the item associated with the message. If no item is associated with the message, set this to `false`.
 --- @param sentMsg string -- The message to be displayed when the spell is sent.
---- @param startedMsg string -- The message to be displayed when the spell is started.
---- @param interruptedMsg string -- The message to be displayed when the spell is interrupted.
---- @param stoppedMsg string -- The message to be displayed when the spell is stopped.
+--- @param startedMsg string -- The message to be displayed when the spell casting is started.
+--- @param interruptedMsg string -- The message to be displayed when the spell is interrupted by a spell effect like .
+--- @param stoppedMsg string -- The message to be displayed when the spell is interrupted by the player.
 --- @param succeededMsg string -- The message to be displayed when the spell is successful.
 --- @param plural boolean|nil -- (optional) Indicates whether the message should be pluralized.
 --- @param target boolean|nil -- (optional) Indicates whether the message should include the target's name.
@@ -124,6 +124,9 @@ function SpellMessage:new(spellId, itemId, sentMsg, startedMsg, interruptedMsg, 
     return obj
 end
 
+--- Make the game cache every relevant item link for the spell message pipeline.
+--- @return nil
+--- @usage `SpellMessage:requestItemLink()`
 function SpellMessage:requestItemLink()
     if not self.itemId then return end
     if not C_Item.IsItemDataCachedByID(self.itemId) then
@@ -133,10 +136,10 @@ function SpellMessage:requestItemLink()
     if itemLink then self.itemLink = itemLink end
 end
 
---- Generates a message based on the given `msgType` and `isAlive` parameters.
---- @param msgType string The type of message. Defaults to "INTERRUPTED" if not provided.
---- @param isAlive boolean Indicates whether the player is alive. Defaults to `false` if not provided.
---- @return string The generated message based on the `msgType` and `isAlive` parameters.
+--- Generates a message based on the given `msgType` and `isAlive` parameters for the soulstone specific case.
+--- @param msgType string -- The type of message. Defaults to "INTERRUPTED" if not provided.
+--- @param isAlive boolean -- Indicates whether the player is alive. Defaults to `false` if not provided.
+--- @return string -- The generated message based on the `msgType` and `isAlive` parameters for the soulstone specific case.
 --- @usage `soulstoneMessage(key, isAlive)` Intended to be used in the `buildString` function of a `newSpellMessage` object.
 function SpellMessage:soulstoneMessage(msgType, isAlive)
     local soulstoneMessages = {
@@ -202,50 +205,193 @@ end
 --- Dequeues the messages from the message queue.
 --- @usage `self:dequeueMessages()` Intended to be used when the spell cast is interrupted or successful.
 function SpellMessage:dequeueMessages()
-    if messageQueue == {} then return end
+    -- Check if messageQueue has any entries
+    local hasMessages = false
+    for _ in pairs(messageQueue) do
+        hasMessages = true
+        break
+    end
+    if not hasMessages then return end
     messageQueue = {}
 end
 
 -- ===========================================================================================================================================================
 
-function SpellMessages:MakeSpellMessageDb()
-    --- This table, `spellMessageDb`, stores the spell messages for various spells.
-    --- Each entry in the table represents a spell and its associated messages.
-    --- The key of each entry is the spellId, and the value is an instance of the newSpellMessage function.
-    --- The newSpellMessage function takes several parameters to define the spell message entry.
-    --- The messages can be customized for different spells and items.
-    --- The messages are used to display information to the player when certain events related to the spell occur.
-    --- The messages can be queued in the messageQueue using the queueMessages function.
-    --- The dynamic data, such as the target's state, is added in the buildString function of the object.
-    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
-        spellMessageDb = {
-            -- Example entries:
-            -- [6201] = SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Healthstone, Healthstone
+-- Configuration for spell messages organized by category
+local SpellMessageConfigs = {
+    WARLOCK_SPELLS = {
+        [29893] = {        -- Create Soulwell
+            itemId = 5512, -- Healthstone
+            messages = {
+                sent = "Making",
+                interrupted = "make",
+                succeeded = "made"
+            },
+            options = { plural = true, group = true }
+        },
+        [698] = { -- Ritual of Summoning
+            messages = { sent = "Using" }
+        },
+        [20707] = {        -- Soulstone
+            messages = {}, -- Special handling in soulstoneMessage
+            options = { target = true }
+        }
+    },
 
-            [29893] = SpellMessage:new(29893, 5512, "Making", "", "make", "", "made", true, false, true),      -- Create Soulwell, Healthstone
-            [698] = SpellMessage:new(698, false, "Using", "", "", "", "", false),                              -- Ritual of Summoning, No Item
-            [20707] = SpellMessage:new(20707, false, "", "", "", "", "", false, true),                         -- Soulstone, No Item => messages are decided in spellMessageToString
-            [187748] = SpellMessage:new(187748, 127770, "Placing a", "", "place a", "", "placed a", false),    -- Brazier of Awakening, Brazier of Awakening
-            [67826] = SpellMessage:new(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
-            [256153] = SpellMessage:new(256153, 153597, "Placing a", "", "place a", "", "placed a", false),    -- Deployable Attire Rearranger, Deployable Attire Rearranger
-            [384908] = SpellMessage:new(384908, 198268, "Placing a", "", "place a", "", "placed a", false),    -- Portable Tinker's Workbench, Portable Tinker's Workbench
-            [299127] = SpellMessage:new(299127, 168222, "Placing an", "", "place an", "", "placed an", false), -- Encrypted Black Market Radio, Encrypted Black Market Radio
-            [126459] = SpellMessage:new(126459, 87214, "", "", "", "", "placed a", false),                     -- Blingtron 4000, Blingtron 4000
-            [161414] = SpellMessage:new(161414, 111821, "", "", "", "", "placed a", false),                    -- Blingtron 5000, Blingtron 5000
-            [200218] = SpellMessage:new(200218, false, "", "Placing a", "place a", "", "placed a", false),     -- Blingtron 6000, No Item
-            [298926] = SpellMessage:new(298926, 168667, "", "", "", "", "placed a", false),                    -- Blingtron 7000, Blingtron 7000
-            [200205] = SpellMessage:new(200205, 132514, "", "Placing an", "place an", "", "placed an", false), -- Reaves Module: Repair Mode, Auto-Hammer
+    ENGINEERING_ITEMS = {
+        [67826] = { -- Jeeves
+            itemId = 49040,
+            messages = { succeeded = "summoned" },
+            options = { plural = true }
+        },
+        [187748] = { -- Brazier of Awakening
+            itemId = 127770,
+            messages = {
+                sent = "Placing a",
+                interrupted = "place a",
+                succeeded = "placed a"
+            }
+        },
+        [256153] = { -- Deployable Attire Rearranger
+            itemId = 153597,
+            messages = {
+                sent = "Placing a",
+                interrupted = "place a",
+                succeeded = "placed a"
+            }
+        },
+        [384908] = { -- Portable Tinker's Workbench
+            itemId = 198268,
+            messages = {
+                sent = "Placing a",
+                interrupted = "place a",
+                succeeded = "placed a"
+            }
+        },
+        [299127] = { -- Encrypted Black Market Radio
+            itemId = 168222,
+            messages = {
+                sent = "Placing an",
+                interrupted = "place an",
+                succeeded = "placed an"
+            }
+        },
+        [200205] = { -- Reaves Module: Repair Mode
+            itemId = 132514,
+            messages = {
+                started = "Placing an",
+                interrupted = "place an",
+                succeeded = "placed an"
+            }
+        }
+    },
+
+    BLINGTRONS = {
+        [126459] = { -- Blingtron 4000
+            itemId = 87214,
+            messages = { succeeded = "placed a" }
+        },
+        [161414] = { -- Blingtron 5000
+            itemId = 111821,
+            messages = { succeeded = "placed a" }
+        },
+        [200218] = { -- Blingtron 6000 (special case, no itemId)
+            messages = {
+                started = "Placing a",
+                interrupted = "place a",
+                succeeded = "placed a"
+            }
+        },
+        [298926] = { -- Blingtron 7000
+            itemId = 168667,
+            messages = { succeeded = "placed a" }
+        }
+    }
+}
+
+-- Classic-specific spell configurations
+local ClassicSpellConfigs = {
+    WARLOCK_SPELLS = {
+        [29893] = {        -- Create Soulwell
+            itemId = 5512, -- Healthstone
+            messages = { sent = "Creating" },
+            options = { plural = true }
+        },
+        [698] = { -- Ritual of Summoning
+            messages = { sent = "Using" }
+        },
+        [20707] = {        -- Soulstone resurrection
+            itemId = 5232, -- Soulstone
+            messages = {}, -- Special handling in soulstoneMessage
+            options = { target = true }
+        }
+    },
+
+    ENGINEERING_ITEMS = {
+        [67826] = { -- Jeeves
+            itemId = 49040,
+            messages = { succeeded = "summoned" },
+            options = { plural = true }
+        }
+    }
+}
+
+--- Helper function to create spell message with validation
+--- @param spellId number -- The ID of the spell associated with the message.
+--- @param config table -- The configuration table containing itemId, messages, and options.
+local function createSpellMessage(spellId, config)
+    local itemId = config.itemId or false
+    local msgs = config.messages or {}
+    local opts = config.options or {}
+
+    -- Validate required data
+    if not spellId or type(spellId) ~= "number" then
+        error("Invalid spellId: " .. tostring(spellId))
+    end
+
+    return SpellMessage:new(
+        spellId,
+        itemId,
+        msgs.sent or "",
+        msgs.started or "",
+        msgs.interrupted or "",
+        msgs.stopped or "",
+        msgs.succeeded or "",
+        opts.plural,
+        opts.target,
+        opts.group
+    )
+end
+
+--- comment
+function SpellMessages:MakeSpellMessageDb()
+    spellMessageDb = {}
+
+    -- Get the appropriate config based on WoW version
+    local configs = {}
+    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+        configs = {
+            SpellMessageConfigs.WARLOCK_SPELLS,
+            SpellMessageConfigs.ENGINEERING_ITEMS,
+            SpellMessageConfigs.BLINGTRONS
         }
     elseif WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC then
-        spellMessageDb = {
-            -- Example entries:
-            -- [6201] = SpellMessage(6201, 5512, "Making", "", "make", "", "made", true, false, true), -- Create Healthstone, Healthstone
-
-            [29893] = SpellMessage:new(29893, 5512, "Creating", "", "", "", "", true),                         -- Create Soulwell, Healthstone
-            [698] = SpellMessage:new(698, false, "Using", "", "", "", "", false),                              -- Ritual of Summoning, No Item
-            [20707] = SpellMessage:new(20707, 5232, "", "", "", "", "", false, true),                          -- Soulstone resurrection, Soulstone => messages are decided in spellMessageToString
-            [67826] = SpellMessage:new(67826, 49040, "", "", "", "", "summoned", true),                        -- Jeeves, Jeeves
+        configs = {
+            ClassicSpellConfigs.WARLOCK_SPELLS,
+            ClassicSpellConfigs.ENGINEERING_ITEMS
         }
+    end
+
+    -- Build the database from configs
+    for _, configGroup in ipairs(configs) do
+        for spellId, config in pairs(configGroup) do
+            local success, result = pcall(createSpellMessage, spellId, config)
+            if success then
+                spellMessageDb[spellId] = result
+            else
+                print("Error creating spell message for ID " .. spellId .. ": " .. tostring(result))
+            end
+        end
     end
 end
 
@@ -256,12 +402,13 @@ end
 --- @param spellId number The ID of the spell that was casted.
 --- @usage `SpellMessages:PlayerCastSent("player", 12345)`
 function SpellMessages:PlayerCastSent(unit, spellId)
-    local spellMessage = spellMessageDb[spellId]
-    if not spellMessage then return end
+    if not unit or not spellId then return end
     if unit ~= "player" then return end
 
-    spellMessage:queueMessages()
+    local spellMessage = spellMessageDb[spellId]
+    if not spellMessage then return end
 
+    spellMessage:queueMessages()
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.SENT])
 end
 
@@ -272,9 +419,11 @@ end
 --- @param spellId number The ID of the spell that was casted.
 --- @usage `SpellMessages:PlayerCastInterrupted("player", 12345)`
 function SpellMessages:PlayerCastInterrupted(unit, spellId)
+    if not unit or not spellId then return end
+    if unit ~= "player" then return end
+
     local spellMessage = spellMessageDb[spellId]
     if not spellMessage then return end
-    if unit ~= "player" then return end
 
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.INTERRUPTED])
     for key, message in pairs(messageQueue) do Debug:Print(key, message) end
@@ -289,12 +438,13 @@ end
 --- @param spellId number The ID of the spell that was casted.
 --- @usage SpellMessages:PlayerCastSucceeded("player", 12345)
 function SpellMessages:PlayerCastSucceeded(unit, spellId)
-    local spellMessage = spellMessageDb[spellId]
-    if not spellMessage then return end
+    if not unit or not spellId then return end
     if unit ~= "player" then return end
 
-    SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.SUCCEEDED])
+    local spellMessage = spellMessageDb[spellId]
+    if not spellMessage then return end
 
+    SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.SUCCEEDED])
     spellMessage:dequeueMessages()
 end
 
