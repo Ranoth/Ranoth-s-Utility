@@ -149,6 +149,65 @@ local commandList = {
         end,
         help = "Sends a click message to the raid"
     },
+    ["dumpItemLinkTooltip"] = {
+        func = function(itemLink)
+            if not itemLink then
+                Printer:Print("No item link provided")
+                return
+            end
+            -- Create or reuse a hidden tooltip
+            if not ItemLinkTooltip or not ItemLinkTooltip.SetOwner then
+                ItemLinkTooltip = CreateFrame("GameTooltip", "ItemLinkTooltip", nil, "GameTooltipTemplate")
+            end
+            local tooltip = ItemLinkTooltip
+            tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+            tooltip:ClearLines()
+            tooltip:SetHyperlink(itemLink)
+            -- Print each line of the tooltip
+            for i = 1, tooltip:NumLines() do
+                local left = _G["ItemLinkTooltipTextLeft" .. i]
+                local right = _G["ItemLinkTooltipTextRight" .. i]
+                local leftText = left and left:GetText() or nil
+                local rightText = right and right:GetText() or nil
+                if leftText and leftText ~= "" then
+                    Printer:Print(leftText)
+                end
+                if rightText and rightText ~= "" then
+                    Printer:Print(rightText)
+                end
+            end
+            tooltip:Hide()
+        end,
+        help = "Dumps the tooltip information for the provided item link",
+        argsHelp = "<itemLink>"
+    },
+    ["checkIfTradeable"] = {
+        func = function(itemLink)
+            if not itemLink then return end
+            if not ItemLinkTooltip or not ItemLinkTooltip.SetOwner then
+                ItemLinkTooltip = CreateFrame("GameTooltip", "ItemLinkTooltip", nil, "GameTooltipTemplate")
+            end
+            local tooltip = ItemLinkTooltip
+            tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+            tooltip:ClearLines()
+            tooltip:SetHyperlink(itemLink)
+            tooltip:Show()
+            for i = 1, tooltip:NumLines() do
+                local line = _G["ItemLinkTooltipTextLeft" .. i]
+                local text = line and line:GetText() or ""
+                if string.find(text, string.format(BIND_TRADE_TIME_REMAINING, ".*")) or string.find(text, string.format(ITEM_BIND_ON_EQUIP, ".*")) then
+                    tooltip:Hide()
+                    print("The item is tradeable.")
+                    return true
+                end
+            end
+            tooltip:Hide()
+            print("The item is not tradeable.")
+            return false
+        end,
+        help = "Checks if the provided item link is tradeable",
+        argsHelp = "<itemLink>"
+    },
 }
 
 --- prints the help message for the addon's slash commands
