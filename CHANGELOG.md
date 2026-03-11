@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.14.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.13.4...v1.14.0) (2026-03-11)
+
+
+### Features
+
+* Add command to move loot asker anchor ([9275733](https://github.com/Ranoth/Ranoth-s-Utility/commit/9275733d0274a947864bd1ff7504ee2e0cf66e83))
+* Add loot asker ([4b8bb14](https://github.com/Ranoth/Ranoth-s-Utility/commit/4b8bb1452e25f6b70669f5c35a19993a743802c6))
+* Add options menu ([0077236](https://github.com/Ranoth/Ranoth-s-Utility/commit/007723612d40c9afde9635813a1efca58a234537))
+* Remove commands setting options that are not in options menu ([7990a11](https://github.com/Ranoth/Ranoth-s-Utility/commit/7990a115af46cf94d8b13408da83027a843906b4))
+
+
+### Bug Fixes
+
+* Add safe get spell ID ([2c8c09f](https://github.com/Ranoth/Ranoth-s-Utility/commit/2c8c09f7c6f7739f9480c579f93cfae26f7dcb83))
+* Remove features using the combat log ([198a2c6](https://github.com/Ranoth/Ranoth-s-Utility/commit/198a2c66503cc74ef6bf82eda828d2c4f166c1ff))
+
 ## [1.13.4](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.13.3...v1.13.4) (2025-10-21)
 
 
