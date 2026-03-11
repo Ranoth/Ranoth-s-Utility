@@ -70,7 +70,11 @@ function SpellMessages:PrepareSendChatMessage(message)
     if not message then return end
     local channel, _ = selectChannel()
     if channel == nil then return end
-    SendChatMessage(message, channel)
+    -- Schedule the message send on a timer to avoid protected function restrictions
+    -- when called from event handlers
+    RanothUtils:ScheduleTimer(function()
+        SendChatMessage(message, channel)
+    end, 0.01)
 end
 
 --- Enum of message prefixes for each spell message type.
