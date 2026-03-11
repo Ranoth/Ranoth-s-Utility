@@ -6,7 +6,6 @@ local RanothUtils = LibStub("AceAddon-3.0"):GetAddon(addon_name)
 local SpellMessages = RanothUtils:NewModule("SpellMessages")
 
 local Debug = RanothUtils:GetModule("Debug")
-
 local spellMessageDb = {}
 local petOwners = {}
 local messageQueue = {}
@@ -465,7 +464,6 @@ function SpellMessages:NpcCastStart(unit, _, spellId)
     if unit ~= "target" then return end
     local spellMessage = SafeGetSpellMessage(spellId)
     if not spellMessage then return end
-    if unit ~= "target" then return end
 
     spellMessage:queueMessages()
 
@@ -483,23 +481,10 @@ function SpellMessages:NpcCastSucceeded(unit, spellId)
     if unit ~= "target" then return end
     local spellMessage = SafeGetSpellMessage(spellId)
     if not spellMessage then return end
-    if unit ~= "target" then return end
 
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.SUCCEEDED])
 
     spellMessage:dequeueMessages()
-end
-
---- This function is called when an NPC casts a spell and the cast is interrupted.
---- It retrieves the spell message associated with the spell ID and dequeues the messages.
---- It then prepares and sends a chat message using the prepared message queue.
---- @param ... any -- The arguments passed to the function.
---- @usage `SpellMessages:NpcCastInterrupted(...)`
-function SpellMessages:SummonedGuardian(...)
-    local _, subevent, _, sourceGUID, _, _, _, destGUID, destName, destFlags, _ = ...
-    Debug:CombatLogGetUnitFlags(subevent, destName, destFlags)
-    if not sourceGUID or not destGUID then return end
-    petOwners[destGUID] = sourceGUID
 end
 
 --- This function is called when an NPC casts a spell and the cast is interrupted.
@@ -556,23 +541,11 @@ function RanothUtils:UNIT_SPELLCAST_SUCCEEDED(_, unit, _, spellId)
     SpellMessages:NpcCastSucceeded(unit, spellId)
 end
 
-function RanothUtils:COMBAT_LOG_EVENT_UNFILTERED()
-    local eventInfo = { CombatLogGetCurrentEventInfo() }
-    if eventInfo[2] == "SPELL_SUMMON" then
-        SpellMessages:SummonedGuardian(unpack(eventInfo))
-    elseif eventInfo[2] == "SPELL_INTERRUPT" then
-        SpellMessages:InterruptedSpellCast(unpack(eventInfo))
-    end
-end
-
--- ====================================================================================================================
-
 function SpellMessages:OnEnable()
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_SENT")
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_START")
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     RanothUtils:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-    RanothUtils:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     RanothUtils:RegisterEvent("GET_ITEM_INFO_RECEIVED")
 
     SpellMessages:MakeSpellMessageDb()
@@ -586,6 +559,5 @@ function SpellMessages:OnDisable()
     RanothUtils:UnregisterEvent("UNIT_SPELLCAST_START")
     RanothUtils:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     RanothUtils:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-    RanothUtils:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     RanothUtils:UnregisterEvent("GET_ITEM_INFO_RECEIVED")
 end
