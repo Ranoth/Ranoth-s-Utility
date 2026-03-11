@@ -155,7 +155,6 @@ local function InjectButtonInUnitMenu()
     }
 
     for _, menu in pairs(unitMenus) do
-        if not ThreeDViewer:IsEnabled() then return end
         Menu.ModifyMenu(menu, function(_, rootDescription, contextData) -- luacheck: ignore
             rootDescription:CreateDivider()
             rootDescription:CreateTitle("Ranoth's Utility")
@@ -166,33 +165,12 @@ local function InjectButtonInUnitMenu()
     end
 end
 
---- Toggle button on or off.
-function ThreeDViewer:Toggle()
-    if ThreeDViewer:IsEnabled() then
-        ThreeDViewer:Disable()
-    else
-        ThreeDViewer:Enable()
-    end
-    Printer:Print(ThreeDViewer:IsEnabled() and "3D Viewer button enabled" or "3D Viewer button disabled")
-    if not ThreeDViewer:IsEnabled() then
-        ReloadUI()
-    end
-end
-
 function ThreeDViewer:OnInitialize()
-    self.db = RanothUtils.db.profile.threeDViewer
-    if self.db then
-        self:Enable()
-    else
-        self:Disable()
-    end
 end
 
 function ThreeDViewer:OnEnable()
     InjectButtonInUnitMenu()
-    RanothUtils.db.profile.threeDViewer = ThreeDViewer:IsEnabled()
 end
 
 function ThreeDViewer:OnDisable()
-    RanothUtils.db.profile.threeDViewer = ThreeDViewer:IsEnabled()
 end

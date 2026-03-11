@@ -17,7 +17,6 @@ local chatTab = _G["ChatFrame" .. chatFrameIndex] or DEFAULT_CHAT_FRAME
 --- @usage `Debug.Print = createToggledFunction(function(self, ...)`
 local function createToggledFunction(func)
     return function(...)
-        if not Debug:IsEnabled() then return end
         return func(unpack({ ... }))
     end
 end
@@ -118,9 +117,7 @@ end
 
 function Debug:OnEnable()
     setChatWindow()
-    RanothUtils.db.profile.debug = Debug:IsEnabled()
 end
 
 function Debug:OnDisable()
-    RanothUtils.db.profile.debug = Debug:IsEnabled()
 end

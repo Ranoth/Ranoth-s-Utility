@@ -8,8 +8,19 @@ local defaults = {
     profile = {
         language = "enUS",
         debug = false,
-        autoOpen = true,
+        autoOpen = false,
         threeDViewer = true,
+        lootAsker = true,
+        spellMessages = true,
+        growDirection = 1,
+        checkIfSelfCanEquip = true,
+        checkItemQuality = true,
+        minItemQuality = 2,
+        checkIfNotWarbound = false,
+        lootAnchorPoint = "CENTER",
+        lootAnchorRelativePoint = "CENTER",
+        lootAnchorX = 0,
+        lootAnchorY = 0,
     },
 }
 
