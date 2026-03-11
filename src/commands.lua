@@ -28,10 +28,6 @@ local commandList = {
         func = Commands.PrintHelp,
         help = "Prints the help message for the addon's slash commands"
     },
-    ["toggledebug"] = {
-        func = Debug.Toggle,
-        help = "Toggles debug mode"
-    },
     ["swlang"] = {
         func = function()
             local b, l, c, g = DEFAULT_CHAT_FRAME.editBox, "languageID", GetNumLanguages, GetLanguageByIndex
@@ -86,10 +82,6 @@ local commandList = {
         help = "Evaluates a mathematical expression",
         argsHelp = "<expression>"
     },
-    ["autoopen"] = {
-        func = AutoOpen.Toggle,
-        help = "Toggles auto-opening containers in your bags"
-    },
     ["view"] = {
         func = function(args) -- luacheck: no unused args
             local arguments = tonumber(args)
@@ -107,10 +99,6 @@ local commandList = {
         end,
         help = "Opens a 3D viewer of the unit under your mouse or from the provided Display ID",
         argsHelp = "<(optionnal)displayID>"
-    },
-    ["toggleviewer"] = {
-        func = ThreeDViewer.Toggle,
-        help = "Toggles the model viewer's button. UI Reload needed to toggle off."
     },
     ["interfaceversion"] = {
         func = function()
