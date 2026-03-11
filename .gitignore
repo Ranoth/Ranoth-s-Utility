@@ -4,3 +4,5 @@ build
 build.sh
 *.bat
 .release
+lootAskerWA.lua
+upgradeEquiperWA.lua
