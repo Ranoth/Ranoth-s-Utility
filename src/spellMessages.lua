@@ -11,6 +11,17 @@ local spellMessageDb = {}
 local petOwners = {}
 local messageQueue = {}
 
+-- Some modern API events can provide protected "secret" spell IDs.
+-- Guard table indexing so we silently skip unsupported entries.
+local function SafeGetSpellMessage(spellId)
+    if spellId == nil then return nil end
+    local ok, spellMessage = pcall(function()
+        return spellMessageDb[spellId]
+    end)
+    if not ok then return nil end
+    return spellMessage
+end
+
 local function selectTarget()
     local target = UnitExists("mouseover") and "mouseover" or "player"
     local isAlive = not UnitIsDeadOrGhost(target)
@@ -451,7 +462,8 @@ end
 --- @param unit any -- The unit that casted the spell.
 --- @param spellId any -- The ID of the spell that was casted.
 function SpellMessages:NpcCastStart(unit, _, spellId)
-    local spellMessage = spellMessageDb[spellId]
+    if unit ~= "target" then return end
+    local spellMessage = SafeGetSpellMessage(spellId)
     if not spellMessage then return end
     if unit ~= "target" then return end
 
@@ -468,7 +480,8 @@ end
 --- @usage `SpellMessages:NpcCastSucceeded("target", _, 12345)`
 function SpellMessages:NpcCastSucceeded(unit, spellId)
     -- Debug:Print("NpcCastSucceeded called with unit: " .. tostring(unit) .. ", spellId: " .. tostring(spellId))
-    local spellMessage = spellMessageDb[spellId]
+    if unit ~= "target" then return end
+    local spellMessage = SafeGetSpellMessage(spellId)
     if not spellMessage then return end
     if unit ~= "target" then return end
 
@@ -569,10 +582,10 @@ function SpellMessages:OnEnable()
 end
 
 function SpellMessages:OnDisable()
-    RanothUtils:UneregisterEvent("UNIT_SPELLCAST_SENT")
-    RanothUtils:UneregisterEvent("UNIT_SPELLCAST_START")
-    RanothUtils:UneregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
-    RanothUtils:UneregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-    RanothUtils:UneregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    RanothUtils:UneregisterEvent("GET_ITEM_INFO_RECEIVED")
+    RanothUtils:UnregisterEvent("UNIT_SPELLCAST_SENT")
+    RanothUtils:UnregisterEvent("UNIT_SPELLCAST_START")
+    RanothUtils:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+    RanothUtils:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+    RanothUtils:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    RanothUtils:UnregisterEvent("GET_ITEM_INFO_RECEIVED")
 end
