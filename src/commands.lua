@@ -10,6 +10,7 @@ local Printer = RanothUtils:GetModule("Printer")
 local Debug = RanothUtils:GetModule("Debug")
 local ThreeDViewer = RanothUtils:GetModule("ThreeDViewer")
 local SpellMessages = RanothUtils:GetModule("SpellMessages")
+local LootAsker = RanothUtils:GetModule("LootAsker")
 
 local addonShortHand = string.lower("ranu")
 
@@ -207,6 +208,13 @@ local commandList = {
         end,
         help = "Checks if the provided item link is tradeable",
         argsHelp = "<itemLink>"
+    },
+    ["moveloot"] = {
+        func = function()
+            LootAsker:ToggleMoveMode()
+            Printer:Print("Loot anchor move mode toggled")
+        end,
+        help = "Toggle loot anchor move mode",
     },
 }
 
