@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.14.0...v1.14.1) (2026-03-11)
+
+
+### Bug Fixes
+
+* Update embeds ([70b00b6](https://github.com/Ranoth/Ranoth-s-Utility/commit/70b00b6090a483993764f68d4e781558a7ca161d))
+
 ## [1.14.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.13.4...v1.14.0) (2026-03-11)
 
 
