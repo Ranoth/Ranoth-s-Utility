@@ -12,6 +12,7 @@ local defaults = {
         threeDViewer = true,
         lootAsker = true,
         spellMessages = true,
+        elvuiTags = true,
         growDirection = 1,
         checkIfSelfCanEquip = true,
         checkItemQuality = true,

@@ -1,4 +1,4 @@
-## Interface: 120001
+## Interface: 120005
 ## Title: |cffc66ff0Ranoth's Utility|r
 ## Notes: A collection of things I want in the game.
 ## Author: Ranoth_
@@ -17,4 +17,5 @@ src\spellMessages.lua
 src\autoOpen.lua
 src\threeDViewer.lua
 src\lootAsker.lua
+src\elvuiTagsRegisterer.lua
 src\commands.lua

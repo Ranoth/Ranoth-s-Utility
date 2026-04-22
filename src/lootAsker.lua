@@ -67,6 +67,21 @@ local inventorySlotsForItemLink = {
     INVTYPE_THROWN = 18,
     INVTYPE_RELIC = 18,
 }
+local primaryStatKeys = {
+    [1] = "ITEM_MOD_STRENGTH_SHORT",
+    [2] = "ITEM_MOD_AGILITY_SHORT",
+    [4] = "ITEM_MOD_INTELLECT_SHORT",
+}
+local primaryStatOrder = { 1, 2, 4 }
+local secondaryStatKeys = {
+    "ITEM_MOD_CRIT_RATING_SHORT",
+    "ITEM_MOD_HASTE_RATING_SHORT",
+    "ITEM_MOD_MASTERY_RATING_SHORT",
+    "ITEM_MOD_VERSATILITY",
+    "ITEM_MOD_LIFESTEAL",
+    "ITEM_MOD_SPEED_SHORT",
+    "ITEM_MOD_AVOIDANCE_SHORT",
+}
 
 local function MakeCompareTooltip(itemLink, tooltipName)
     if not UpgradeEquiperItemLinkTooltip or not UpgradeEquiperItemLinkTooltip.SetOwner then
@@ -99,6 +114,55 @@ local function ExtractItemLevelFromTooltip(itemLink)
     return nil
 end
 
+local function GetPlayerPrimaryStatKey()
+    local highestStatValue = -1
+    local primaryStatKey = nil
+
+    for _, statIndex in ipairs(primaryStatOrder) do
+        local currentStatValue = UnitStat("player", statIndex) or 0
+        if currentStatValue > highestStatValue then
+            highestStatValue = currentStatValue
+            primaryStatKey = primaryStatKeys[statIndex]
+        end
+    end
+
+    return primaryStatKey
+end
+
+local function IsMainStatMatch(itemLink)
+    local primaryStatKey = GetPlayerPrimaryStatKey()
+    if not primaryStatKey then return true end
+
+    local itemStats = (C_Item and C_Item.GetItemStats and C_Item.GetItemStats(itemLink)) or GetItemStats(itemLink)
+    if not itemStats then
+        return true
+    end
+
+    local hasMatchingMainStat = (itemStats[primaryStatKey] or 0) > 0
+    if hasMatchingMainStat then
+        return true
+    end
+
+    local hasAnyMainStat = false
+    for _, statKey in pairs(primaryStatKeys) do
+        if (itemStats[statKey] or 0) > 0 then
+            hasAnyMainStat = true
+            break
+        end
+    end
+    if hasAnyMainStat then
+        return false
+    end
+
+    for _, secondaryStatKey in ipairs(secondaryStatKeys) do
+        if (itemStats[secondaryStatKey] or 0) > 0 then
+            return true
+        end
+    end
+
+    return false
+end
+
 local function GetEquippedItemLevelAtSlot(slotID)
     local itemLink = GetInventoryItemLink("player", slotID)
     if itemLink then
@@ -106,6 +170,16 @@ local function GetEquippedItemLevelAtSlot(slotID)
         return itemLevel or 0
     end
     return 0
+end
+
+local function IsItemTrinket(itemLink)
+    local itemType, itemSubType = select(6, GetItemInfo(itemLink))
+    return itemType == "Armor" and (itemSubType == "Trinket" or itemSubType == "Miscellaneous")
+end
+
+local function IsItemRingOrNeck(itemLink)
+    local itemType, itemSubType = select(6, GetItemInfo(itemLink))
+    return itemType == "Armor" and (itemSubType == "Finger" or itemSubType == "Neck")
 end
 
 local function IsLooterDifferentFromSelf(playerName)
@@ -129,6 +203,9 @@ local function CanSelfEquip(itemLink)
     local _, _, _, _, _, itemType, itemSubType, _, equipSlot = GetItemInfo(itemLink)
     if equipSlot == INVTYPE_NON_EQUIP_IGNORE then return false end
 
+    if IsItemRingOrNeck(itemLink) then return true end
+    if IsItemTrinket(itemLink) and IsMainStatMatch(itemLink) then return true end
+
     if itemType == "Armor" then
         if itemSubType == "Miscellaneous" then return true end
         return itemSubType == armorProficiencies[class]
@@ -140,11 +217,47 @@ local function CanSelfEquip(itemLink)
     return false
 end
 
+local function IsSameItem(itemLinkA, itemLinkB)
+    if not itemLinkA or not itemLinkB then return false end
+    local itemIdA = GetItemInfoInstant(itemLinkA)
+    local itemIdB = GetItemInfoInstant(itemLinkB)
+    if itemIdA and itemIdB then
+        return itemIdA == itemIdB
+    end
+    return itemLinkA == itemLinkB
+end
+
+local function MultiSlotCompare(itemLink, slotId, start, offset)
+    local lootedItemLevel = ExtractItemLevelFromTooltip(itemLink) or 0
+    for i = start, offset do
+        local equippedItemLink = GetInventoryItemLink("player", slotId + i)
+        if equippedItemLink then
+            local equippedItemLevel = ExtractItemLevelFromTooltip(equippedItemLink) or 0
+            if IsSameItem(itemLink, equippedItemLink) and equippedItemLevel <= lootedItemLevel then
+                return false
+            end
+            if lootedItemLevel > equippedItemLevel then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 local function IsUpgrade(itemLink, slotId)
-    if slotId then
-        local equippedItemLevel = GetEquippedItemLevelAtSlot(slotId)
-        -- print("Comparing item levels: ", e.itemInfo[4], equippedItemLevel)
-        if ExtractItemLevelFromTooltip(itemLink) > equippedItemLevel then
+    local lootedItemLevel = ExtractItemLevelFromTooltip(itemLink) or 0
+    if slotId == 11 then
+        return MultiSlotCompare(itemLink, slotId, 0, 1)
+    elseif slotId == 12 then
+        return MultiSlotCompare(itemLink, slotId, 1, 2)
+    elseif slotId then
+        local equippedItemLink = GetInventoryItemLink("player", slotId)
+        local equippedItemLevel = (equippedItemLink and ExtractItemLevelFromTooltip(equippedItemLink)) or
+            GetEquippedItemLevelAtSlot(slotId)
+        if equippedItemLink and IsSameItem(itemLink, equippedItemLink) and equippedItemLevel <= lootedItemLevel then
+            return false
+        end
+        if lootedItemLevel > equippedItemLevel then
             return true
         end
     end
@@ -402,8 +515,6 @@ function RanothUtils:CHAT_MSG_LOOT(event, ...)
     if not itemInfo then return end
 
     local slotId = inventorySlotsForItemLink[itemInfo[9]]
-    if slotId == 12 or slotId == 11 or slotId == 2 then return false end -- Trinkets, Rings and Necks are not checked for upgrades
-
     if not MatchingFilters(itemLink, playerName, msg, slotId) then return end
 
     MakeIconFrames(itemLink, playerName)

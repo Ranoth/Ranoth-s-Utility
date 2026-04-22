@@ -111,8 +111,17 @@ function Options:OnInitialize()
                             SetToggle("spellMessages", v, false, "SpellMessages")
                         end,
                     },
-                    lootAskerFilters = {
+                    elvuiTags = {
                         order = 6,
+                        type = "toggle",
+                        name = "ElvUI Tags",
+                        get = function() return RanothUtils.db.profile.elvuiTags end,
+                        set = function(_, v)
+                            SetToggle("elvuiTags", v, true, "ElvuiTagsRegisterer")
+                        end,
+                    },
+                    lootAskerFilters = {
+                        order = 7,
                         type = "group",
                         name = "Loot Asker Filters",
                         args = {
