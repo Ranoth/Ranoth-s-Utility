@@ -4,16 +4,16 @@ local LootAsker = RanothUtils:NewModule("LootAsker")
 
 local Debug = RanothUtils:GetModule("Debug")
 
---#region Initialization
+-- #region Initialization
 local lootItems = {}
 local iconFrames = {}
 local itemInfo = nil
 
 local anchorFrame
 local moveMode = false
---#endregion Initialization
+-- #endregion Initialization
 
---#region Loot filtering logic
+-- #region Loot filtering logic
 local class = select(2, UnitClass("player"))
 local armorProficiencies = {
     DRUID = "Leather",
@@ -28,22 +28,26 @@ local armorProficiencies = {
     DEATHKNIGHT = "Plate",
     PRIEST = "Cloth",
     MAGE = "Cloth",
-    WARLOCK = "Cloth",
+    WARLOCK = "Cloth"
 }
 local weaponProficiencies = {
-    DEATHKNIGHT = { "One-Handed Axes", "One-Handed Swords", "One-Handed Maces", "Two-Handed Axes", "Two-Handed Swords", "Two-Handed Maces", "Polearms" },
-    DEMONHUNTER = { "Warglaives", "Fist Weapons", "One-Handed Swords" },
-    DRUID = { "Staves", "Fist Weapons", "One-Handed Maces", "Two-Handed Maces", "Daggers", "Polearms" },
-    EVOKER = { "Staves", "Daggers", "One-Handed Swords" },
-    HUNTER = { "Bows", "Guns", "Crossbows", "Polearms", "Staves" },
-    MAGE = { "Staves", "One-Handed Swords", "Daggers", "Wands" },
-    MONK = { "Staves", "Fist Weapons", "One-Handed Swords", "One-Handed Axes", "One-Handed Maces", "Polearms" },
-    PALADIN = { "One-Handed Swords", "One-Handed Axes", "One-Handed Maces", "Two-Handed Swords", "Two-Handed Axes", "Two-Handed Maces", "Polearms" },
-    PRIEST = { "Staves", "One-Handed Maces", "Daggers", "Wands" },
-    ROGUE = { "Daggers", "Fist Weapons", "One-Handed Swords", "One-Handed Axes", "One-Handed Maces" },
-    SHAMAN = { "Staves", "One-Handed Axes", "One-Handed Maces", "Two-Handed Axes", "Two-Handed Maces", "Daggers", "Fist Weapons" },
-    WARLOCK = { "Staves", "One-Handed Swords", "Daggers", "Wands" },
-    WARRIOR = { "One-Handed Swords", "One-Handed Axes", "One-Handed Maces", "Two-Handed Swords", "Two-Handed Axes", "Two-Handed Maces", "Polearms" },
+    DEATHKNIGHT = {"One-Handed Axes", "One-Handed Swords", "One-Handed Maces", "Two-Handed Axes", "Two-Handed Swords",
+                   "Two-Handed Maces", "Polearms"},
+    DEMONHUNTER = {"Warglaives", "Fist Weapons", "One-Handed Swords"},
+    DRUID = {"Staves", "Fist Weapons", "One-Handed Maces", "Two-Handed Maces", "Daggers", "Polearms"},
+    EVOKER = {"Staves", "Daggers", "One-Handed Swords"},
+    HUNTER = {"Bows", "Guns", "Crossbows", "Polearms", "Staves"},
+    MAGE = {"Staves", "One-Handed Swords", "Daggers", "Wands"},
+    MONK = {"Staves", "Fist Weapons", "One-Handed Swords", "One-Handed Axes", "One-Handed Maces", "Polearms"},
+    PALADIN = {"One-Handed Swords", "One-Handed Axes", "One-Handed Maces", "Two-Handed Swords", "Two-Handed Axes",
+               "Two-Handed Maces", "Polearms"},
+    PRIEST = {"Staves", "One-Handed Maces", "Daggers", "Wands"},
+    ROGUE = {"Daggers", "Fist Weapons", "One-Handed Swords", "One-Handed Axes", "One-Handed Maces"},
+    SHAMAN = {"Staves", "One-Handed Axes", "One-Handed Maces", "Two-Handed Axes", "Two-Handed Maces", "Daggers",
+              "Fist Weapons"},
+    WARLOCK = {"Staves", "One-Handed Swords", "Daggers", "Wands"},
+    WARRIOR = {"One-Handed Swords", "One-Handed Axes", "One-Handed Maces", "Two-Handed Swords", "Two-Handed Axes",
+               "Two-Handed Maces", "Polearms"}
 }
 local inventorySlotsForItemLink = {
     INVTYPE_HEAD = 1,
@@ -65,23 +69,17 @@ local inventorySlotsForItemLink = {
     INVTYPE_RANGED = 18,
     INVTYPE_RANGEDRIGHT = 18,
     INVTYPE_THROWN = 18,
-    INVTYPE_RELIC = 18,
+    INVTYPE_RELIC = 18
 }
 local primaryStatKeys = {
     [1] = "ITEM_MOD_STRENGTH_SHORT",
     [2] = "ITEM_MOD_AGILITY_SHORT",
-    [4] = "ITEM_MOD_INTELLECT_SHORT",
+    [4] = "ITEM_MOD_INTELLECT_SHORT"
 }
-local primaryStatOrder = { 1, 2, 4 }
-local secondaryStatKeys = {
-    "ITEM_MOD_CRIT_RATING_SHORT",
-    "ITEM_MOD_HASTE_RATING_SHORT",
-    "ITEM_MOD_MASTERY_RATING_SHORT",
-    "ITEM_MOD_VERSATILITY",
-    "ITEM_MOD_LIFESTEAL",
-    "ITEM_MOD_SPEED_SHORT",
-    "ITEM_MOD_AVOIDANCE_SHORT",
-}
+local primaryStatOrder = {1, 2, 4}
+local secondaryStatKeys = {"ITEM_MOD_CRIT_RATING_SHORT", "ITEM_MOD_HASTE_RATING_SHORT", "ITEM_MOD_MASTERY_RATING_SHORT",
+                           "ITEM_MOD_VERSATILITY", "ITEM_MOD_LIFESTEAL", "ITEM_MOD_SPEED_SHORT",
+                           "ITEM_MOD_AVOIDANCE_SHORT"}
 
 local function MakeCompareTooltip(itemLink, tooltipName)
     if not UpgradeEquiperItemLinkTooltip or not UpgradeEquiperItemLinkTooltip.SetOwner then
@@ -131,7 +129,9 @@ end
 
 local function IsMainStatMatch(itemLink)
     local primaryStatKey = GetPlayerPrimaryStatKey()
-    if not primaryStatKey then return true end
+    if not primaryStatKey then
+        return true
+    end
 
     local itemStats = (C_Item and C_Item.GetItemStats and C_Item.GetItemStats(itemLink)) or GetItemStats(itemLink)
     if not itemStats then
@@ -188,8 +188,10 @@ local function IsLooterDifferentFromSelf(playerName)
 end
 
 local function IsItemReceivedMessage(msg)
-    if not msg then return false end
-    local stringsToFind = { "receives loot", "receive loot", "receive item" }
+    if not msg then
+        return false
+    end
+    local stringsToFind = {"receives loot", "receive loot", "receive item"}
     for _, str in ipairs(stringsToFind) do
         if msg:lower():find(str) then
             return true
@@ -199,26 +201,40 @@ local function IsItemReceivedMessage(msg)
 end
 
 local function CanSelfEquip(itemLink)
-    if not RanothUtils.db.profile.checkIfSelfCanEquip then return true end
+    if not RanothUtils.db.profile.checkIfSelfCanEquip then
+        return true
+    end
     local _, _, _, _, _, itemType, itemSubType, _, equipSlot = GetItemInfo(itemLink)
-    if equipSlot == INVTYPE_NON_EQUIP_IGNORE then return false end
+    if equipSlot == INVTYPE_NON_EQUIP_IGNORE then
+        return false
+    end
 
-    if IsItemRingOrNeck(itemLink) then return true end
-    if IsItemTrinket(itemLink) and IsMainStatMatch(itemLink) then return true end
+    if IsItemRingOrNeck(itemLink) then
+        return true
+    end
+    if IsItemTrinket(itemLink) and IsMainStatMatch(itemLink) then
+        return true
+    end
 
     if itemType == "Armor" then
-        if itemSubType == "Miscellaneous" then return true end
+        if itemSubType == "Miscellaneous" then
+            return true
+        end
         return itemSubType == armorProficiencies[class]
     elseif itemType == "Weapon" then
         for _, v in ipairs(weaponProficiencies[class]) do
-            if v == itemSubType then return true end
+            if v == itemSubType then
+                return true
+            end
         end
     end
     return false
 end
 
 local function IsSameItem(itemLinkA, itemLinkB)
-    if not itemLinkA or not itemLinkB then return false end
+    if not itemLinkA or not itemLinkB then
+        return false
+    end
     local itemIdA = GetItemInfoInstant(itemLinkA)
     local itemIdB = GetItemInfoInstant(itemLinkB)
     if itemIdA and itemIdB then
@@ -253,7 +269,7 @@ local function IsUpgrade(itemLink, slotId)
     elseif slotId then
         local equippedItemLink = GetInventoryItemLink("player", slotId)
         local equippedItemLevel = (equippedItemLink and ExtractItemLevelFromTooltip(equippedItemLink)) or
-            GetEquippedItemLevelAtSlot(slotId)
+                                      GetEquippedItemLevelAtSlot(slotId)
         if equippedItemLink and IsSameItem(itemLink, equippedItemLink) and equippedItemLevel <= lootedItemLevel then
             return false
         end
@@ -265,13 +281,17 @@ local function IsUpgrade(itemLink, slotId)
 end
 
 local function QualityFilter(itemLink)
-    if not RanothUtils.db.profile.checkItemQuality then return true end
+    if not RanothUtils.db.profile.checkItemQuality then
+        return true
+    end
     local quality = select(3, GetItemInfo(itemLink))
     return quality >= RanothUtils.db.profile.minItemQuality
 end
 
 local function IsNotWarbound(itemLink)
-    if not RanothUtils.db.profile.checkIfNotWarbound then return true end
+    if not RanothUtils.db.profile.checkIfNotWarbound then
+        return true
+    end
 
     if not LootAskerItemLinkTooltip or not LootAskerItemLinkTooltip.SetOwner then
         LootAskerItemLinkTooltip = CreateFrame("GameTooltip", "LootAskerItemLinkTooltip", nil, "GameTooltipTemplate")
@@ -304,20 +324,17 @@ local function CheckUpgradeOrNotSelf(itemLink, slotId, playerName)
 end
 
 local function MatchingFilters(itemLink, playerName, msg, slotId)
-    local filters = {
-        IsItemReceivedMessage(msg),
-        CheckUpgradeOrNotSelf(itemLink, slotId, playerName),
-        CanSelfEquip(itemLink),
-        QualityFilter(itemLink),
-        IsNotWarbound(itemLink),
-    }
+    local filters = {IsItemReceivedMessage(msg), CheckUpgradeOrNotSelf(itemLink, slotId, playerName),
+                     CanSelfEquip(itemLink), QualityFilter(itemLink), IsNotWarbound(itemLink)}
 
     for _, filter in ipairs(filters) do
-        if not filter then return false end
+        if not filter then
+            return false
+        end
     end
     return true
 end
---#endregion Loot filtering logic
+-- #endregion Loot filtering logic
 
 local function EquipItemByLink(link)
     local numBagSlots = NUM_BAG_SLOTS or 5
@@ -326,7 +343,8 @@ local function EquipItemByLink(link)
         for slot = 1, numSlots do
             local item = C_Container.GetContainerItemLink(bag, slot)
             if item and item == link then
-                if (CursorHasItem and CursorHasItem()) or (CursorHasMoney and CursorHasMoney()) or (CursorHasSpell and CursorHasSpell()) then
+                if (CursorHasItem and CursorHasItem()) or (CursorHasMoney and CursorHasMoney()) or
+                    (CursorHasSpell and CursorHasSpell()) then
                     ClearCursor()
                 end
                 C_Container.PickupContainerItem(bag, slot)
@@ -338,7 +356,9 @@ local function EquipItemByLink(link)
 end
 
 local function CreateAnchorFrame()
-    if anchorFrame then return end
+    if anchorFrame then
+        return
+    end
 
     anchorFrame = CreateFrame("Frame", "RanothUtilsLootAnchor", UIParent, "BackdropTemplate")
     anchorFrame:SetSize(48, 48)
@@ -352,7 +372,12 @@ local function CreateAnchorFrame()
         tile = true,
         tileSize = 8,
         edgeSize = 10,
-        insets = { left = 2, right = 2, top = 2, bottom = 2 },
+        insets = {
+            left = 2,
+            right = 2,
+            top = 2,
+            bottom = 2
+        }
     })
     anchorFrame:SetBackdropColor(0, 0.8, 1, 0.25)
     anchorFrame:SetBackdropBorderColor(0, 0.8, 1, 1)
@@ -362,16 +387,14 @@ local function CreateAnchorFrame()
     anchorFrame.text:SetText("Loot Anchor")
 
     anchorFrame:ClearAllPoints()
-    anchorFrame:SetPoint(
-        RanothUtils.db.profile.lootAnchorPoint,
-        UIParent,
-        RanothUtils.db.profile.lootAnchorRelativePoint,
-        RanothUtils.db.profile.lootAnchorX,
-        RanothUtils.db.profile.lootAnchorY
-    )
+    anchorFrame:SetPoint(RanothUtils.db.profile.lootAnchorPoint, UIParent,
+        RanothUtils.db.profile.lootAnchorRelativePoint, RanothUtils.db.profile.lootAnchorX,
+        RanothUtils.db.profile.lootAnchorY)
 
     anchorFrame:SetScript("OnDragStart", function(self)
-        if not moveMode then return end
+        if not moveMode then
+            return
+        end
         self:StartMoving()
     end)
 
@@ -387,9 +410,11 @@ local function CreateAnchorFrame()
     anchorFrame:Hide()
 end
 
---#region Icon frames display logic
+-- #region Icon frames display logic
 local function UpdateLootIconTooltip(iconFrame)
-    if not iconFrame or not iconFrame:IsShown() then return end
+    if not iconFrame or not iconFrame:IsShown() then
+        return
+    end
     GameTooltip:SetOwner(iconFrame, "ANCHOR_RIGHT")
     GameTooltip:SetHyperlink(iconFrame.itemLink)
     GameTooltip:AddLine("Player: " .. (iconFrame.playerName or "?"), 1, 1, 1)
@@ -414,9 +439,15 @@ end)
 LootAskerTooltipModFrame:RegisterEvent("MODIFIER_STATE_CHANGED")
 
 local function MakeIconFrames(itemLink, playerName)
-    if not lootItems[itemLink] then lootItems[itemLink] = {} end
-    if not iconFrames[itemLink] then iconFrames[itemLink] = {} end
-    if lootItems[itemLink][playerName] then return end
+    if not lootItems[itemLink] then
+        lootItems[itemLink] = {}
+    end
+    if not iconFrames[itemLink] then
+        iconFrames[itemLink] = {}
+    end
+    if lootItems[itemLink][playerName] then
+        return
+    end
     lootItems[itemLink][playerName] = true
 
     CreateAnchorFrame()
@@ -483,12 +514,19 @@ local function MakeIconFrames(itemLink, playerName)
             iconFrames[self.itemLink][self.playerName] = nil
             -- if next(iconFrames[self.itemLink]) == nil then iconFrames[self.itemLink] = nil end
         elseif button == "LeftButton" then
-            if self.glow then self.glow:Hide() end
-            if ActionButton_HideOverlayGlow then ActionButton_HideOverlayGlow(self) end
+            if self.glow then
+                self.glow:Hide()
+            end
+            if ActionButton_HideOverlayGlow then
+                ActionButton_HideOverlayGlow(self)
+            end
 
             if IsLooterDifferentFromSelf(self.playerName) then
                 SendChatMessage("Do you need " .. self.itemLink .. "?", "WHISPER", nil, self.playerName)
             else
+                if UnitAffectingCombat("player") then
+                    return
+                end
                 EquipItemByLink(self.itemLink)
 
                 self:Hide()
@@ -501,28 +539,38 @@ local function MakeIconFrames(itemLink, playerName)
     iconFrames[itemLink][playerName] = iconFrame
     iconFrame:Show()
 end
---#endregion Icon frames display logic
+-- #endregion Icon frames display logic
 
---#region Entry points
+-- #region Entry points
 function RanothUtils:CHAT_MSG_LOOT(event, ...)
     local playerName = select(2, ...)
 
     local msg = select(1, ...)
-    if not msg then return end
+    if not msg then
+        return
+    end
     local itemLink = msg and msg:match("|c.-|r")
-    if not itemLink then return end
-    itemInfo = { GetItemInfo(itemLink) }
-    if not itemInfo then return end
+    if not itemLink then
+        return
+    end
+    itemInfo = {GetItemInfo(itemLink)}
+    if not itemInfo then
+        return
+    end
 
     local slotId = inventorySlotsForItemLink[itemInfo[9]]
-    if not MatchingFilters(itemLink, playerName, msg, slotId) then return end
+    if not MatchingFilters(itemLink, playerName, msg, slotId) then
+        return
+    end
 
     MakeIconFrames(itemLink, playerName)
     return true
 end
 
 function RanothUtils:CheckIfIconsToDisplay()
-    if not iconFrames then return false end
+    if not iconFrames then
+        return false
+    end
     for _, playerIcons in pairs(iconFrames) do
         if type(playerIcons) == "table" then
             for _, iconFrame in pairs(playerIcons) do
@@ -535,7 +583,7 @@ function RanothUtils:CheckIfIconsToDisplay()
     return false
 end
 
---#endregion Entry points
+-- #endregion Entry points
 
 function LootAsker:SetMoveMode(enabled)
     moveMode = enabled

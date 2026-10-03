@@ -18,4 +18,5 @@ src\autoOpen.lua
 src\threeDViewer.lua
 src\lootAsker.lua
 src\elvuiTagsRegisterer.lua
+src\macroHotSwap.lua
 src\commands.lua

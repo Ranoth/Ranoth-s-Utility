@@ -11,6 +11,7 @@ local Debug = RanothUtils:GetModule("Debug")
 local ThreeDViewer = RanothUtils:GetModule("ThreeDViewer")
 local SpellMessages = RanothUtils:GetModule("SpellMessages")
 local LootAsker = RanothUtils:GetModule("LootAsker")
+local MacroHotSwap = RanothUtils:GetModule("MacroHotSwap")
 
 local addonShortHand = string.lower("ranu")
 
@@ -203,6 +204,15 @@ local commandList = {
             Printer:Print("Loot anchor move mode toggled")
         end,
         help = "Toggle loot anchor move mode",
+    },
+    ["pot"] = {
+        func = function(args)
+            local potName, quality = args:match("^(%S*)%s*(%S*)$")
+            if not potName or not quality then return end
+            local macroText = MacroHotSwap:UpdatePotMacro(potName, quality)
+        end,
+        help = "Updates the macro for the specified burst potion and quality",
+        argsHelp = "<potName> <quality>"
     },
 }
 
