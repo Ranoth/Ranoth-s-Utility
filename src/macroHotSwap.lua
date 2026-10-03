@@ -46,9 +46,13 @@ end
 
 function MacroHotSwap:UpdatePotMacro(potName, quality)
     local macroText = BuildPotMacroBody(potName, quality)
-    PasteInMacro(potMacroName, macroText)
-    Printer:Print(potMacroName .. " macro's burst potion updated with " .. burstPotsIds[potName].longName ..
-                      " of quality " .. quality)
+    if macroText ~= "" then
+        PasteInMacro(potMacroName, macroText)
+        Printer:Print(potMacroName .. " macro's burst potion updated with " .. burstPotsIds[potName].longName ..
+                          " of quality " .. quality)
+    else
+        Printer:Print("Failed to update " .. potMacroName .. " macro: invalid potion name or quality.")
+    end
 end
 
 function MacroHotSwap:OnEnable()
