@@ -7,6 +7,16 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local pendingReload = false
 
+-- Maps each saved toggle to the module it controls.
+local moduleByToggle = {
+    debug = "Debug",
+    autoOpen = "AutoOpen",
+    threeDViewer = "ThreeDViewer",
+    lootAsker = "LootAsker",
+    spellMessages = "SpellMessages",
+    elvuiTags = "ElvuiTagsRegisterer",
+}
+
 local function PromptReload()
     if not pendingReload then return end
 
@@ -57,6 +67,14 @@ local function openBlizzardOptions(frame)
 end
 
 function Options:OnInitialize()
+    -- Modules are enabled by default; apply saved toggles before they are enabled at login.
+    for key, moduleName in pairs(moduleByToggle) do
+        local module = RanothUtils:GetModule(moduleName, true)
+        if module then
+            module:SetEnabledState(RanothUtils.db.profile[key] and true or false)
+        end
+    end
+
     local opts = {
         type = "group",
         name = "Ranoth's Utility",
@@ -71,7 +89,7 @@ function Options:OnInitialize()
                         name = "Debug Mode",
                         get = function() return RanothUtils.db.profile.debug end,
                         set = function(_, v)
-                            SetToggle("debug", v, false, "Debug")
+                            SetToggle("debug", v, false, moduleByToggle["debug"])
                         end,
                     },
                     autoOpen = {
@@ -80,7 +98,7 @@ function Options:OnInitialize()
                         name = "Auto Open Containers",
                         get = function() return RanothUtils.db.profile.autoOpen end,
                         set = function(_, v)
-                            SetToggle("autoOpen", v, false, "AutoOpen")
+                            SetToggle("autoOpen", v, false, moduleByToggle["autoOpen"])
                         end,
                     },
                     threeDViewer = {
@@ -90,7 +108,7 @@ function Options:OnInitialize()
                         desc = "Disabling may require /reload to fully remove menu injection.",
                         get = function() return RanothUtils.db.profile.threeDViewer end,
                         set = function(_, v)
-                            SetToggle("threeDViewer", v, true, "ThreeDViewer")
+                            SetToggle("threeDViewer", v, true, moduleByToggle["threeDViewer"])
                         end,
                     },
                     lootAsker = {
@@ -99,7 +117,7 @@ function Options:OnInitialize()
                         name = "Loot Asker",
                         get = function() return RanothUtils.db.profile.lootAsker end,
                         set = function(_, v)
-                            SetToggle("lootAsker", v, false, "LootAsker")
+                            SetToggle("lootAsker", v, false, moduleByToggle["lootAsker"])
                         end,
                     },
                     spellMessages = {
@@ -108,7 +126,7 @@ function Options:OnInitialize()
                         name = "Spell Messages",
                         get = function() return RanothUtils.db.profile.spellMessages end,
                         set = function(_, v)
-                            SetToggle("spellMessages", v, false, "SpellMessages")
+                            SetToggle("spellMessages", v, false, moduleByToggle["spellMessages"])
                         end,
                     },
                     elvuiTags = {
@@ -117,7 +135,7 @@ function Options:OnInitialize()
                         name = "ElvUI Tags",
                         get = function() return RanothUtils.db.profile.elvuiTags end,
                         set = function(_, v)
-                            SetToggle("elvuiTags", v, true, "ElvuiTagsRegisterer")
+                            SetToggle("elvuiTags", v, true, moduleByToggle["elvuiTags"])
                         end,
                     },
                     lootAskerFilters = {

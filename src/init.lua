@@ -1,8 +1,8 @@
 --- Initialize the addon and set up the settings database.
 --- @module "Init"
-
 local addon_name, _ = ...
-local RanothUtils = LibStub("AceAddon-3.0"):NewAddon(addon_name, "AceEvent-3.0", "AceHook-3.0", "AceConsole-3.0", "AceTimer-3.0")
+local RanothUtils = LibStub("AceAddon-3.0"):NewAddon(addon_name, "AceEvent-3.0", "AceHook-3.0", "AceConsole-3.0",
+    "AceTimer-3.0")
 
 local defaults = {
     profile = {
@@ -21,8 +21,8 @@ local defaults = {
         lootAnchorPoint = "CENTER",
         lootAnchorRelativePoint = "CENTER",
         lootAnchorX = 0,
-        lootAnchorY = 0,
-    },
+        lootAnchorY = 0
+    }
 }
 
 function RanothUtils:OnInitialize()

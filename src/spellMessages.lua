@@ -437,7 +437,7 @@ function SpellMessages:PlayerCastInterrupted(unit, spellId)
     if not spellMessage then return end
 
     SpellMessages:PrepareSendChatMessage(messageQueue[spellMessagePrefixMap.INTERRUPTED])
-    for key, message in pairs(messageQueue) do Debug:Print(key, message) end
+    -- for key, message in pairs(messageQueue) do Debug:Print(key, message) end
 
     spellMessage:dequeueMessages()
 end
