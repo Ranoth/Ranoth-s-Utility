@@ -20,8 +20,8 @@ local burstPotsIds = {
     },
     ["lp"] = {
         ["longName"] = "Light's Potential",
-        ["1"] = 241308,
-        ["2"] = 241309,
+        ["1"] = 241309,
+        ["2"] = 241308,
         ["flt"] = 245898
     }
 }
