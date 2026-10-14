@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.15.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.14.4...v1.15.0) (2026-10-14)
+
+
+### Features
+
+* Add command to swap burst potion item id in my MISC macro ([a82bb55](https://github.com/Ranoth/Ranoth-s-Utility/commit/a82bb5598722564ba6d76bed56beb06fc3a5467c))
+
+
+### Bug Fixes
+
+* Add error handling if potName or quality are invalid. ([7c77e7d](https://github.com/Ranoth/Ranoth-s-Utility/commit/7c77e7d8a0838033448a6a8347fb3de9dea6d7f9))
+* Bump interface version ([fd8234d](https://github.com/Ranoth/Ranoth-s-Utility/commit/fd8234d3c4137b9f6a8db0aa776bac9ec2ead5f4))
+* Correctly set activated and deactivated modules to reflect the options ([8fb20c8](https://github.com/Ranoth/Ranoth-s-Utility/commit/8fb20c8d3c456a56678c30ddd1a222a407bf34fa))
+* Light's Potential ID misordered ([a56bb00](https://github.com/Ranoth/Ranoth-s-Utility/commit/a56bb005a1769680070cbd526c6d240be4fcda79))
+* Restore model rotation functionnality ([0aa21d1](https://github.com/Ranoth/Ranoth-s-Utility/commit/0aa21d1139f185b18d9aee85bb03a14ceaa39548))
+
 ## [1.14.4](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.14.3...v1.14.4) (2026-08-12)
 
 
