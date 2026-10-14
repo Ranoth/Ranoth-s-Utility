@@ -69,9 +69,23 @@ local function CreateModelWidget(unitID, displayID)
     local isDragging = false
     local buttonDown
 
+    local lastX, lastY
+
+    --- Get the cursor movement since the last call, in UI scale units.
+    local function GetScaledCursorDelta()
+        local cx, cy = GetCursorPosition()
+        local scale = UIParent:GetEffectiveScale()
+        cx, cy = cx / scale, cy / scale
+        local dx, dy = cx - (lastX or cx), cy - (lastY or cy)
+        lastX, lastY = cx, cy
+        return dx, dy
+    end
+
     modelViewer:SetScript("OnMouseDown", function(self, button)
         isDragging = true
         buttonDown = button
+        lastX, lastY = nil, nil
+        GetScaledCursorDelta()
     end)
 
     modelViewer:SetScript("OnMouseUp", function(self, _)
@@ -84,7 +98,7 @@ local function CreateModelWidget(unitID, displayID)
             local deltaX, _ = GetScaledCursorDelta()
             modelViewer:SetRotation(deltaX)
         elseif isDragging and buttonDown == "RightButton" then
-            local x, y, _ = GetScaledCursorDelta()
+            local x, y = GetScaledCursorDelta()
             modelViewer:UpdatePosition(0, x, y)
         end
     end)
