@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.15.0...v1.15.1) (2026-10-14)
+
+
+### Bug Fixes
+
+* Package Name ([64dcf50](https://github.com/Ranoth/Ranoth-s-Utility/commit/64dcf50eb04968db3e95027abc25b7b19f176635))
+
 ## [1.15.0](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.14.4...v1.15.0) (2026-10-14)
 
 
