@@ -1,4 +1,4 @@
-package-as: RanothsUtility
+package-as: Ranoth-s-Utility
 
 externals:
   libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
