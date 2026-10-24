@@ -133,7 +133,7 @@ local function IsMainStatMatch(itemLink)
         return true
     end
 
-    local itemStats = (C_Item and C_Item.GetItemStats and C_Item.GetItemStats(itemLink)) or GetItemStats(itemLink)
+    local itemStats = C_Item.GetItemStats(itemLink)
     if not itemStats then
         return true
     end
@@ -166,19 +166,19 @@ end
 local function GetEquippedItemLevelAtSlot(slotID)
     local itemLink = GetInventoryItemLink("player", slotID)
     if itemLink then
-        local itemLevel = select(4, GetItemInfo(itemLink))
+        local itemLevel = select(4, C_Item.GetItemInfo(itemLink))
         return itemLevel or 0
     end
     return 0
 end
 
 local function IsItemTrinket(itemLink)
-    local itemType, itemSubType = select(6, GetItemInfo(itemLink))
+    local itemType, itemSubType = select(6, C_Item.GetItemInfo(itemLink))
     return itemType == "Armor" and (itemSubType == "Trinket" or itemSubType == "Miscellaneous")
 end
 
 local function IsItemRingOrNeck(itemLink)
-    local itemType, itemSubType = select(6, GetItemInfo(itemLink))
+    local itemType, itemSubType = select(6, C_Item.GetItemInfo(itemLink))
     return itemType == "Armor" and (itemSubType == "Finger" or itemSubType == "Neck")
 end
 
@@ -204,7 +204,7 @@ local function CanSelfEquip(itemLink)
     if not RanothUtils.db.profile.checkIfSelfCanEquip then
         return true
     end
-    local _, _, _, _, _, itemType, itemSubType, _, equipSlot = GetItemInfo(itemLink)
+    local _, _, _, _, _, itemType, itemSubType, _, equipSlot = C_Item.GetItemInfo(itemLink)
     if equipSlot == INVTYPE_NON_EQUIP_IGNORE then
         return false
     end
@@ -235,8 +235,8 @@ local function IsSameItem(itemLinkA, itemLinkB)
     if not itemLinkA or not itemLinkB then
         return false
     end
-    local itemIdA = GetItemInfoInstant(itemLinkA)
-    local itemIdB = GetItemInfoInstant(itemLinkB)
+    local itemIdA = C_Item.GetItemInfoInstant(itemLinkA)
+    local itemIdB = C_Item.GetItemInfoInstant(itemLinkB)
     if itemIdA and itemIdB then
         return itemIdA == itemIdB
     end
@@ -284,7 +284,7 @@ local function QualityFilter(itemLink)
     if not RanothUtils.db.profile.checkItemQuality then
         return true
     end
-    local quality = select(3, GetItemInfo(itemLink))
+    local quality = select(3, C_Item.GetItemInfo(itemLink))
     return quality >= RanothUtils.db.profile.minItemQuality
 end
 
@@ -478,7 +478,7 @@ local function MakeIconFrames(itemLink, playerName)
 
     iconFrame.texture = iconFrame:CreateTexture(nil, "BACKGROUND")
     iconFrame.texture:SetAllPoints()
-    iconFrame.texture:SetTexture(select(10, GetItemInfo(itemLink)))
+    iconFrame.texture:SetTexture(select(10, C_Item.GetItemInfo(itemLink)))
     iconFrame.itemLink = itemLink
     iconFrame.playerName = playerName
 
@@ -553,8 +553,8 @@ function RanothUtils:CHAT_MSG_LOOT(event, ...)
     if not itemLink then
         return
     end
-    itemInfo = {GetItemInfo(itemLink)}
-    if not itemInfo then
+    itemInfo = {C_Item.GetItemInfo(itemLink)}
+    if not itemInfo[1] then
         return
     end
 
