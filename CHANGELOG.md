@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.15.2](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.15.1...v1.15.2) (2026-10-27)
+
+
+### Bug Fixes
+
+* Stop addon from trying to send messages upon spells when in challenge mode. ([34ddd65](https://github.com/Ranoth/Ranoth-s-Utility/commit/34ddd6522a531765858cb26f9a106607e6d4a6f8))
+* Update deprecated calls to global GetItemStats() ([3d499a6](https://github.com/Ranoth/Ranoth-s-Utility/commit/3d499a63a73fd5d5758409da582d16e6283cd3fe))
+
 ## [1.15.1](https://github.com/Ranoth/Ranoth-s-Utility/compare/v1.15.0...v1.15.1) (2026-10-14)
 
 
