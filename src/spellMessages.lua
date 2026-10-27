@@ -210,6 +210,7 @@ end
 --- Queues the messages to be sent to the chat channel.
 --- @usage `self:queueMessages()` Intended to be used when a cast starts.
 function SpellMessage:queueMessages()
+    if C_ChallengeMode.IsChallengeModeActive() then return end
     for k, _ in pairs(self.messages) do
         local message = self:buildString(spellMessagePrefixMap[k], k)
         if message ~= nil then
